@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Access;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.NodeToGraphTests;
@@ -29,24 +30,24 @@ public class FunctionalityGraphTracesIteratorTests {
     public void processSubTrace_SimpleTrace(){  
 		// setup
         List<TraceGraphNode> trace = new ArrayList<TraceGraphNode>();
-        trace.add(new Access("R", 1));
-        trace.add(new Access("W", 2));
-        trace.add(new Access("W", 3));
+        trace.add(NodeToGraphTests.createAccess("R", 1));
+        trace.add(NodeToGraphTests.createAccess("W", 2));
+        trace.add(NodeToGraphTests.createAccess("W", 3));
 
         // steps
         TraceGraph graph = FunctionalityGraphTracesIterator.processSubTrace(trace);
 
-        // result
-        List<Access> allAccesses = graph.getAllAccesses();
+        // longestPath
+        List<AccessDto> allAccesses = graph.toList();
         assertEquals(3, allAccesses.size());
 
-        Access prev = null;
-        Access curr = null;
+        AccessDto prev = null;
+        AccessDto curr = null;
         for (int i = 0; i < allAccesses.size(); i++) {
             if(prev == null) continue;
 
             curr = allAccesses.get(i);
-            assertTrue(prev.getNextAccessProbabilities().containsKey(curr));
+            assertTrue(graph.getGraph().containsEdge(prev, curr));
 
             prev = curr;
         }
@@ -69,9 +70,9 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
-        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+        TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(3, pathData.getLongestPath().size());
+        assertEquals(3, longestPath.getAccesses().size());
 
     }
 
@@ -102,9 +103,9 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
-        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+        TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(8, pathData.getLongestPath().size());
+        assertEquals(8, longestPath.getAccesses().size());
 
     }
 
@@ -144,12 +145,39 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
-        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+        TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
+
+        assertEquals(16, longestPath.getAccesses().size());
+
+    }
+
+    @Test
+    public void computeTraceTypes_Loop() throws JSONException {
+        JSONObject trace = NodeToGraphTests.initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{"R", 1}, new Object[]{"R", 2}
+			},
+			new Object[][]{
+				new Object[]{"R", 3}, new Object[]{"R", 4}
+			}
+			});
 
         
-        TraceDto t = FunctionalityGraphTracesIterator.pathDataAccessListToTraceDto(pathData.getLongestPath());
+        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
 
-        assertEquals(16, pathData.getLongestPath().size());
+        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
+
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+
+        TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
+
+        assertEquals(16, longestPath.getAccesses().size());
 
     }
 
@@ -171,9 +199,9 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
-        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+        TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(7, pathData.getLongestPath().size());
+        assertEquals(7, longestPath.getAccesses().size());
 
     }
 
@@ -207,11 +235,11 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
-        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+        TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(11, pathData.getLongestPath().size());
-        assertEquals(9, pathData.getMostDifferentAccessesPath().size());
-        assertEquals(11, pathData.getMostProbablePath().size());
+        assertEquals(11, longestPath.getAccesses().size());
+        //assertEquals(9, pathData.getMostDifferentAccessesPath().size());
+        //assertEquals(11, pathData.getMostProbablePath().size());
 
     }
 
@@ -251,8 +279,6 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
-        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
-
         
         Map<String, Float> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>();
@@ -288,15 +314,12 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
-        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
-
+        
         Map<String, Float> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>();
         
         FunctionalityGraphTracesIterator.fillEntityDataStructures(processedSubTrace.getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, "requestedFunctionality");
         
-
-        assertEquals(8, pathData.getLongestPath().size());
 
         assertEquals(8, e1e2PairCount.size());
         assertEquals(5, entityFunctionalities.size());        

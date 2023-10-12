@@ -2,12 +2,15 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.Multigraph;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,15 +20,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIteratorTests;
+
 @RunWith(SpringRunner.class)
 @SuiteClasses({Access.class, Call.class, If.class, Label.class, Loop.class})
 public class NodeToGraphTests {
 
-	List<Access> processedSubTrace;
+	TraceGraph traceGraph;
+	Graph<AccessDto, DefaultWeightedEdge> processedSubTrace;
+
 
 	@Before
 	public void setUp() throws Exception {
-        processedSubTrace = new ArrayList<Access>();
+        traceGraph = new TraceGraph();
+		processedSubTrace = traceGraph.getGraph();
     }
 
 	// Access
@@ -35,16 +45,15 @@ public class NodeToGraphTests {
 		String mode = "R";
 		int entityAccessedId = 19;
 
-        Access access = new Access(mode, entityAccessedId);
+        Access access = createAccess(mode, entityAccessedId);
 
-		access.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		access.nodeToAccessGraph(traceGraph, null, null, null, null);
 
-		assertEquals(1, processedSubTrace.size());
-		assertEquals(access, processedSubTrace.get(0));
-		assertEquals(true, access.getNextAccessProbabilities().keySet().isEmpty());
+		assertEquals(1, processedSubTrace.vertexSet().size());
+		assertEquals(FunctionalityGraphTracesIterator.accessModeStringToByte(mode), traceGraph.toList().get(0).getMode());
+		assertEquals(entityAccessedId, traceGraph.toList().get(0).getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(traceGraph.toList().get(0), a)).toList().isEmpty());
 
-		assertEquals(mode, access.getMode());
-		assertEquals(entityAccessedId, access.getEntityAccessedId());
     }
 
 	@Test  
@@ -52,22 +61,24 @@ public class NodeToGraphTests {
 		String mode = "R";
 		int entityAccessedId = 19;
 
-        Access access1 = new Access();
+        Access access1 = new Access(-1);
 		access1.setMode(mode);
 		access1.setEntityAccessedId(entityAccessedId);
 
-		Access access2 = new Access();
+		Access access2 = new Access(-1);
 		access2.setMode(mode);
 		access2.setEntityAccessedId(entityAccessedId);
 
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
-		access2.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		access1.nodeToAccessGraph(traceGraph, null, null, null, null);
+		access2.nodeToAccessGraph(traceGraph, null, null, null, null);
 
-		assertEquals(2, processedSubTrace.size());
-		assertEquals(access1, processedSubTrace.get(0));
-		assertEquals(access2, processedSubTrace.get(1));
-		assertTrue(access1.getNextAccessProbabilities().containsKey(access2));
-		assertTrue(access2.getNextAccessProbabilities().keySet().isEmpty());
+		assertEquals(2, processedSubTrace.vertexSet().size());
+		assertEquals(FunctionalityGraphTracesIterator.accessModeStringToByte(mode), traceGraph.toList().get(0).getMode());
+		assertEquals(entityAccessedId, traceGraph.toList().get(0).getEntityID());
+		assertEquals(FunctionalityGraphTracesIterator.accessModeStringToByte(mode), traceGraph.toList().get(1).getMode());
+		assertEquals(entityAccessedId, traceGraph.toList().get(1).getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(traceGraph.toList().get(0), a)).toList().contains(traceGraph.toList().get(1)));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(traceGraph.toList().get(1), a)).toList().isEmpty());
 		
     }
 
@@ -91,22 +102,22 @@ public class NodeToGraphTests {
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		callNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 3); // entry + 1 access + exit = 3
+		assertEquals(processedSubTrace.vertexSet().size(), 3); // entry + 1 access + exit = 3
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(2);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(2);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access access = processedSubTrace.get(1); // actual access
-		assertEquals("R", access.getMode());
-		assertEquals(6, access.getEntityAccessedId());
-		assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
-		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+		AccessDto access = traceGraph.toList().get(1); // actual access
+		assertEquals(FunctionalityGraphTracesIterator.accessModeStringToByte("R"), access.getMode());
+		assertEquals(6, access.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access, a)).toList().contains(exitPoint));
 		
 		
     }
@@ -129,26 +140,26 @@ public class NodeToGraphTests {
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		callNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(4, processedSubTrace.size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(3);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access access1 = processedSubTrace.get(1);
-		Access access2 = processedSubTrace.get(2);
-		assertEquals("R", access1.getMode());
-		assertEquals(6, access1.getEntityAccessedId());
-		assertEquals("R", access2.getMode());
-		assertEquals(6, access2.getEntityAccessedId());
-		assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access1));
-		assertTrue(access1.getNextAccessProbabilities().containsKey(access2));
-		assertTrue(access2.getNextAccessProbabilities().containsKey(exitPoint));
+		AccessDto access1 = traceGraph.toList().get(1);
+		AccessDto access2 = traceGraph.toList().get(2);
+		assertEquals(FunctionalityGraphTracesIterator.accessModeStringToByte("R"), access1.getMode());
+		assertEquals(6, access1.getEntityID());
+		assertEquals(FunctionalityGraphTracesIterator.accessModeStringToByte("R"), access2.getMode());
+		assertEquals(6, access2.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access1));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access1, a)).toList().contains(access2));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access2, a)).toList().contains(exitPoint));
 		
 		
     }
@@ -156,9 +167,9 @@ public class NodeToGraphTests {
 	@Test  
     public void nodeToAccessGraph_Call_NonEmptyTrace() throws JSONException{
 		// setup
-		Access access1 = new Access("W", 17);
-		Access access2 = new Access("R", 20);
-		Access access3 = new Access("R", 6);
+		Access access1 = createAccess("W", 17);
+		Access access2 = createAccess("R", 20);
+		Access access3 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -175,28 +186,27 @@ public class NodeToGraphTests {
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
 		
 		// steps
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
-		access2.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		access1.nodeToAccessGraph(traceGraph, null, null, null, null);
+		callNode.nodeToAccessGraph(traceGraph, null, null, null, null);
+		access2.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(5, processedSubTrace.size());
+		assertEquals(5, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(1);
-		Access exitPoint = processedSubTrace.get(3);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
+		AccessDto entryPoint = traceGraph.toList().get(1);
+		AccessDto exitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
 		
-		Access access;
-		access = processedSubTrace.get(0);
-		assertTrue(access.getNextAccessProbabilities().containsKey(entryPoint)); // check if entry connected properly
+		AccessDto access = traceGraph.toList().get(0);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access, a)).toList().contains(entryPoint)); // check if entry connected properly
 
-		access = processedSubTrace.get(2);
-		assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
-		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint)); // check if center access is connected
+		AccessDto access_1 = traceGraph.toList().get(2);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access_1));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access_1, a)).toList().contains(exitPoint)); // check if center access is connected
 
-		access = processedSubTrace.get(4);
-		assertTrue(exitPoint.getNextAccessProbabilities().containsKey(access)); // check if exit connected properly
+		AccessDto access_2 = traceGraph.toList().get(4);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().contains(access_2)); // check if exit connected properly
 		
     }
 
@@ -221,28 +231,28 @@ public class NodeToGraphTests {
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		callNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 5);
+		assertEquals(processedSubTrace.vertexSet().size(), 5);
 
-		Access outerEntryPoint = processedSubTrace.get(0);
-		Access outerExitPoint = processedSubTrace.get(4);
-		assertNull(outerEntryPoint.getMode());
-		assertNull(outerExitPoint.getMode());
-		assertTrue(outerExitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto outerEntryPoint = traceGraph.toList().get(0);
+		AccessDto outerExitPoint = traceGraph.toList().get(4);
+		assertEquals(-1, outerEntryPoint.getEntityID());
+		assertEquals(-1, outerExitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(outerExitPoint, a)).toList().isEmpty());
 
-		Access innerEntryPoint = processedSubTrace.get(1);
-		Access innerExitPoint = processedSubTrace.get(3);
-		assertNull(innerEntryPoint.getMode());
-		assertNull(innerExitPoint.getMode());
-		assertTrue(innerExitPoint.getNextAccessProbabilities().containsKey(outerExitPoint));
+		AccessDto innerEntryPoint = traceGraph.toList().get(1);
+		AccessDto innerExitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, innerEntryPoint.getEntityID());
+		assertEquals(-1, innerExitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(innerExitPoint, a)).toList().contains(outerExitPoint));
 		
-		Access access = processedSubTrace.get(2); // actual access
-		assertEquals("R", access.getMode());
-		assertEquals(6, access.getEntityAccessedId());
-		assertTrue(innerEntryPoint.getNextAccessProbabilities().containsKey(access));
-		assertTrue(access.getNextAccessProbabilities().containsKey(innerExitPoint));
+		AccessDto access = traceGraph.toList().get(2); // actual access
+		assertEquals(FunctionalityGraphTracesIterator.accessModeStringToByte("R"), access.getMode());
+		assertEquals(6, access.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(innerEntryPoint, a)).toList().contains(access));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access, a)).toList().contains(innerExitPoint));
 		
 		
     }
@@ -252,7 +262,7 @@ public class NodeToGraphTests {
 	@Test  
     public void nodeToAccessGraph_If_EmptyTrace() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -278,28 +288,31 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(5, processedSubTrace.size()); // entry + 3 access + exit = 5
+		assertEquals(5, processedSubTrace.vertexSet().size()); // entry + 3 access + exit = 5
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(4);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.getFirstAccess();
+		AccessDto exitPoint = traceGraph.getLastAccess();
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access access;
-		Access condition = null;
+		AccessDto access;
+		AccessDto condition = null;
 
 		for (int i = 1; i < 4; i++) {
-			access = processedSubTrace.get(i);
+			access = traceGraph.toList().get(i);
 			if(condition == null) {
-				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access));
+
 				condition = access;
 			} else {
-				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
-				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+				final AccessDto cond = condition;
+				final AccessDto acc = access;
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(exitPoint));
 			}
 			
 		}
@@ -310,7 +323,7 @@ public class NodeToGraphTests {
 	@Test  
     public void nodeToAccessGraph_If_NonEmptyTrace() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -336,45 +349,49 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		access1.nodeToAccessGraph(traceGraph, null, null, null, null);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, null);
+		access1.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(7, processedSubTrace.size());
+		assertEquals(7, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(1);
-		Access exitPoint = processedSubTrace.get(5);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
+		List<AccessDto> a1 = traceGraph.toList();
+		AccessDto entryPoint = traceGraph.toList().get(1);
+		AccessDto exitPoint = traceGraph.toList().get(5);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
 		
-		Access access;
-		Access condition = null;
+		AccessDto access;
+		AccessDto condition = null;
 
 		for (int i = 2; i < 5; i++) {
-			access = processedSubTrace.get(i);
+			access = traceGraph.toList().get(i);
 			if(condition == null) {
-				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access));
 				condition = access;
 			} else {
-				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
-				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+				final AccessDto cond = condition;
+				final AccessDto acc = access;
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(exitPoint));
 			}
 			
 		}
 
-		access = processedSubTrace.get(0);
-		assertTrue(access.getNextAccessProbabilities().containsKey(entryPoint));
+		access = traceGraph.toList().get(0);
+		final AccessDto acc = access;
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(entryPoint));
 
-		access = processedSubTrace.get(6);
-		assertTrue(exitPoint.getNextAccessProbabilities().containsKey(access));
+		access = traceGraph.toList().get(6);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().contains(access));
 		
     }
 
 	@Test  
     public void nodeToAccessGraph_If_Nested() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -412,33 +429,35 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(9, processedSubTrace.size());
+		assertEquals(9, processedSubTrace.vertexSet().size());
 
-		Access outerEntryPoint = processedSubTrace.get(0);
-		Access outerExitPoint = processedSubTrace.get(8);
-		assertNull(outerEntryPoint.getMode());
-		assertNull(outerExitPoint.getMode());
-		assertTrue(outerExitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto outerEntryPoint = traceGraph.toList().get(0);
+		AccessDto outerExitPoint = traceGraph.toList().get(8);
+		assertEquals(-1, outerEntryPoint.getEntityID());
+		assertEquals(-1, outerExitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(outerExitPoint, a)).toList().isEmpty());
 
-		Access innerEntryPoint = processedSubTrace.get(2);
-		Access innerExitPoint = processedSubTrace.get(6);
-		assertNull(innerEntryPoint.getMode());
-		assertNull(innerExitPoint.getMode());
+		AccessDto innerEntryPoint = traceGraph.toList().get(2);
+		AccessDto innerExitPoint = traceGraph.toList().get(6);
+		assertEquals(-1, innerEntryPoint.getEntityID());
+		assertEquals(-1, innerExitPoint.getEntityID());
 		
-		Access access;
-		Access condition = null;
+		AccessDto access;
+		AccessDto condition = null;
 
 		for (int i = 3; i < 5; i++) {
-			access = processedSubTrace.get(i);
+			access = traceGraph.toList().get(i);
 			if(condition == null) {
-				assertTrue(innerEntryPoint.getNextAccessProbabilities().containsKey(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(innerEntryPoint, a)).toList().contains(access));
 				condition = access;
 			} else {
-				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
-				assertTrue(access.getNextAccessProbabilities().containsKey(innerExitPoint));
+				final AccessDto cond = condition;
+				final AccessDto acc = access;
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(innerExitPoint));
 			}
 			
 		}
@@ -449,7 +468,7 @@ public class NodeToGraphTests {
 	@Test  
     public void nodeToAccessGraph_If_NoCond() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -475,27 +494,29 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(4, processedSubTrace.size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(3);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access access;
-		Access condition = null;
+		AccessDto access;
+		AccessDto condition = null;
 
 		for (int i = 0; i < 3; i++) {
-			access = processedSubTrace.get(i);
+			access = traceGraph.toList().get(i);
 			if(condition == null) {
 				condition = entryPoint;
 			} else {
-				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
-				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+				final AccessDto cond = condition;
+				final AccessDto acc = access;
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(exitPoint));
 			}
 			
 		}
@@ -506,7 +527,7 @@ public class NodeToGraphTests {
 	@Test  
     public void nodeToAccessGraph_If_NoThen() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -532,28 +553,30 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(4, processedSubTrace.size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(3);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access access;
-		Access condition = null;
+		AccessDto access;
+		AccessDto condition = null;
 
 		for (int i = 1; i < 3; i++) {
-			access = processedSubTrace.get(i);
+			access = traceGraph.toList().get(i);
 			if(condition == null) {
-				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access));
 				condition = access;
 			} else {
-				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
-				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+				final AccessDto cond = condition;
+				final AccessDto acc = access;
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(exitPoint));
 			}
 			
 		}
@@ -564,7 +587,7 @@ public class NodeToGraphTests {
 	@Test  
     public void nodeToAccessGraph_If_NoElse() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -590,28 +613,30 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(4, processedSubTrace.size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(3);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access access;
-		Access condition = null;
+		AccessDto access;
+		AccessDto condition = null;
 
 		for (int i = 1; i < 3; i++) {
-			access = processedSubTrace.get(i);
+			access = traceGraph.toList().get(i);
 			if(condition == null) {
-				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access));
 				condition = access;
 			} else {
-				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
-				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+				final AccessDto cond = condition;
+				final AccessDto acc = access;
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(exitPoint));
 			}
 			
 		}
@@ -622,7 +647,7 @@ public class NodeToGraphTests {
 	@Test  
     public void nodeToAccessGraph_If_NoThenOrElse() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -648,28 +673,30 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(3, processedSubTrace.size());
+		assertEquals(3, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(2);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(2);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access access;
-		Access condition = null;
+		AccessDto access;
+		AccessDto condition = null;
 
 		for (int i = 1; i < 2; i++) {
-			access = processedSubTrace.get(i);
+			access = traceGraph.toList().get(i);
 			if(condition == null) {
-				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access));
 				condition = access;
 			} else {
-				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
-				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+				final AccessDto cond = condition;
+				final AccessDto acc = access;
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(exitPoint));
 			}
 			
 		}
@@ -713,18 +740,18 @@ public class NodeToGraphTests {
 		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(10, processedSubTrace.size());
+		assertEquals(10, processedSubTrace.vertexSet().size());
 
-		TraceGraph subGraph = new TraceGraph(processedSubTrace, processedSubTrace.get(0));
+		TraceGraph subGraph = new TraceGraph(processedSubTrace, traceGraph.toList().get(0));
 		subGraph.removeEmptyNodes();
 
 		assertTrue(heuristicFlags.hasReturn);
 
-		Access exitPoint = processedSubTrace.get(2);		
-		Access access = processedSubTrace.get(1);
+		AccessDto exitPoint = traceGraph.toList().get(2);		
+		Access access = traceGraph.toList().get(1);
 		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
 		
 		
@@ -749,14 +776,14 @@ public class NodeToGraphTests {
 		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+		callNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(3, processedSubTrace.size());
+		assertEquals(3, processedSubTrace.vertexSet().size());
 
-		Access exitPoint = processedSubTrace.get(2);		
-		Access access = processedSubTrace.get(1);
-		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+		AccessDto exitPoint = traceGraph.toList().get(2);		
+		AccessDto access = traceGraph.toList().get(1);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access, a)).toList().contains(exitPoint));
 		
 		
     }
@@ -783,14 +810,14 @@ public class NodeToGraphTests {
 		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+		callNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(5, processedSubTrace.size());
+		assertEquals(5, processedSubTrace.vertexSet().size());
 
-		Access exitPoint = processedSubTrace.get(3);		
-		Access access = processedSubTrace.get(2);
-		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+		AccessDto exitPoint = traceGraph.toList().get(3);		
+		AccessDto access = traceGraph.toList().get(2);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access, a)).toList().contains(exitPoint));
 		
 		
     }
@@ -820,14 +847,14 @@ public class NodeToGraphTests {
 		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(4, processedSubTrace.size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
-		Access expressionStart = processedSubTrace.get(0);		
-		Access bodyEnd = processedSubTrace.get(2);
-		assertTrue(bodyEnd.getNextAccessProbabilities().containsKey(expressionStart));
+		AccessDto expressionStart = traceGraph.toList().get(0);		
+		AccessDto bodyEnd = traceGraph.toList().get(2);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(bodyEnd, a)).toList().contains(expressionStart));
 			
     }
 
@@ -865,14 +892,14 @@ public class NodeToGraphTests {
 		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(7, processedSubTrace.size());
+		assertEquals(7, processedSubTrace.vertexSet().size());
 
-		Access innerExpressionStart = processedSubTrace.get(2);		
-		Access innerBodyEnd = processedSubTrace.get(4);
-		assertTrue(innerBodyEnd.getNextAccessProbabilities().containsKey(innerExpressionStart));
+		AccessDto innerExpressionStart = traceGraph.toList().get(2);		
+		AccessDto innerBodyEnd = traceGraph.toList().get(4);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(innerBodyEnd, a)).toList().contains(innerExpressionStart));
 		
     }
 
@@ -901,14 +928,14 @@ public class NodeToGraphTests {
 		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(4, processedSubTrace.size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
-		Access loopEnd = processedSubTrace.get(3);		
-		Access bodyEnd = processedSubTrace.get(2);
-		assertTrue(bodyEnd.getNextAccessProbabilities().containsKey(loopEnd));
+		AccessDto loopEnd = traceGraph.toList().get(3);		
+		AccessDto bodyEnd = traceGraph.toList().get(2);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(bodyEnd, a)).toList().contains(loopEnd));
 			
     }
 
@@ -946,21 +973,21 @@ public class NodeToGraphTests {
 		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(7, processedSubTrace.size());
+		assertEquals(7, processedSubTrace.vertexSet().size());
 
-		Access innerLoopEnd = processedSubTrace.get(5);		
-		Access innerBodyEnd = processedSubTrace.get(4);
-		assertTrue(innerBodyEnd.getNextAccessProbabilities().containsKey(innerLoopEnd));
+		AccessDto innerLoopEnd = traceGraph.toList().get(5);		
+		AccessDto innerBodyEnd = traceGraph.toList().get(4);
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(innerBodyEnd, a)).toList().contains(innerLoopEnd));
 		
     }
 
 	@Test
 	public void nodeToAccessGraph_Label_FlagReturn() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -988,15 +1015,16 @@ public class NodeToGraphTests {
 		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+		ifNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(4, processedSubTrace.size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
-		Float probability = BranchHeuristics.heuristicProbabilities.get(BranchHeuristics.RETURN_H);
-		Float inverse = 1.0f - probability;
-		assertEquals(probability, processedSubTrace.get(1).getNextAccessProbabilities().get(processedSubTrace.get(2)));
-		assertEquals(inverse, processedSubTrace.get(1).getNextAccessProbabilities().get(processedSubTrace.get(3)));
+		double probability = BranchHeuristics.heuristicProbabilities.get(BranchHeuristics.RETURN_H);
+		double inverse = 1.0f - probability;
+		
+		assertEquals(probability, processedSubTrace.getEdgeWeight(processedSubTrace.getEdge(traceGraph.toList().get(1), traceGraph.toList().get(2))), 0);
+		assertEquals(inverse, processedSubTrace.getEdgeWeight(processedSubTrace.getEdge(traceGraph.toList().get(1), traceGraph.toList().get(3))), 0);
 		
     }
 
@@ -1005,7 +1033,7 @@ public class NodeToGraphTests {
 	@Test  
     public void nodeToAccessGraph_Loop_EmptyTrace() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -1028,31 +1056,31 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(4, processedSubTrace.size()); // entry + 2 access + exit = 4
+		assertEquals(4, processedSubTrace.vertexSet().size()); // entry + 2 access + exit = 4
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(3);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access expression = processedSubTrace.get(1);
-		Access body = processedSubTrace.get(2);
+		AccessDto expression = traceGraph.toList().get(1);
+		AccessDto body = traceGraph.toList().get(2);
 
-		assertTrue(expression.getNextAccessProbabilities().containsKey(body));
-		assertTrue(expression.getNextAccessProbabilities().containsKey(exitPoint));
-		assertTrue(body.getNextAccessProbabilities().containsKey(expression));
-		assertFalse(body.getNextAccessProbabilities().containsKey(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(body));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(expression));
+		assertFalse(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(exitPoint));
 		
     }
 
 	@Test  
     public void nodeToAccessGraph_Loop_NonEmptyTrace() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -1075,33 +1103,33 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		access1.nodeToAccessGraph(traceGraph, null, null, null, null);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(5, processedSubTrace.size()); // entry + 2 access + exit = 4
+		assertEquals(5, processedSubTrace.vertexSet().size()); // entry + 2 access + exit = 4
 
-		access1 = processedSubTrace.get(0);
-		Access entryPoint = processedSubTrace.get(1);
-		Access exitPoint = processedSubTrace.get(4);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(access1.getNextAccessProbabilities().containsKey(entryPoint));
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto access_1 = traceGraph.toList().get(0);
+		AccessDto entryPoint = traceGraph.toList().get(1);
+		AccessDto exitPoint = traceGraph.toList().get(4);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access_1, a)).toList().contains(entryPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access expression = processedSubTrace.get(2);
-		Access body = processedSubTrace.get(3);
+		AccessDto expression = traceGraph.toList().get(2);
+		AccessDto body = traceGraph.toList().get(3);
 
-		assertTrue(expression.getNextAccessProbabilities().containsKey(body));
-		assertTrue(expression.getNextAccessProbabilities().containsKey(exitPoint));
-		assertTrue(body.getNextAccessProbabilities().containsKey(expression));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(body));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(expression));
 			
     }
 
 	@Test  
     public void nodeToAccessGraph_Loop_NoExpr() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -1124,28 +1152,28 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(3, processedSubTrace.size());
+		assertEquals(3, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(2);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(2);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 
-		Access body = processedSubTrace.get(1);
+		AccessDto body = traceGraph.toList().get(1);
 
-		assertTrue(body.getNextAccessProbabilities().containsKey(body));
-		assertTrue(body.getNextAccessProbabilities().containsKey(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(body));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(exitPoint));
 	
     }
 
 	@Test  
     public void nodeToAccessGraph_Loop_NoBody() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -1168,28 +1196,28 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(3, processedSubTrace.size());
+		assertEquals(3, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(2);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(2);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
-		Access expression = processedSubTrace.get(1);
+		AccessDto expression = traceGraph.toList().get(1);
 
-		assertTrue(expression.getNextAccessProbabilities().containsKey(expression));
-		assertTrue(expression.getNextAccessProbabilities().containsKey(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(expression));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(exitPoint));
 		
     }
 
 	@Test  
     public void nodeToAccessGraph_Loop_MultipleAccesses() throws JSONException{
 		// setup
-		Access access1 = new Access("R", 6);
+		Access access1 = createAccess("R", 6);
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
@@ -1212,36 +1240,37 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(6, processedSubTrace.size());
+		assertEquals(6, processedSubTrace.vertexSet().size());
 
-		Access entryPoint = processedSubTrace.get(0);
-		Access exitPoint = processedSubTrace.get(5);
-		assertNull(entryPoint.getMode());
-		assertNull(exitPoint.getMode());
-		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(5);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 
-		Access prev = null;
-		Access current;
+		AccessDto prev = null;
+		AccessDto current;
 
-		for (int i = 0; i < processedSubTrace.size()-1; i++) {
+		for (int i = 0; i < processedSubTrace.vertexSet().size()-1; i++) {
 			if (prev == null) continue;
 
-			current = processedSubTrace.get(i);
+			current = traceGraph.toList().get(i);
 
-			assertTrue(prev.getNextAccessProbabilities().containsKey(current));
+			final AccessDto p = prev;
+			assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(p, a)).toList().contains(current));
 
 			prev = current;
 		}
 
-		Access firstExpressionAccess = processedSubTrace.get(1);
-		Access lastExpressionAccess = processedSubTrace.get(2);
-		Access lastBodyAccess = processedSubTrace.get(4);
+		AccessDto firstExpressionAccess = traceGraph.toList().get(1);
+		AccessDto lastExpressionAccess = traceGraph.toList().get(2);
+		AccessDto lastBodyAccess = traceGraph.toList().get(4);
 
-		assertTrue(lastExpressionAccess.getNextAccessProbabilities().containsKey(exitPoint));
-		assertTrue(lastBodyAccess.getNextAccessProbabilities().containsKey(firstExpressionAccess));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(lastExpressionAccess, a)).toList().contains(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(lastBodyAccess, a)).toList().contains(firstExpressionAccess));
 		
     }
 
@@ -1281,6 +1310,12 @@ public class NodeToGraphTests {
 		return trace.accumulate("id", id).accumulate("a", accessList);
 	}
 
+	public static Access createAccess(String mode, Integer entityId) {
+		Access a = new Access(-1);
+		a.setEntityAccessedId(entityId);
+		a.setMode(mode);
+		return a;
+	}
 
 
 
