@@ -10,11 +10,17 @@ import java.util.Objects;
 @JsonDeserialize(using = AccessDtoDeserializer.class)
 @JsonSerialize(using = AccessDtoSerializer.class)
 public class AccessDto extends ReducedTraceElementDto {
+    private static long ID_COUNTER = 0;
+
+    private long id;
     private short entityID;
     private byte mode; // "R" -> 1, "W" -> 2
     private float probability = 1.0f;
 
-    public AccessDto() {}
+    public AccessDto() {
+        id = ID_COUNTER++;
+        entityID = -1;
+    }
 
     public short getEntityID() { return entityID; }
     public void setEntityID(short entityID) { this.entityID = entityID; }
@@ -29,7 +35,7 @@ public class AccessDto extends ReducedTraceElementDto {
 	public boolean equals(final Object other) {
         if (other instanceof AccessDto) {
             AccessDto that = (AccessDto) other;
-            return this.entityID == that.entityID && this.mode == that.mode;
+            return this.entityID == that.entityID && this.mode == that.mode && this.id == that.id;
         }
         
         return false;
@@ -38,9 +44,9 @@ public class AccessDto extends ReducedTraceElementDto {
     @Override
     public String toString() {
         if (occurrences < 2)
-            return "[" + entityID + ',' + mode + ",p=" + probability + ']';
+            return "[" + entityID + ',' + mode + ",p=" + probability + ",id=" + id + ']';
 
-        return "[" + entityID + ',' + mode + ',' + occurrences + ",p=" + probability + ']';
+        return "[" + entityID + ',' + mode + ',' + occurrences + ",p=" + probability + ",id=" + id + ']';
     }
 
     @Override

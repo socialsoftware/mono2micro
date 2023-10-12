@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
+
 public abstract class TraceGraphNode {
     int id;
     static int idCounter = 0;
@@ -69,7 +71,7 @@ public abstract class TraceGraphNode {
         this.lockedToNewConnections = locked;
     }
 
-    public abstract void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags);
+    public abstract void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags);
 
     /**
      * Creates connections around empty (or auxiliar) nodes and adds them to the removal stack.

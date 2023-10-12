@@ -2,8 +2,12 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import java.util.List;
 
+import org.jgrapht.GraphTests;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 
 public class Label extends TraceGraphNode {
     String content;
@@ -21,35 +25,34 @@ public class Label extends TraceGraphNode {
         this.content = content;
     }
 
-    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
-        // TODO: implement (set flags for detected label)
-        Access lastAccess = null;
+    public void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
+        AccessDto lastAccess = null;
         
-        if (processedSubTrace.size() > 0) {
-            lastAccess = processedSubTrace.get(processedSubTrace.size()-1);
+        if (!traceGraph.isEmpty()) {
+            lastAccess = traceGraph.getLastAccess();
         }
 
         switch (this.getContent()) {
             case HeuristicLabelType.CONTINUE:
-                    if (lastAccess != null && lastLoopStart != null) {
-                        lastAccess.addSuccessor(lastLoopStart, 1f);
-                        lastAccess.setLockedToNewConnections(true);
+                    if (lastAccess != null && lastLoopStart != null && !traceGraph.isVertexLockedToNewConnections(lastAccess)) {
+                        traceGraph.addEdge(lastAccess, lastLoopStart, 1f);
+                        traceGraph.lockVertexToNewConnections(lastAccess);
                     }
                     heuristicFlags.goingToLoopHead = true;
                 break;
         
             case HeuristicLabelType.BREAK:
-                    if (lastAccess != null && lastLoopEnd != null){
-                        lastAccess.addSuccessor(lastLoopEnd, 1f);
-                        lastAccess.setLockedToNewConnections(true);
+                    if (lastAccess != null && lastLoopEnd != null && !traceGraph.isVertexLockedToNewConnections(lastAccess)){
+                        traceGraph.addEdge(lastAccess, lastLoopEnd, 1f);
+                        traceGraph.lockVertexToNewConnections(lastAccess);
                     }
                     heuristicFlags.hasBreak = true;
                 break;
 
             case HeuristicLabelType.RETURN:
-                    if (lastAccess != null && lastCallEnd != null) {
-                        lastAccess.addSuccessor(lastCallEnd, 1f);
-                        lastAccess.setLockedToNewConnections(true);
+                    if (lastAccess != null && lastCallEnd != null && !traceGraph.isVertexLockedToNewConnections(lastAccess)) {
+                        traceGraph.addEdge(lastAccess, lastCallEnd, 1f); //FIXME: lastCallEnd may not be in the graph
+                        traceGraph.lockVertexToNewConnections(lastAccess);
                     }
                     heuristicFlags.hasReturn = true;
                 break;

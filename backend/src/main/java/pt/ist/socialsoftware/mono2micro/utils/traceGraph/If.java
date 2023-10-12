@@ -2,10 +2,15 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import java.util.List;
 
+import org.jgrapht.GraphTests;
+import org.jgrapht.Graphs;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.Multigraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
 
 public class If extends TraceGraphNode {
@@ -58,17 +63,21 @@ public class If extends TraceGraphNode {
         this.elseBody = elseBody;
     }
 
-    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
+    public void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
         HeuristicFlags conditionHeuristicFlags = new HeuristicFlags();
         HeuristicFlags thenHeuristicFlags = new HeuristicFlags();
         HeuristicFlags elseHeuristicFlags = new HeuristicFlags();
 
         Float thenProbability;
 
-        Access startingNode = new Access(this.getContextIndex());
-        Access endingNode = new Access(this.getContextIndex());
+        TraceGraph processedSubTrace = new TraceGraph();
+
+        AccessDto startingNode = new AccessDto();
+        AccessDto endingNode = new AccessDto();
+
+        processedSubTrace.addVertex(startingNode);
         
-        Access baseNode;
+        AccessDto baseNode;
         
         TraceGraph condition = FunctionalityGraphTracesIterator.processSubTrace(this.getCondition(), lastCallEnd, lastLoopStart, lastLoopEnd, conditionHeuristicFlags);
         TraceGraph thenGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getThenBody(), lastCallEnd, lastLoopStart, lastLoopEnd, thenHeuristicFlags);
@@ -78,39 +87,53 @@ public class If extends TraceGraphNode {
         if (elseGraph == null) elseHeuristicFlags.postDominant = true;
         thenProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
 
-        if (condition != null && condition.getAllAccesses().size() != 0) {
-            startingNode.addSuccessor(condition.getFirstAccess(), 1f);
+        if (condition != null && !condition.isEmpty()) {
+            processedSubTrace.addGraph(condition);
+
+            processedSubTrace.addEdge(startingNode, condition.getFirstAccess(), 1f);
 
             baseNode = condition.getLastAccess();
         } else {
             baseNode = startingNode;
         }
 
-        if (thenGraph != null && thenGraph.getAllAccesses().size() != 0) {
-            baseNode.addSuccessor(thenGraph.getFirstAccess(), thenProbability);
-            thenGraph.getLastAccess().addSuccessor(endingNode, 1f);
+        if (thenGraph != null && !thenGraph.isEmpty()) {
+            processedSubTrace.addGraph(thenGraph);
+            
+            processedSubTrace.addEdge(baseNode, thenGraph.getFirstAccess(), thenProbability);
+
+            processedSubTrace.addEdge(thenGraph.getLastAccess(), endingNode, 1f);
+
         } else {
-            baseNode.addSuccessor(endingNode, thenProbability);
+            processedSubTrace.addEdge(baseNode, endingNode, thenProbability);
         }
 
-        if (elseGraph != null && elseGraph.getAllAccesses().size() != 0) {
-            baseNode.addSuccessor(elseGraph.getFirstAccess(), 1-thenProbability);
-            elseGraph.getLastAccess().addSuccessor(endingNode, 1f);
+        if (elseGraph != null && !elseGraph.isEmpty()) {
+            processedSubTrace.addGraph(elseGraph);
+            
+            processedSubTrace.addEdge(baseNode, elseGraph.getFirstAccess(), 1-thenProbability);
+
+            processedSubTrace.addEdge(elseGraph.getLastAccess(), endingNode, 1f);
+
         } else {
-            baseNode.addSuccessor(endingNode, 1-thenProbability);
+            processedSubTrace.addEdge(baseNode, endingNode, 1-thenProbability);
         }
 
 
 
-        if (processedSubTrace.size() != 0) {
-            processedSubTrace.get(processedSubTrace.size()-1).addSuccessor(startingNode, 1f);
+        if (!processedSubTrace.isEmpty()) {
+            try {
+                processedSubTrace.setLastAccess(endingNode);
+                boolean traceGraphWasEmpty = traceGraph.isEmpty();
+                traceGraph.addGraph(processedSubTrace);
+                if (!traceGraphWasEmpty)
+                    traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
+                traceGraph.setLastAccess(endingNode);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        processedSubTrace.add(startingNode);
-        if (condition != null) processedSubTrace.addAll(condition.getAllAccesses());
-        if (thenGraph != null) processedSubTrace.addAll(thenGraph.getAllAccesses());
-        if (elseGraph != null) processedSubTrace.addAll(elseGraph.getAllAccesses());
-        processedSubTrace.add(endingNode);
     }
 
 }

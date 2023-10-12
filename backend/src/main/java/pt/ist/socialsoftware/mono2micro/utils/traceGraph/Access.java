@@ -2,8 +2,13 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import java.util.List;
 
+import org.jgrapht.GraphTests;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
 
 
 public class Access extends TraceGraphNode {
@@ -39,11 +44,21 @@ public class Access extends TraceGraphNode {
 
 
 
-    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
-        if (processedSubTrace.size() != 0) {
-            processedSubTrace.get(processedSubTrace.size()-1).addSuccessor(this, 1f);
+    public void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
+        AccessDto access = new AccessDto();
+        access.setEntityID((short)this.entityAccessedId);
+        access.setMode(FunctionalityGraphTracesIterator.accessModeStringToByte(this.mode));
+
+        if (!traceGraph.isEmpty())
+            traceGraph.addEdge(traceGraph.getLastAccess(), access, 1.0f);
+        else
+            traceGraph.addVertex(access);
+
+        try {
+            traceGraph.setLastAccess(access);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        processedSubTrace.add(this);
 
         if (heuristicFlags != null && getMode() == "W") {
             heuristicFlags.hasStore = true;

@@ -2,10 +2,15 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import java.util.List;
 
+import org.jgrapht.GraphTests;
+import org.jgrapht.Graphs;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.Multigraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
 
 public class Call extends TraceGraphNode {
@@ -24,29 +29,42 @@ public class Call extends TraceGraphNode {
         this.body = body;
     }
 
-    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
+    public void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
 
-        Access startingNode = new Access(this.getContextIndex());
-        Access endingNode = new Access(this.getContextIndex());
+        TraceGraph processedSubTrace = new TraceGraph();
+
+        AccessDto startingNode = new AccessDto();
+        AccessDto endingNode = new AccessDto();
+
+        processedSubTrace.addVertex(startingNode);
         
         TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
 
-        if (bodyGraph != null && bodyGraph.getAllAccesses().size() != 0) {
-            startingNode.addSuccessor(bodyGraph.getFirstAccess(), 1f);
-            bodyGraph.getLastAccess().addSuccessor(endingNode, 1f);
+        if (bodyGraph != null && !bodyGraph.isEmpty()) {
+            processedSubTrace.addGraph(bodyGraph);
+
+            processedSubTrace.addEdge(startingNode, bodyGraph.getFirstAccess(), 1f);
+
+            processedSubTrace.addEdge(bodyGraph.getLastAccess(), endingNode, 1f);
+
         } else {
-            startingNode.addSuccessor(endingNode, 1f);
+            processedSubTrace.addEdge(startingNode, endingNode, 1f);
         }
 
         
 
-        if (processedSubTrace.size() != 0) {
-            processedSubTrace.get(processedSubTrace.size()-1).addSuccessor(startingNode, 1f);
+        if (!processedSubTrace.isEmpty()) {
+            try {
+                processedSubTrace.setLastAccess(endingNode);
+                boolean traceGraphWasEmpty = traceGraph.isEmpty();
+                traceGraph.addGraph(processedSubTrace);
+                if (!traceGraphWasEmpty)
+                    traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1f);
+                traceGraph.setLastAccess(endingNode);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        processedSubTrace.add(startingNode);
-        if (bodyGraph != null) processedSubTrace.addAll(bodyGraph.getAllAccesses());
-        processedSubTrace.add(endingNode);
 
         if (heuristicFlags != null) {
             heuristicFlags.hasCall = true;

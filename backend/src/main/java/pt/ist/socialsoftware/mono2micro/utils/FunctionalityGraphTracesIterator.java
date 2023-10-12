@@ -10,9 +10,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.Multigraph;
+import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,138 +77,97 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     /* Get Trace Types */
 
-    public PathData computeTraceTypes() {
-        PathData pathData = computeTraceTypes(_traceGraphs.get(requestedFunctionality).getFirstAccess(), _pathDataCache, new ArrayList<>());
-        _pathDataCache.clear();
-        return pathData;
-    }
-
-    public static PathData computeTraceTypes(Access access, Map<Access, PathData> pathDataCache, List<Access> currentPath) {
-        PathData resultingPathData;
-       
-        boolean hasBeenTraversed = currentPath.contains(access);
-
-        if (access.getNextAccessProbabilities().size() > 1 || currentPath.size() > 0 && currentPath.get(currentPath.size()-1).getNextAccessProbabilities().size() > 1) {
-            currentPath.add(access);
-        }
-
-        List<PathData> successorsPathData = new ArrayList<>();
-        PathData succPathData;
-        for (TraceGraphNode successor: access.getNextAccessProbabilities().keySet()) {
-            // if the current access has been traversed, only continue to non-traversed successors
-            if (hasBeenTraversed && currentPath.contains(successor)) continue;
-            
-            if (pathDataCache.containsKey(successor)) {
-                succPathData = pathDataCache.get(successor);
-            } else {
-                succPathData = computeTraceTypes((Access)successor, pathDataCache, new ArrayList<>(currentPath));
-            }
-
-            float succProbability = access.getNextAccessProbabilities().get(successor);
-            // update prob
-            succPathData.setMostProbablePath(new ArrayList<>(succPathData.getMostProbablePath()));
-            succPathData.getMostProbablePath().set(0, new PathDataAccess(succPathData.getMostProbablePath().get(0).getAccess(), succProbability));
-            succPathData.getMostProbablePath().add(0, new PathDataAccess(access, 1f));
-            succPathData.setMostProbablePathProbability(succPathData.getMostProbablePathProbability() * succProbability);
-
-            // add current access to list of diff accesses
-            succPathData.setMostDifferentAccesses(new ArrayList<>(succPathData.getMostDifferentAccesses()));
-            succPathData.setMostDifferentAccessesPath(new ArrayList<>(succPathData.getMostDifferentAccessesPath()));
-            boolean alreadyExists = false;
-            for (Access a: succPathData.getMostDifferentAccesses().stream().map(a -> a.getAccess()).collect(Collectors.toList())) {
-                if (a.getMode() == access.getMode() && a.getEntityAccessedId() == access.getEntityAccessedId()) {
-                    alreadyExists = true;
-                    break;
-                }
-            }
-            
-            succPathData.getMostDifferentAccessesPath().set(0, new PathDataAccess(succPathData.getMostDifferentAccessesPath().get(0).getAccess(), succProbability));
-            succPathData.getMostDifferentAccessesPath().add(0, new PathDataAccess(access, 1.0f));
-            if (!alreadyExists) {
-                succPathData.getMostDifferentAccesses().add(new PathDataAccess(access));
-            }
-            
-            // add current access to trace
-            succPathData.setLongestPath(new ArrayList<>(succPathData.getLongestPath()));
-            succPathData.getLongestPath().set(0, new PathDataAccess(succPathData.getLongestPath().get(0).getAccess(), succProbability));
-            succPathData.getLongestPath().add(0, new PathDataAccess(access, 1.0f));
-
-            successorsPathData.add(succPathData);
-        }
-
-        if (successorsPathData.size() != 0) {
-            // calculate different accesses in currentPath
-            List<Access> currentPathDifferentAccesses = new ArrayList<>();
-            for (Access a : currentPath) {
-                if (!currentPathDifferentAccesses.contains(a)) {
-                    currentPathDifferentAccesses.add(a);
-                }
-            }
-
-            Float highestProb = 0f;
-            int highestProbIndex = 0;
-            int biggerDiffAccessListAggregateSize = 0;
-            int biggerDiffAccessListSizeIndex = 0;
-            int highestLength = 0;
-            int highestLengthIndex = 0;
-            
-            boolean firstLoop = true;
-            for (PathData pathData : successorsPathData) {
-                if (firstLoop || pathData.getMostProbablePathProbability() > highestProb) {
-                    highestProb = pathData.getMostProbablePathProbability();
-                    highestProbIndex = successorsPathData.indexOf(pathData);
-                }
-
-                List<Access> mostDifferentAccessesAggregate = new ArrayList<>(currentPathDifferentAccesses);
-                for (Access a : pathData.getMostDifferentAccesses().stream().map(a -> a.getAccess()).collect(Collectors.toList())) {
-                    if (!mostDifferentAccessesAggregate.contains(a)) {
-                        mostDifferentAccessesAggregate.add(a);
-                    }
-                }
-                
-                if (firstLoop || mostDifferentAccessesAggregate.size() > biggerDiffAccessListAggregateSize) {
-                    biggerDiffAccessListAggregateSize = mostDifferentAccessesAggregate.size();
-                    biggerDiffAccessListSizeIndex = successorsPathData.indexOf(pathData);
-                }
-
-                if (firstLoop || pathData.getLongestPath().size() > highestLength) {
-                    highestLength = pathData.getLongestPath().size();
-                    highestLengthIndex = successorsPathData.indexOf(pathData);
-                }
-                
-                if (firstLoop) firstLoop = false;
-            }
-            
-
-            resultingPathData = new PathData(   new ArrayList<>(successorsPathData.get(highestLengthIndex).getLongestPath()),
-                                                new ArrayList<>(successorsPathData.get(highestProbIndex).getMostProbablePath()),
-                                                successorsPathData.get(highestProbIndex).getMostProbablePathProbability(),
-                                                new ArrayList<>(successorsPathData.get(biggerDiffAccessListSizeIndex).getMostDifferentAccessesPath()),
-                                                new ArrayList<>(successorsPathData.get(biggerDiffAccessListSizeIndex).getMostDifferentAccesses())
-                                            );
-
-            if (access.getPrevAccessProbabilities().size() > 1 && !pathDataCache.containsKey(access)) {
-                pathDataCache.put(access, new PathData(         resultingPathData.getLongestPath(),
-                                                                resultingPathData.getMostProbablePath(),
-                                                                resultingPathData.getMostProbablePathProbability(),
-                                                                resultingPathData.getMostDifferentAccessesPath(),
-                                                                resultingPathData.getMostDifferentAccesses()
-                                                            ));
-            }
-
-        } else {
-            List<Access> accessList = new ArrayList<>();
-            accessList.add(access);
-            resultingPathData = new PathData((new ArrayList<>(accessList)), 1f, new ArrayList<>(accessList), new ArrayList<>(accessList), new ArrayList<>(accessList));
-        }
-
-        return resultingPathData;
-    }
-
     public TraceDto getLongestTrace() throws JSONException {
-        initializeFunctionalityPathData(requestedFunctionality);
+        return getLongestTrace(_traceGraphs.get(requestedFunctionality).getGraph(), requestedFunctionality);
+    }
 
-        return pathDataAccessListToTraceDto(_functionalityPathData.get(requestedFunctionality).getLongestPath());
+    public static TraceDto getLongestTrace(Graph<AccessDto, DefaultWeightedEdge> graph, String functionalityName) throws JSONException {
+        
+        Map<AccessDto, Integer> vertexToDepthMap = new HashMap<>();
+
+        Iterator<AccessDto> iterator = new TopologicalOrderIterator<AccessDto, DefaultWeightedEdge>(graph);
+
+        // calculate all possible path lengths
+        for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
+            AccessDto vertex = it.next();
+
+            List<AccessDto> predecessors = Graphs.predecessorListOf(graph, vertex);
+            Integer maxPredecessorDepth = -1;
+
+            for (AccessDto predecessor : predecessors) {
+                maxPredecessorDepth = Math.max(maxPredecessorDepth, vertexToDepthMap.get(predecessor));
+            }
+
+            vertexToDepthMap.put(vertex, maxPredecessorDepth + 1);
+        }
+
+        System.out.println("ran all nodes");
+        
+        // get ending of longest path
+        AccessDto maxPathEnd = null;
+
+        for (AccessDto vertex : vertexToDepthMap.keySet()) {
+            if (maxPathEnd == null || vertexToDepthMap.get(vertex) > vertexToDepthMap.get(maxPathEnd)) {
+                maxPathEnd = vertex;
+            }
+        }
+
+        if (maxPathEnd == null) {
+            throw new JSONException(functionalityName + ": no max path");
+        }
+
+        // get longest path
+        List<ReducedTraceElementDto> path = new ArrayList<>();
+        path.add(maxPathEnd);
+
+        List<AccessDto> predecessors = Graphs.predecessorListOf(graph, maxPathEnd);
+        
+        System.out.println("getting longest path");
+        while (!predecessors.isEmpty()) {
+            AccessDto maxPredecessor = null;
+            for (AccessDto predecessor : predecessors) {
+                if (maxPredecessor == null || vertexToDepthMap.get(predecessor) > vertexToDepthMap.get(maxPredecessor)) {
+                    maxPredecessor = predecessor;
+                }
+            }
+
+            path.add(maxPredecessor);
+            predecessors = Graphs.predecessorListOf(graph, maxPredecessor);
+        }
+
+        System.out.println("finished max path, inverting");
+
+        Collections.reverse(path);
+
+        System.out.println("applying probability");
+
+        // register probability of each node
+        float carriedProbability = 1.0f; // used to carry probability from null nodes
+        List<AccessDto> emptyNodes = new ArrayList<>();
+        AccessDto previous = null;
+        for (ReducedTraceElementDto el : path) {
+            AccessDto access = (AccessDto)el;
+
+            if (previous == null) {
+                previous = access;
+                continue;
+            }
+
+            carriedProbability *= graph.getEdgeWeight(graph.getEdge(previous, access));
+
+            if (access.getEntityID() == -1) {
+                emptyNodes.add(access);
+            } else {
+                access.setProbability(carriedProbability);
+                carriedProbability = 1.0f;
+            }
+
+            previous = access;
+        }
+
+        System.out.println("returning");
+
+        return new TraceDto(0, 0, path);
     }
 
     public TraceDto getTraceWithMoreDifferentAccesses() throws JSONException {
@@ -216,16 +182,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return null;
     }
 
-    public void initializeFunctionalityPathData(String functionality) {
-        if (!_functionalityPathData.containsKey(requestedFunctionality)) {
-            _functionalityPathData.put(requestedFunctionality, computeTraceTypes());
-        }
-    }
-
     public List<TraceDto> getTracesByType(Constants.TraceType traceType) throws JSONException {
         List<TraceDto> traceDtos = new ArrayList<>();
-
-        initializeFunctionalityPathData(requestedFunctionality);
 
         // Get traces according to trace type
         switch(traceType) {
@@ -319,28 +277,19 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return processSubTrace(subTrace, null, null, null, new HeuristicFlags());
     }
 
-    public static TraceGraph processSubTrace(List<TraceGraphNode> subTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
+    public static TraceGraph processSubTrace(List<TraceGraphNode> subTrace, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
         if (subTrace == null || subTrace.isEmpty()) return null;
-
-        List<Access> processedSubTrace = new ArrayList<Access>();
-        for (int i = 0; i < subTrace.size(); i++) {
-            subTrace.get(i).nodeToAccessGraph(processedSubTrace, lastCallEnd, lastLoopStart, lastLoopEnd, heuristicFlags);
-        }
-
+        
         TraceGraph resultingGraph = new TraceGraph();
-        resultingGraph.setAllAccesses(processedSubTrace);
-        if (processedSubTrace.size() > 0) {
-            resultingGraph.setFirstAccess(processedSubTrace.get(0));
+
+        for (int i = 0; i < subTrace.size(); i++) {
+            subTrace.get(i).nodeToAccessGraph(resultingGraph, lastCallEnd, lastLoopStart, lastLoopEnd, heuristicFlags);
         }
 
         return resultingGraph;
     }
 
     /* Fill Similarity Measures Structures */
-    static float countFill;
-    static int totalPaths;
-    static Map<Integer, Integer> accessCounter;
-    static int totalPathSizes;
 
     public void fillEntityDataStructures(
             Map<String, Float> e1e2PairCount,
@@ -348,186 +297,9 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     ) {
         System.out.println("\n\ngraph fill data structures");
         System.out.println(requestedFunctionality);
-        countFill = 0;
-        totalPaths = 0;
-        totalPathSizes = 0;
-        accessCounter = new HashMap<>();
 
-        if (_entityAccessDataCache == null) {
-            _entityAccessDataCache = new HashMap<>();
-        } else {
-            _entityAccessDataCache.clear();
-        }
 
-        EntityAccessData result = getEntityAccessData(requestedFunctionality, _traceGraphs.get(requestedFunctionality).getFirstAccess(), _entityAccessDataCache, new ArrayList<>());
-
-        e1e2PairCount = result.getE1e2PairCount();
         
-        for (Short entityID : result.getEntityFunctionalitiesAccesses().keySet()) {
-            Map<Pair<String, Byte>, Float> entityAccesses = new HashMap<>();
-            for (Pair<String, Byte> accessPair : result.getEntityFunctionalitiesAccesses().get(entityID)) {
-                String pairName = entityID + "_" + accessPair.getFirst();
-                entityAccesses.put(accessPair, Collections.max(result.getEntityFunctionalitiesProbabilities().get(pairName)));
-            }
-            entityFunctionalities.put(entityID, entityAccesses);
-        }
-
-        //fillEntityDataStructures(_traceGraphs.get(requestedFunctionality).getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, requestedFunctionality);
-    }
-
-    public static EntityAccessData getEntityAccessData(
-            String functionalityName,
-            Access access,
-            Map<Access, EntityAccessData> entityAccessDataCache,
-            List<Access> currentPath
-    ) {
-        // foreach next
-        //  if next in buffer, load
-        //  else, visit next
-        //  multiply all data by next prob
-        //  add data to current structure
-        EntityAccessData currentNodeData = new EntityAccessData(new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
-        Map<Access, Float> nextValidAccesses = new HashMap<>();
-
-        EntityAccessData succData;
-        for (TraceGraphNode successor : access.getNextAccessProbabilities().keySet()) {
-            if (currentPath.contains(access) && currentPath.contains(successor)) continue;
-
-            Float succProbability = access.getNextAccessProbabilities().get(successor);
-            if (entityAccessDataCache.containsKey(successor)) {
-                System.out.println("load from cache");
-                succData = entityAccessDataCache.get(successor);
-            } else {
-                List<Access> newCurrentPath = new ArrayList<>(currentPath);
-                newCurrentPath.add(0, access);
-                succData = getEntityAccessData(functionalityName, (Access)successor, entityAccessDataCache, newCurrentPath);
-            }
-
-            // merge e1e2 pair data
-            for (String pairKey : succData.getE1e2PairCount().keySet()) {
-                float currentProb = 0;
-                if (currentNodeData.getE1e2PairCount().containsKey(pairKey)) {
-                    currentProb = currentNodeData.getE1e2PairCount().get(pairKey);
-                }
-
-                currentNodeData.getE1e2PairCount().put(pairKey, currentProb + succData.getE1e2PairCount().get(pairKey) * succProbability);
-            }
-
-            // merge next valid accesses
-            for (Access validAccess : succData.getNextValidAccesses().keySet()) {
-                nextValidAccesses.put(validAccess, succData.getNextValidAccesses().get(validAccess)*succProbability);
-            }
-
-            // merge entity access types
-            for (Short entityID : succData.getEntityFunctionalitiesAccesses().keySet()) {
-                if (currentNodeData.getEntityFunctionalitiesAccesses().containsKey(entityID)) {
-
-                    for (Pair<String, Byte> functionalityPairSucc : succData.getEntityFunctionalitiesAccesses().get(entityID)) {
-                        boolean containsFunctionality = false;
-                        for (Pair<String, Byte> functionalityPairCurr : currentNodeData.getEntityFunctionalitiesAccesses().get(entityID)) {
-                            if (functionalityPairCurr.getFirst().equals(functionalityName)) {
-                                containsFunctionality = true;
-        
-                                if (functionalityPairCurr.getSecond() != 3 && functionalityPairCurr.getSecond() != functionalityPairSucc.getSecond())
-                                    functionalityPairCurr.setSecond((byte) 3); // "RW" -> 3
-        
-                                break;
-                            }
-                        }
-                        if (!containsFunctionality) {
-                            currentNodeData.getEntityFunctionalitiesAccesses().get(entityID).add(new Pair<>(functionalityName, functionalityPairSucc.getSecond()));
-                        }
-                    }
-
-                } else {
-                    currentNodeData.getEntityFunctionalitiesAccesses().put(entityID, new ArrayList<>(succData.getEntityFunctionalitiesAccesses().get(entityID)));
-                }
-            }
-
-            // merge entity access probability
-            for (String entityFunctionalityPair : succData.getEntityFunctionalitiesProbabilities().keySet()) {
-                List<Float> probabilities = new ArrayList<>(succData.getEntityFunctionalitiesProbabilities().get(entityFunctionalityPair));
-
-                for (int i = 0; i < probabilities.size(); i++) {
-                    probabilities.set(i, probabilities.get(i) * succProbability);
-                }
-
-                if (currentNodeData.getEntityFunctionalitiesProbabilities().containsKey(entityFunctionalityPair)) {
-                    currentNodeData.getEntityFunctionalitiesProbabilities().get(entityFunctionalityPair).addAll(probabilities);
-                } else {
-                    currentNodeData.getEntityFunctionalitiesProbabilities().put(entityFunctionalityPair, probabilities);
-                }
-            }
-        }
-
-        // add current to entity functionalities
-        Short entityID = (short)access.getEntityAccessedId();
-        if (access.getMode() != null) {
-            byte mode = accessModeStringToByte(access.getMode());
-            if (currentNodeData.getEntityFunctionalitiesAccesses().containsKey(entityID)) {
-                boolean containsFunctionality = false;
-    
-                for (Pair<String, Byte> functionalityPair : currentNodeData.getEntityFunctionalitiesAccesses().get(entityID)) {
-                    if (functionalityPair.getFirst().equals(functionalityName)) {
-                        containsFunctionality = true;
-    
-                        if (functionalityPair.getSecond() != 3 && functionalityPair.getSecond() != mode)
-                            functionalityPair.setSecond((byte) 3); // "RW" -> 3
-    
-                        break;
-                    }
-                }
-    
-                if (!containsFunctionality) {
-                    currentNodeData.getEntityFunctionalitiesAccesses().get(entityID).add(new Pair<>(functionalityName, mode));
-                }
-    
-            } else {
-                List<Pair<String, Byte>> functionalitiesPairs = new ArrayList<>();
-                functionalitiesPairs.add(new Pair<>(functionalityName, mode));
-    
-                currentNodeData.getEntityFunctionalitiesAccesses().put(entityID, functionalitiesPairs);
-            }
-
-            String entityFuncPair = entityID.toString() + "_" + functionalityName;
-            if (currentNodeData.getEntityFunctionalitiesProbabilities().containsKey(entityFuncPair)) {
-                currentNodeData.getEntityFunctionalitiesProbabilities().get(entityFuncPair).add(1f);
-            } else {
-                currentNodeData.getEntityFunctionalitiesProbabilities().put(entityFuncPair, Arrays.asList(1f));
-            }
-    
-            // if successors >0, add current to e1e2PairCount
-            if (nextValidAccesses.size() > 0) {
-                for (TraceGraphNode successor : nextValidAccesses.keySet()) {
-                    Access nextAccess = (Access) successor;
-                    int nextEntityID = nextAccess.getEntityAccessedId();
-
-                    if (entityID != nextEntityID) {
-                        String e1e2 = entityID + "->" + nextEntityID;
-                        String e2e1 = nextEntityID + "->" + entityID;
-
-                        float count = currentNodeData.getE1e2PairCount().getOrDefault(e1e2, 0f);
-                        currentNodeData.getE1e2PairCount().put(e1e2, count + nextValidAccesses.get(successor));
-
-                        count = currentNodeData.getE1e2PairCount().getOrDefault(e2e1, 0f);
-                        currentNodeData.getE1e2PairCount().put(e2e1, count + nextValidAccesses.get(successor));
-
-                    }
-                }
-            }
-
-            currentNodeData.getNextValidAccesses().put(access, 1f);
-        } else {
-            currentNodeData.getNextValidAccesses().putAll(nextValidAccesses);
-        }
-
-        // if predecessors >1, save in buffer
-        if (access.getPrevAccessProbabilities().size() > 1 && !entityAccessDataCache.containsKey(access)) {
-            System.out.println("save to cache");
-            entityAccessDataCache.put(access, currentNodeData);
-        }
-
-        return currentNodeData;
     }
 
     public static void fillEntityDataStructures(
