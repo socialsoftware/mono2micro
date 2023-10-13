@@ -62,8 +62,7 @@ public class TraceGraph {
     }
 
     public boolean isEmpty() {
-        //TODO: change it check if all nodes are aux, aka entityId = -1
-        return this.graph.vertexSet().size() == 0; //FIXME: is never going to be empty because it always has 1 startingNode
+        return this.graph.vertexSet().stream().filter(e -> e.getEntityID() != -1).collect(Collectors.toList()).size() == 0;
     }
 
     public void addEdge(AccessDto from, AccessDto to, float probability) {
