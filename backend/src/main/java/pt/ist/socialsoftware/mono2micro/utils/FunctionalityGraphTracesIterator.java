@@ -98,7 +98,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 maxPredecessorDepth = Math.max(maxPredecessorDepth, vertexToDepthMap.get(predecessor));
             }
 
-            vertexToDepthMap.put(vertex, maxPredecessorDepth + 1);
+            vertexToDepthMap.put(vertex, vertex.getEntityID() > 0? maxPredecessorDepth + 1: maxPredecessorDepth);
         }
 
         System.out.println("ran all nodes");
