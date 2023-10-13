@@ -148,12 +148,9 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         for (ReducedTraceElementDto el : path) {
             AccessDto access = (AccessDto)el;
 
-            if (previous == null) {
-                previous = access;
-                continue;
+            if (previous != null) {
+                carriedProbability *= graph.getEdgeWeight(graph.getEdge(previous, access));
             }
-
-            carriedProbability *= graph.getEdgeWeight(graph.getEdge(previous, access));
 
             if (access.getEntityID() == -1) {
                 emptyNodes.add(access);
@@ -164,6 +161,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
             previous = access;
         }
+
+        path.removeAll(emptyNodes);
 
         System.out.println("returning");
 
