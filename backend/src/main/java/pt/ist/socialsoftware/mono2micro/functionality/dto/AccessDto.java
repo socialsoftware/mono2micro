@@ -6,11 +6,12 @@ import pt.ist.socialsoftware.mono2micro.functionality.deserializer.AccessDtoDese
 import pt.ist.socialsoftware.mono2micro.functionality.serializer.AccessDtoSerializer;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 @JsonDeserialize(using = AccessDtoDeserializer.class)
 @JsonSerialize(using = AccessDtoSerializer.class)
 public class AccessDto extends ReducedTraceElementDto {
-    private static long ID_COUNTER = 0;
+    private static AtomicLong ID_COUNTER = new AtomicLong(0);
 
     private long id;
     private short entityID;
@@ -18,7 +19,7 @@ public class AccessDto extends ReducedTraceElementDto {
     private float probability = 1.0f;
 
     public AccessDto() {
-        id = ID_COUNTER++;
+        id = ID_COUNTER.getAndIncrement();
         entityID = -1;
     }
 
