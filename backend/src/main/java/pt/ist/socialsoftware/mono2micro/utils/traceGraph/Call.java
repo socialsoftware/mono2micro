@@ -56,9 +56,9 @@ public class Call extends TraceGraphNode {
         if (!processedSubTrace.isEmpty()) {
             try {
                 processedSubTrace.setLastAccess(endingNode);
-                boolean traceGraphWasEmpty = traceGraph.isEmpty();
+                boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
                 traceGraph.addGraph(processedSubTrace);
-                if (!traceGraphWasEmpty)
+                if (traceGraphHadLast)
                     traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1f);
                 traceGraph.setLastAccess(endingNode);
             } catch (Exception e) {

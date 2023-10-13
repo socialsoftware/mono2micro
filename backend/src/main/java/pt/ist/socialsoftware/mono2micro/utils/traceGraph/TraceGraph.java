@@ -1,12 +1,14 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -30,7 +32,7 @@ public class TraceGraph {
 
     public TraceGraph() {
         //graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        graph = GraphTypeBuilder.<AccessDto, DefaultWeightedEdge> directed().allowingMultipleEdges(true).allowingSelfLoops(true).weighted(true).edgeClass(DefaultWeightedEdge.class).buildGraph();
+        graph = GraphTypeBuilder.<AccessDto, DefaultWeightedEdge> directed().allowingMultipleEdges(true).weighted(true).edgeClass(DefaultWeightedEdge.class).buildGraph();
         vertexesLockedToNewConnections = new HashSet<>();
 
         list = new ArrayList<>();
