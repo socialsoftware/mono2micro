@@ -105,7 +105,7 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(8, longestPath.getAccesses().size());
+        assertEquals(6, longestPath.getAccesses().size());
 
     }
 
@@ -147,7 +147,7 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(16, longestPath.getAccesses().size());
+        assertEquals(10, longestPath.getAccesses().size());
 
     }
 
@@ -177,7 +177,7 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(16, longestPath.getAccesses().size());
+        assertEquals(6, longestPath.getAccesses().size());
 
     }
 
@@ -201,7 +201,7 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(7, longestPath.getAccesses().size());
+        assertEquals(5, longestPath.getAccesses().size());
 
     }
 
@@ -237,7 +237,7 @@ public class FunctionalityGraphTracesIteratorTests {
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(11, longestPath.getAccesses().size());
+        assertEquals(7, longestPath.getAccesses().size());
         //assertEquals(9, pathData.getMostDifferentAccessesPath().size());
         //assertEquals(11, pathData.getMostProbablePath().size());
 

@@ -833,10 +833,10 @@ public class NodeToGraphTests {
 				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
 			},
 			new Object[][]{
-				new Object[]{"R", 6}
+				new Object[]{"R", 1}
 			},
 			new Object[][]{
-				new Object[]{"R", 6}, new Object[]{"#continue"}
+				new Object[]{"R", 2}, new Object[]{"#continue"}
 			}
 			});
 		
@@ -850,11 +850,11 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(4, processedSubTrace.vertexSet().size());
-
-		AccessDto expressionStart = traceGraph.toList().get(0);		
+		assertEquals(5, processedSubTrace.vertexSet().size());
+		
 		AccessDto bodyEnd = traceGraph.toList().get(2);
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(bodyEnd, a)).toList().contains(expressionStart));
+		AccessDto secondExpressionStart = traceGraph.toList().get(3);	
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(bodyEnd, a)).toList().contains(secondExpressionStart));
 			
     }
 
@@ -895,11 +895,11 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(7, processedSubTrace.vertexSet().size());
+		assertEquals(9, processedSubTrace.vertexSet().size());
 
-		AccessDto innerExpressionStart = traceGraph.toList().get(2);		
+		AccessDto innerSecondExpressionStart = traceGraph.toList().get(5);		
 		AccessDto innerBodyEnd = traceGraph.toList().get(4);
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(innerBodyEnd, a)).toList().contains(innerExpressionStart));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(innerBodyEnd, a)).toList().contains(innerSecondExpressionStart));
 		
     }
 
@@ -931,7 +931,7 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(4, processedSubTrace.vertexSet().size());
+		assertEquals(5, processedSubTrace.vertexSet().size());
 
 		AccessDto loopEnd = traceGraph.toList().get(3);		
 		AccessDto bodyEnd = traceGraph.toList().get(2);
@@ -976,7 +976,7 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(7, processedSubTrace.vertexSet().size());
+		assertEquals(9, processedSubTrace.vertexSet().size());
 
 		AccessDto innerLoopEnd = traceGraph.toList().get(5);		
 		AccessDto innerBodyEnd = traceGraph.toList().get(4);
@@ -1059,20 +1059,21 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(4, processedSubTrace.vertexSet().size()); // entry + 2 access + exit = 4
+		assertEquals(5, processedSubTrace.vertexSet().size()); // entry + 2 access + exit = 4
 
 		AccessDto entryPoint = traceGraph.toList().get(0);
-		AccessDto exitPoint = traceGraph.toList().get(3);
+		AccessDto exitPoint = traceGraph.toList().get(4);
 		assertEquals(-1, entryPoint.getEntityID());
 		assertEquals(-1, exitPoint.getEntityID());
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
 		AccessDto expression = traceGraph.toList().get(1);
+		AccessDto secondExpression = traceGraph.toList().get(3);
 		AccessDto body = traceGraph.toList().get(2);
 
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(body));
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(exitPoint));
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(expression));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(secondExpression, a)).toList().contains(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(secondExpression));
 		assertFalse(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(exitPoint));
 		
     }
@@ -1107,22 +1108,23 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(5, processedSubTrace.vertexSet().size()); // entry + 2 access + exit = 4
+		assertEquals(6, processedSubTrace.vertexSet().size()); // entry + 2 access + exit = 4
 
 		AccessDto access_1 = traceGraph.toList().get(0);
 		AccessDto entryPoint = traceGraph.toList().get(1);
-		AccessDto exitPoint = traceGraph.toList().get(4);
+		AccessDto exitPoint = traceGraph.toList().get(5);
 		assertEquals(-1, entryPoint.getEntityID());
 		assertEquals(-1, exitPoint.getEntityID());
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(access_1, a)).toList().contains(entryPoint));
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
 		AccessDto expression = traceGraph.toList().get(2);
+		AccessDto secondExpression = traceGraph.toList().get(4);
 		AccessDto body = traceGraph.toList().get(3);
 
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(body));
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(exitPoint));
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(expression));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(secondExpression, a)).toList().contains(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(secondExpression));
 			
     }
 
@@ -1165,7 +1167,7 @@ public class NodeToGraphTests {
 
 		AccessDto body = traceGraph.toList().get(1);
 
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(body));
+		assertFalse(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(body));
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(body, a)).toList().contains(exitPoint));
 	
     }
@@ -1199,18 +1201,19 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(3, processedSubTrace.vertexSet().size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
 		AccessDto entryPoint = traceGraph.toList().get(0);
-		AccessDto exitPoint = traceGraph.toList().get(2);
+		AccessDto exitPoint = traceGraph.toList().get(3);
 		assertEquals(-1, entryPoint.getEntityID());
 		assertEquals(-1, exitPoint.getEntityID());
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
 		
 		AccessDto expression = traceGraph.toList().get(1);
+		AccessDto secondExpression = traceGraph.toList().get(2);
 
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(expression));
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(expression, a)).toList().contains(secondExpression));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(secondExpression, a)).toList().contains(exitPoint));
 		
     }
 
@@ -1243,10 +1246,10 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, null);
 
 		// result
-		assertEquals(6, processedSubTrace.vertexSet().size());
+		assertEquals(8, processedSubTrace.vertexSet().size());
 
 		AccessDto entryPoint = traceGraph.toList().get(0);
-		AccessDto exitPoint = traceGraph.toList().get(5);
+		AccessDto exitPoint = traceGraph.toList().get(7);
 		assertEquals(-1, entryPoint.getEntityID());
 		assertEquals(-1, exitPoint.getEntityID());
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().isEmpty());
@@ -1265,12 +1268,12 @@ public class NodeToGraphTests {
 			prev = current;
 		}
 
-		AccessDto firstExpressionAccess = traceGraph.toList().get(1);
-		AccessDto lastExpressionAccess = traceGraph.toList().get(2);
+		AccessDto secondExpressionEntryAccess = traceGraph.toList().get(5);
+		AccessDto secondExpressionExitAccess = traceGraph.toList().get(6);
 		AccessDto lastBodyAccess = traceGraph.toList().get(4);
 
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(lastExpressionAccess, a)).toList().contains(exitPoint));
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(lastBodyAccess, a)).toList().contains(firstExpressionAccess));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(secondExpressionExitAccess, a)).toList().contains(exitPoint));
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(lastBodyAccess, a)).toList().contains(secondExpressionEntryAccess));
 		
     }
 
