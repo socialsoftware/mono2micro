@@ -57,34 +57,57 @@ public class Loop extends TraceGraphNode {
         AccessDto startingNode = new AccessDto();
         AccessDto endingNode = new AccessDto();
 
+        AccessDto continueNode;
+
         processedSubTrace.addVertex(startingNode);
         
         TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, startingNode, endingNode, expressionHeuristicFlags);
-        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), lastCallEnd, startingNode, endingNode, bodyHeuristicFlags);
+
+        TraceGraph expressionGraphCopy = null;
+        if (expressionGraph != null && !expressionGraph.isEmpty()) {
+            expressionGraphCopy = expressionGraph.createDuplicate();
+            continueNode = expressionGraphCopy.getFirstAccess();
+        } else {
+            continueNode = endingNode;
+        }
+
+        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), lastCallEnd, continueNode, endingNode, bodyHeuristicFlags);
 
         List<String> appliableHeuristics = BranchHeuristics.getAppliableHeuristics(expressionHeuristicFlags, bodyHeuristicFlags, null);
         appliableHeuristics.add(BranchHeuristics.LOOP_BRANCH_H); // add heuristic beacuse the loop is repeated if path taken
         Float enterLoopProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
         Float exitLoopProbability = 1-enterLoopProbability;
 
-        if (expressionGraph != null && !expressionGraph.isEmpty()) {
+
+        if (expressionGraph != null && !expressionGraph.isEmpty())
             processedSubTrace.addGraph(expressionGraph);
+
+        if (bodyGraph != null && !bodyGraph.isEmpty())
+            processedSubTrace.addGraph(bodyGraph);
+
+        if (expressionGraph != null && !expressionGraph.isEmpty())
+            processedSubTrace.addGraph(expressionGraphCopy);
+
+
+        if (expressionGraph != null && !expressionGraph.isEmpty()) {
             // enter condition
             processedSubTrace.addEdge(startingNode, expressionGraph.getFirstAccess(), 1f);
 
             // return to head (if no body)
-            if(bodyGraph == null || !bodyGraph.isEmpty()) {
-                processedSubTrace.addEdge(expressionGraph.getLastAccess(), expressionGraph.getFirstAccess(), enterLoopProbability);
+            // will go to a copy to avoid creating a loop in the graph,
+            // which works because we only want to consider the code loop
+            // running once (1 expression + 1 body + 1 expression + exit)
+            if(bodyGraph == null || bodyGraph.isEmpty()) {
+                processedSubTrace.addEdge(expressionGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), enterLoopProbability);
             }
-
+            
             // exit body
-            processedSubTrace.addEdge(expressionGraph.getLastAccess(), endingNode, exitLoopProbability);
+            processedSubTrace.addEdge(expressionGraphCopy.getLastAccess(), endingNode, exitLoopProbability);
         }
 
         if (bodyGraph != null && !bodyGraph.isEmpty()) {
-            processedSubTrace.addGraph(bodyGraph);
             // enter body
-            if (expressionGraph != null) {
+            if (expressionGraph != null && !expressionGraph.isEmpty()) {
                 processedSubTrace.addEdge(expressionGraph.getLastAccess(), bodyGraph.getFirstAccess(), enterLoopProbability);
             } else {
                 processedSubTrace.addEdge(startingNode, bodyGraph.getFirstAccess(), enterLoopProbability);
@@ -95,10 +118,8 @@ public class Loop extends TraceGraphNode {
 
             // return to head
             if (expressionGraph != null && !expressionGraph.isEmpty()) {
-                processedSubTrace.addEdge(bodyGraph.getLastAccess(), expressionGraph.getFirstAccess(), 1f);
-            } else {
-                processedSubTrace.addEdge(bodyGraph.getLastAccess(), bodyGraph.getFirstAccess(), enterLoopProbability);
-                
+                processedSubTrace.addEdge(bodyGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), 1f);
+            } else {               
                 // exit body (since expression is "empty")
                 processedSubTrace.addEdge(bodyGraph.getLastAccess(), endingNode, exitLoopProbability);
             }

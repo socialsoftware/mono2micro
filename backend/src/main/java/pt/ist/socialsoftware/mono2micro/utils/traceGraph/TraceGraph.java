@@ -1,8 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jgrapht.Graph;
@@ -11,6 +14,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.Multigraph;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 
@@ -99,7 +103,12 @@ public class TraceGraph {
             this.lastAccess = other.lastAccess;
         }
         
-        this.list.addAll(other.toList());
+        // only add vertexes that are not on the list yet
+        for (AccessDto accessDto : other.toList()) {
+            if (!this.list.contains(accessDto)) {
+                this.list.add(accessDto);
+            }
+        }
     }
 
     public List<AccessDto> toList() {
@@ -118,5 +127,59 @@ public class TraceGraph {
         if (!isVertexLockedToNewConnections(vertex)) {
             this.vertexesLockedToNewConnections.add(vertex);
         }
+    }
+
+    public TraceGraph createDuplicate() {
+        TraceGraph duplicate = new TraceGraph();
+
+        Iterator<AccessDto> iterator = new TopologicalOrderIterator<AccessDto, DefaultWeightedEdge>(this.graph);
+
+        //duplicate.addVertex(this.getFirstAccess());
+
+        Map<AccessDto, AccessDto> copiedVertices = new HashMap<>();
+
+        // calculate all possible path lengths
+        for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
+            AccessDto vertex = it.next();
+            AccessDto vertexCopy = new AccessDto();
+            if (copiedVertices.containsKey(vertex)) {
+                vertexCopy = copiedVertices.get(vertex);
+            } else {
+                vertexCopy.setEntityID(vertex.getEntityID());
+                vertexCopy.setMode(vertex.getMode());
+                duplicate.addVertex(vertexCopy);
+
+                copiedVertices.put(vertex, vertexCopy);
+            }
+
+            List<AccessDto> successors = Graphs.successorListOf(this.graph, vertex);
+
+            for (AccessDto successor : successors) {
+                AccessDto successorCopy = new AccessDto();
+                if (copiedVertices.containsKey(successor)) {
+                    successorCopy = copiedVertices.get(successor);
+                } else {
+                    successorCopy.setEntityID(successor.getEntityID());
+                    successorCopy.setMode(successor.getMode());
+
+                    copiedVertices.put(successor, successorCopy);
+                }
+
+
+                duplicate.addEdge(vertexCopy, successorCopy, (float)this.graph.getEdgeWeight(this.graph.getEdge(vertex, successor)));
+                
+            }
+
+            
+            if (this.getLastAccess() == vertex) {
+                try {
+                    duplicate.setLastAccess(vertexCopy);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return duplicate;
     }
 }
