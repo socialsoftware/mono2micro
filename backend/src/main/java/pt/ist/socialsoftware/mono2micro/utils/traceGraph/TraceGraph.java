@@ -68,6 +68,9 @@ public class TraceGraph {
     public void addEdge(AccessDto from, AccessDto to, float probability) {
         this.addVertex(from);
         this.addVertex(to);
+        if (from.equals(to)) {
+            System.out.println("repeated edge (invalid): " + from + " - " + to);
+        }
 
         DefaultWeightedEdge edge = this.graph.addEdge(from, to);
         this.graph.setEdgeWeight(edge, probability);

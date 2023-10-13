@@ -55,12 +55,15 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
         // create graph representation
         _traceGraphs = new HashMap<String, TraceGraph>();
-
+        
+        System.out.println("FunctionalityGraphTracesIterator");
         Iterator<String> functionalities = getFunctionalitiesNames();
-        while (functionalities.hasNext()) {
-            String functionality = functionalities.next();
+        for(Iterator<String> it = functionalities; it.hasNext(); ) {
+            String functionality = it.next();
 
+            System.out.println("Creating graph: " + functionality);
             _traceGraphs.put(functionality, getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionality)));
+            System.out.println("--------------");
         }
 
         _pathDataCache = new HashMap<>();
@@ -184,6 +187,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     public List<TraceDto> getTracesByType(Constants.TraceType traceType) throws JSONException {
         List<TraceDto> traceDtos = new ArrayList<>();
 
+        System.out.println("Get Trace by Type: " + traceType);
         // Get traces according to trace type
         switch(traceType) {
             case LONGEST:
@@ -212,8 +216,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         List<TraceGraphNode> preProcessedTraces = translateSubTrace(object, mainTrace);
 
         TraceGraph processedSubTrace = processSubTrace(preProcessedTraces);
-
-        //processedSubTrace.removeEmptyNodes();
 
         return processedSubTrace;
     }
