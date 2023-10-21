@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -81,6 +83,10 @@ public class TraceGraph {
     public void addVertex(AccessDto vertex) {
         if (!this.graph.containsVertex(vertex)) {
             this.graph.addVertex(vertex);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+
+            System.out.println(dtf.format(now) + " -> " + vertex.getEntityID());
         }
 
         if (this.firstAccess == null) {
