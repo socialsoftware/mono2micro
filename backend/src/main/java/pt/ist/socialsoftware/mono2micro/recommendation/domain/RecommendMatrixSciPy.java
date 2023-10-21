@@ -171,12 +171,14 @@ public class RecommendMatrixSciPy extends Recommendation {
             try {
                 GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
                 SimilarityScipy similarityScipy = SimilarityScipyFactory.getSimilarityScipy(this);
-                System.out.println("generate receommendation");
+                long startTime = System.currentTimeMillis();
+                System.out.println("generate recommendation");
                 setSimilarityMatricesNames(similarityScipy.generateMultipleMatrices(gridFsService, this, fillElements(gridFsService), getTotalNumberOfWeights()));
                 clusteringAlgorithm.generateMultipleDecompositions(this);
 
                 recommendationRepository.save(this);
-                System.out.println("recommendation ended");
+                long totalTime = System.currentTimeMillis() - startTime;
+                System.out.println("recommendation ended: " + totalTime/1000d + " seconds");
             } catch (Exception e) {
                 e.printStackTrace();
             }
