@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -42,7 +44,7 @@ import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
 public class FunctionalityGraphTracesIterator extends TracesIterator {
     private final String _representationName;
     private final JSONObject _codebaseAsJSON;
-    private static Map<String, TraceGraph> _traceGraphs; //TODO: transform into map of processed graph info
+    private static ConcurrentMap<String, TraceGraph> _traceGraphs = new ConcurrentHashMap<String, TraceGraph>(); //TODO: transform into map of processed graph info
     private String requestedFunctionality;
 
     private Map<Access, PathData> _pathDataCache;
@@ -54,18 +56,19 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         _representationName = representationName;
         _codebaseAsJSON = new JSONObject(new String(IOUtils.toByteArray(file)));
         file.close();
-
-        // create graph representation
-        _traceGraphs = new HashMap<String, TraceGraph>();
         
         System.out.println("FunctionalityGraphTracesIterator - " + _representationName);
         Iterator<String> functionalities = getFunctionalitiesNames();
         for(Iterator<String> it = functionalities; it.hasNext(); ) {
             String functionality = it.next();
 
-            System.out.println("Creating graph: " + functionality);
-            _traceGraphs.put(innerFunctionalityName(functionality), getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionality)));
-            System.out.println("--------------");
+            if (!_traceGraphs.containsKey(innerFunctionalityName(functionality))) {
+                System.out.println("Creating graph: " + innerFunctionalityName(functionality));
+                _traceGraphs.put(innerFunctionalityName(functionality), getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionality)));
+                System.out.println("--------------");
+            } else {
+                System.out.println("Loading from cache: " + innerFunctionalityName(functionality));
+            }
         }
 
         _pathDataCache = new HashMap<>();
