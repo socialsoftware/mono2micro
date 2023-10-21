@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraph;
 
-public class TraceGraphCreationThread implements Callable {
+public class TraceGraphCreationThread implements Callable<Pair<String, FunctionalityInfo>> {
     private FunctionalityGraphTracesIterator iterator;
     private String functionalityName;
 
@@ -14,17 +14,24 @@ public class TraceGraphCreationThread implements Callable {
     }
 
     @Override
-    public Pair<String, TraceGraph> call() {
+    public Pair<String, FunctionalityInfo> call() {
         TraceGraph graph = null;
+        FunctionalityInfo functionalityInfo = new FunctionalityInfo();
 
         try {
             graph = iterator.getFunctionalityTraceGraph(functionalityName);
+
+            functionalityInfo.setLongestPath(FunctionalityGraphTracesIterator.getLongestTrace(graph.getGraph(), functionalityName));
+            //TODO: add most probable
+            //TODO: add most different accesses
+            //TODO: add all (pairCount and entityFunctionalities)
+
         } catch (Exception e) {
             System.out.println("JSON error handling functionality graph");
             e.printStackTrace();
         }
 
-        return new Pair<>(this.functionalityName, graph);
+        return new Pair<>(this.functionalityName, functionalityInfo);
     }
     
 }

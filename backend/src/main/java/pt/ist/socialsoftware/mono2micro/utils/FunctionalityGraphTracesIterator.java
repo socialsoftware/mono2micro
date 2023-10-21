@@ -43,13 +43,8 @@ import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
 public class FunctionalityGraphTracesIterator extends TracesIterator {
     private final String _representationName;
     private final JSONObject _codebaseAsJSON;
-    private static ConcurrentMap<String, TraceGraph> _traceGraphs = new ConcurrentHashMap<String, TraceGraph>(); //TODO: transform into map of processed graph info
+    private static ConcurrentMap<String, FunctionalityInfo> _graphInfo = new ConcurrentHashMap<>(); //TODO: transform into map of processed graph info
     private String requestedFunctionality;
-
-    private Map<Access, PathData> _pathDataCache;
-    private Map<String, PathData> _functionalityPathData;
-
-    private Map<Access, EntityAccessData> _entityAccessDataCache;
 
     public FunctionalityGraphTracesIterator(String representationName, InputStream file) throws IOException, JSONException {
         _representationName = representationName;
@@ -59,13 +54,13 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         // load graphs from cache or launch building thread
         System.out.println("FunctionalityGraphTracesIterator - " + _representationName);
         ExecutorService executor = Executors.newCachedThreadPool();
-        List<Callable<Pair<String, TraceGraph>>> tasks = new ArrayList<>();
+        List<Callable<Pair<String, FunctionalityInfo>>> tasks = new ArrayList<>();
 
         Iterator<String> functionalities = getFunctionalitiesNames();
         for(Iterator<String> it = functionalities; it.hasNext(); ) {
             String functionality = it.next();
 
-            if (!_traceGraphs.containsKey(innerFunctionalityName(functionality))) {
+            if (!_graphInfo.containsKey(innerFunctionalityName(functionality))) {
                 System.out.println("Launching creation thread: " + innerFunctionalityName(functionality));
                 tasks.add(new TraceGraphCreationThread(this, functionality));
             } else {
@@ -75,18 +70,16 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
         // await threads finish
         try {
-            List<Future<Pair<String, TraceGraph>>> futures = executor.invokeAll(tasks);
-            for (Future<Pair<String, TraceGraph>> future : futures) {
-                addFunctionalityTraceGraph(future.get().getFirst(), future.get().getSecond());
+            List<Future<Pair<String, FunctionalityInfo>>> futures = executor.invokeAll(tasks);
+            for (Future<Pair<String, FunctionalityInfo>> future : futures) {
+                addFunctionalityInfo(future.get().getFirst(), future.get().getSecond());
                 System.out.println("Thread finished " + future.get().getSecond());
             }
             
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        _pathDataCache = new HashMap<>();
-        _functionalityPathData = new HashMap<>();
+        
     }
 
     private String innerFunctionalityName(String functionalityName) {
@@ -104,7 +97,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     /* Get Trace Types */
 
     public TraceDto getLongestTrace() throws JSONException {
-        return getLongestTrace(_traceGraphs.get(innerFunctionalityName(requestedFunctionality)).getGraph(), requestedFunctionality);
+        return _graphInfo.get(innerFunctionalityName(requestedFunctionality)).getLongestPath();
     }
 
     public static TraceDto getLongestTrace(Graph<AccessDto, DefaultWeightedEdge> graph, String functionalityName) throws JSONException {
@@ -233,8 +226,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     /* Process Access Graph */
 
-    public void addFunctionalityTraceGraph(String functionalityName, TraceGraph graph) {
-        _traceGraphs.put(innerFunctionalityName(functionalityName), graph);
+    public void addFunctionalityInfo(String functionalityName, FunctionalityInfo info) {
+        _graphInfo.put(innerFunctionalityName(functionalityName), info);
     }
 
     public TraceGraph getFunctionalityTraceGraph(String functionalityName) throws JSONException {
