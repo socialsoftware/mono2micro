@@ -121,13 +121,13 @@ public class AccessesInformation extends RepresentationInformation {
         getFunctionalities().put(functionality.getName().replace(".", "_"), functionality);
     }
 
-    public static TracesIterator getTraceIterator(String representationType, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
+    public static TracesIterator getTraceIterator(String representationType, String representationName, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
         switch (representationType) {
             case ACCESSES:
                 return new FunctionalityTracesIterator(accessesFile, tracesMaxLimit);
         
             case ACCESSES_GRAPH:
-                return new FunctionalityGraphTracesIterator(accessesFile);
+                return new FunctionalityGraphTracesIterator(representationName, accessesFile);
 
             default:
                 break;
@@ -145,7 +145,7 @@ public class AccessesInformation extends RepresentationInformation {
         InputStream inputStream = gridFsService.getFile(accesses.getName());
         Set<String> profileFunctionalities = accesses.getProfile(similarity.getProfile());
 
-        TracesIterator iter = getTraceIterator(Utils.getCodebaseAccessRepresentation(decomposition.getStrategy().getCodebase()).getType(), inputStream, similarity.getTracesMaxLimit());
+        TracesIterator iter = getTraceIterator(Utils.getCodebaseAccessRepresentation(decomposition.getStrategy().getCodebase()).getType(), accesses.getName(), inputStream, similarity.getTracesMaxLimit());
         Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
         List<Functionality> newFunctionalities = new ArrayList<>();
 

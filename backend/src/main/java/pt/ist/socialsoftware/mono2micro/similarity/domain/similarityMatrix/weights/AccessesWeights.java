@@ -132,7 +132,7 @@ public class AccessesWeights extends Weights {
     public void fillMatrix(GridFsService gridFsService, Similarity similarity, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException, JSONException {
         SimilarityScipyAccessesAndRepository s = (SimilarityScipyAccessesAndRepository) similarity;
         AccessesRepresentation accesses = Utils.getCodebaseAccessRepresentation(similarity.getStrategy().getCodebase());
-        fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(s.getProfile()), s.getTraceType(), s.getTracesMaxLimit(), accesses.getType());
+        fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(s.getProfile()), s.getTraceType(), s.getTracesMaxLimit(), accesses.getType(), accesses.getName());
     }
 
     @Override
@@ -142,17 +142,17 @@ public class AccessesWeights extends Weights {
         System.out.println("get representation");
         AccessesRepresentation accesses = Utils.getCodebaseAccessRepresentation(recommendation.getStrategy().getCodebase());
         System.out.println("fill raw matrix from acc");
-        fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(r.getProfile()), r.getTraceType(), r.getTracesMaxLimit(), accesses.getType());
+        fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(r.getProfile()), r.getTraceType(), r.getTracesMaxLimit(), accesses.getType(), accesses.getName());
         System.out.println("weights out");
     }
 
-    public static TracesIterator getTraceIterator(String representationType, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
+    public static TracesIterator getTraceIterator(String representationType, String representationName, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
         switch (representationType) {
             case ACCESSES:
                 return new FunctionalityTracesIterator(accessesFile, tracesMaxLimit);
         
             case ACCESSES_GRAPH:
-                return new FunctionalityGraphTracesIterator(accessesFile);
+                return new FunctionalityGraphTracesIterator(representationName, accessesFile);
 
             default:
                 break;
@@ -168,13 +168,14 @@ public class AccessesWeights extends Weights {
             Set<String> profileFunctionalities,
             Constants.TraceType traceType,
             int tracesMaxLimit,
-            String representationType
+            String representationType,
+            String representationName
     ) throws JSONException, IOException {
         Set<Short> entities = new TreeSet<>();
         Map<String, Float> e1e2PairCount = new HashMap<>();
         Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
         System.out.println("fill data structures");
-        fillDataStructures(entities, e1e2PairCount, entityFunctionalities, getTraceIterator(representationType, accessesFile, tracesMaxLimit), profileFunctionalities, traceType);
+        fillDataStructures(entities, e1e2PairCount, entityFunctionalities, getTraceIterator(representationType, representationName, accessesFile, tracesMaxLimit), profileFunctionalities, traceType);
         System.out.println("fill raw matrix");
         fillRawMatrix(rawMatrix, entities, e1e2PairCount, entityFunctionalities, fillFromIndex);
     }
