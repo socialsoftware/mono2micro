@@ -40,8 +40,9 @@ import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
  * FunctionalityGraphTracesIterator
  */
 public class FunctionalityGraphTracesIterator extends TracesIterator {
+    private final String _representationName;
     private final JSONObject _codebaseAsJSON;
-    private Map<String, TraceGraph> _traceGraphs;
+    private static Map<String, TraceGraph> _traceGraphs; //TODO: transform into map of processed graph info
     private String requestedFunctionality;
 
     private Map<Access, PathData> _pathDataCache;
@@ -49,25 +50,30 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     private Map<Access, EntityAccessData> _entityAccessDataCache;
 
-    public FunctionalityGraphTracesIterator(InputStream file) throws IOException, JSONException {
+    public FunctionalityGraphTracesIterator(String representationName, InputStream file) throws IOException, JSONException {
+        _representationName = representationName;
         _codebaseAsJSON = new JSONObject(new String(IOUtils.toByteArray(file)));
         file.close();
 
         // create graph representation
         _traceGraphs = new HashMap<String, TraceGraph>();
         
-        System.out.println("FunctionalityGraphTracesIterator");
+        System.out.println("FunctionalityGraphTracesIterator - " + _representationName);
         Iterator<String> functionalities = getFunctionalitiesNames();
         for(Iterator<String> it = functionalities; it.hasNext(); ) {
             String functionality = it.next();
 
             System.out.println("Creating graph: " + functionality);
-            _traceGraphs.put(functionality, getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionality)));
+            _traceGraphs.put(innerFunctionalityName(functionality), getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionality)));
             System.out.println("--------------");
         }
 
         _pathDataCache = new HashMap<>();
         _functionalityPathData = new HashMap<>();
+    }
+
+    private String innerFunctionalityName(String functionalityName) {
+        return _representationName + "_" + functionalityName;
     }
 
     public Iterator<String> getFunctionalitiesNames() {
@@ -81,7 +87,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     /* Get Trace Types */
 
     public TraceDto getLongestTrace() throws JSONException {
-        return getLongestTrace(_traceGraphs.get(requestedFunctionality).getGraph(), requestedFunctionality);
+        return getLongestTrace(_traceGraphs.get(innerFunctionalityName(requestedFunctionality)).getGraph(), requestedFunctionality);
     }
 
     public static TraceDto getLongestTrace(Graph<AccessDto, DefaultWeightedEdge> graph, String functionalityName) throws JSONException {
