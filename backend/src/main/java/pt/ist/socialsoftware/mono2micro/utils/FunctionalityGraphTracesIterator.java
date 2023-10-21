@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.io.IOUtils;
 import org.jgrapht.Graph;
@@ -52,18 +56,33 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         _codebaseAsJSON = new JSONObject(new String(IOUtils.toByteArray(file)));
         file.close();
         
+        // load graphs from cache or launch building thread
         System.out.println("FunctionalityGraphTracesIterator - " + _representationName);
+        ExecutorService executor = Executors.newCachedThreadPool();
+        List<Callable<Pair<String, TraceGraph>>> tasks = new ArrayList<>();
+
         Iterator<String> functionalities = getFunctionalitiesNames();
         for(Iterator<String> it = functionalities; it.hasNext(); ) {
             String functionality = it.next();
 
             if (!_traceGraphs.containsKey(innerFunctionalityName(functionality))) {
-                System.out.println("Creating graph: " + innerFunctionalityName(functionality));
-                _traceGraphs.put(innerFunctionalityName(functionality), getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionality)));
-                System.out.println("--------------");
+                System.out.println("Launching creation thread: " + innerFunctionalityName(functionality));
+                tasks.add(new TraceGraphCreationThread(this, functionality));
             } else {
                 System.out.println("Loading from cache: " + innerFunctionalityName(functionality));
             }
+        }
+
+        // await threads finish
+        try {
+            List<Future<Pair<String, TraceGraph>>> futures = executor.invokeAll(tasks);
+            for (Future<Pair<String, TraceGraph>> future : futures) {
+                addFunctionalityTraceGraph(future.get().getFirst(), future.get().getSecond());
+                System.out.println("Thread finished " + future.get().getSecond());
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         _pathDataCache = new HashMap<>();
@@ -214,7 +233,15 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     /* Process Access Graph */
 
-    TraceGraph getFunctionalityTraceGraph(JSONObject object) throws JSONException {
+    public void addFunctionalityTraceGraph(String functionalityName, TraceGraph graph) {
+        _traceGraphs.put(innerFunctionalityName(functionalityName), graph);
+    }
+
+    public TraceGraph getFunctionalityTraceGraph(String functionalityName) throws JSONException {
+        return getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionalityName));
+    }
+
+    public static TraceGraph getFunctionalityTraceGraph(JSONObject object) throws JSONException {
         JSONObject mainTrace = object.getJSONArray("t").getJSONObject(0);
 
         List<TraceGraphNode> preProcessedTraces = translateSubTrace(object, mainTrace);
