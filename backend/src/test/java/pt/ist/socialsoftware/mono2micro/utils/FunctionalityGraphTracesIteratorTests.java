@@ -221,10 +221,10 @@ public class FunctionalityGraphTracesIteratorTests {
 				new Object[]{"W", 3}
 			},
 			new Object[][]{
-				new Object[]{"W", 4}, new Object[]{"#return"}
+				new Object[]{"W", 4}, new Object[]{"W", 5}, new Object[]{"#return"}
 			},
 			new Object[][]{
-				new Object[]{"W", 8}, new Object[]{"W", 8}
+				new Object[]{"W", 8}, new Object[]{"W", 8}, new Object[]{"W", 8}
 			}
 			});
 
@@ -236,11 +236,12 @@ public class FunctionalityGraphTracesIteratorTests {
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
+        TraceDto mostDiffAccessesPath = FunctionalityGraphTracesIterator.getTraceWithMoreDifferentAccesses(processedSubTrace.getGraph(), "funcName");
         TraceDto mostProbablePath = FunctionalityGraphTracesIterator.getMostProbableTrace(processedSubTrace.getGraph(), "funcName");
 
-        assertEquals(7, longestPath.getAccesses().size());
-        //assertEquals(6, pathData.getMostDifferentAccessesPath().size());
-        assertEquals(7, mostProbablePath.getAccesses().size());
+        assertEquals(8, longestPath.getAccesses().size());
+        assertEquals(7, mostDiffAccessesPath.getAccesses().size());
+        assertEquals(8, mostProbablePath.getAccesses().size());
 
     }
 

@@ -190,7 +190,130 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     }
 
     public TraceDto getTraceWithMoreDifferentAccesses() throws JSONException {
-        return null;
+        return _graphInfo.get(innerFunctionalityName(requestedFunctionality)).getMostDifferentAccessesPath();
+    }
+
+    public static TraceDto getTraceWithMoreDifferentAccesses(Graph<AccessDto, DefaultWeightedEdge> graph, String functionalityName) throws JSONException {
+        
+        Map<AccessDto, Integer> vertexToDepthMap = new HashMap<>();
+        Map<AccessDto, List<Short>> vertexToDiffAccessesMap = new HashMap<>();
+
+        Iterator<AccessDto> iterator = new TopologicalOrderIterator<AccessDto, DefaultWeightedEdge>(graph);
+
+        // calculate all possible path lengths
+        for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
+            AccessDto vertex = it.next();
+
+            List<AccessDto> predecessors = Graphs.predecessorListOf(graph, vertex);
+            Integer maxPredecessorDepth = 0;
+            AccessDto maxPredecessor = null;
+
+            for (AccessDto predecessor : predecessors) {
+                List<Short> diffAccessesMap = vertexToDiffAccessesMap.get(predecessor);
+                if (!diffAccessesMap.contains(vertex.getEntityID()))
+                    diffAccessesMap.add(vertex.getEntityID());
+
+                if (maxPredecessor == null || vertexToDiffAccessesMap.get(maxPredecessor).size() != Math.max(vertexToDiffAccessesMap.get(maxPredecessor).size(), diffAccessesMap.size())) {
+                    maxPredecessorDepth = Math.max(maxPredecessorDepth, vertexToDepthMap.get(predecessor));
+                    maxPredecessor = predecessor;
+                }
+            }
+
+            List<Short> vertexDiffAccesses = new ArrayList<>();
+
+            if (predecessors.size() > 0) {
+                vertexDiffAccesses.addAll(vertexToDiffAccessesMap.get(maxPredecessor));
+            }
+
+            if (!vertexDiffAccesses.contains(vertex.getEntityID()) && vertex.getEntityID() > -1)
+                vertexDiffAccesses.add(vertex.getEntityID());
+
+            vertexToDiffAccessesMap.put(vertex, vertexDiffAccesses);
+            vertexToDepthMap.put(vertex, predecessors.size() > 0? maxPredecessorDepth + 1: maxPredecessorDepth);
+        }
+
+        System.out.println("ran all nodes");
+        
+        // get ending of path
+        AccessDto pathEnd = null;
+
+        List<AccessDto> endingVertexes = vertexToDiffAccessesMap.keySet().stream().filter(v -> Graphs.successorListOf(graph, v).size() == 0).collect(Collectors.toList());
+
+        // end of path is the most probable final node
+        for (AccessDto vertex : endingVertexes) {
+            if (pathEnd == null || vertexToDiffAccessesMap.get(vertex).size() > vertexToDiffAccessesMap.get(pathEnd).size()
+                ||
+                vertexToDiffAccessesMap.get(vertex).size() == vertexToDiffAccessesMap.get(pathEnd).size() && vertexToDepthMap.get(vertex) > vertexToDepthMap.get(pathEnd)
+                ){
+                pathEnd = vertex;
+            }
+        }
+
+        if (pathEnd == null) {
+            throw new JSONException(functionalityName + ": no max path");
+        }
+
+        // get longest path
+        List<ReducedTraceElementDto> path = new ArrayList<>();
+        path.add(pathEnd);
+
+        List<Short> pathEntities = new ArrayList<>();
+
+        List<AccessDto> predecessors = Graphs.predecessorListOf(graph, pathEnd);
+        
+        System.out.println("getting most diff accesses path");
+        while (!predecessors.isEmpty()) {
+            AccessDto maxPredecessor = null;
+            for (AccessDto predecessor : predecessors) {
+                List<Short> maxPredecessorAccList = vertexToDiffAccessesMap.get(maxPredecessor);
+                List<Short> predecessorAccList = vertexToDiffAccessesMap.get(predecessor);
+
+                if (maxPredecessor != null) maxPredecessorAccList.removeAll(pathEntities);
+                predecessorAccList.removeAll(pathEntities);
+
+                if (maxPredecessor == null || predecessorAccList.size() > maxPredecessorAccList.size()) {
+                    maxPredecessor = predecessor;
+                }
+            }
+
+            path.add(maxPredecessor);
+            predecessors = Graphs.predecessorListOf(graph, maxPredecessor);
+
+            pathEntities.add(maxPredecessor.getEntityID());
+        }
+
+        System.out.println("finished max path, inverting");
+
+        Collections.reverse(path);
+
+        System.out.println("applying probability");
+
+        // register probability of each node
+        float carriedProbability = 1.0f; // used to carry probability from null nodes
+        List<AccessDto> emptyNodes = new ArrayList<>();
+        AccessDto previous = null;
+        for (ReducedTraceElementDto el : path) {
+            AccessDto access = (AccessDto)el;
+
+            if (previous != null) {
+                carriedProbability *= graph.getEdgeWeight(graph.getEdge(previous, access));
+            }
+
+            if (access.getEntityID() == -1) {
+                emptyNodes.add(access);
+            } else {
+                access.setProbability(carriedProbability);
+                carriedProbability = 1.0f;
+            }
+
+            previous = access;
+        }
+
+        path.removeAll(emptyNodes);
+
+        System.out.println("returning");
+
+        return new TraceDto(0, 0, path);
     }
 
     public TraceDto getMostProbableTrace() throws JSONException {
