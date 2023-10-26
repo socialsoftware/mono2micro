@@ -111,13 +111,13 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             AccessDto vertex = it.next();
 
             List<AccessDto> predecessors = Graphs.predecessorListOf(graph, vertex);
-            Integer maxPredecessorDepth = -1;
+            Integer maxPredecessorDepth = 0;
 
             for (AccessDto predecessor : predecessors) {
                 maxPredecessorDepth = Math.max(maxPredecessorDepth, vertexToDepthMap.get(predecessor));
             }
 
-            vertexToDepthMap.put(vertex, vertex.getEntityID() > 0? maxPredecessorDepth + 1: maxPredecessorDepth);
+            vertexToDepthMap.put(vertex, predecessors.size() > 0? maxPredecessorDepth + 1: maxPredecessorDepth);
         }
 
         System.out.println("ran all nodes");
