@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.io.IOUtils;
@@ -43,7 +44,7 @@ import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
 public class FunctionalityGraphTracesIterator extends TracesIterator {
     private final String _representationName;
     private final JSONObject _codebaseAsJSON;
-    private static ConcurrentMap<String, FunctionalityInfo> _graphInfo = new ConcurrentHashMap<>(); //TODO: transform into map of processed graph info
+    private static ConcurrentMap<String, FunctionalityInfo> _graphInfo = new ConcurrentHashMap<>();
     private String requestedFunctionality;
 
     public FunctionalityGraphTracesIterator(String representationName, InputStream file) throws IOException, JSONException {
@@ -193,7 +194,109 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     }
 
     public TraceDto getMostProbableTrace() throws JSONException {
-        return null;
+        return _graphInfo.get(innerFunctionalityName(requestedFunctionality)).getMostProbablePath();
+    }
+
+    public static TraceDto getMostProbableTrace(Graph<AccessDto, DefaultWeightedEdge> graph, String functionalityName) throws JSONException {
+        
+        Map<AccessDto, Integer> vertexToDepthMap = new HashMap<>();
+        Map<AccessDto, Double> vertexToProbMap = new HashMap<>();
+
+        Iterator<AccessDto> iterator = new TopologicalOrderIterator<AccessDto, DefaultWeightedEdge>(graph);
+
+        // calculate all possible path lengths
+        for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
+            AccessDto vertex = it.next();
+
+            List<AccessDto> predecessors = Graphs.predecessorListOf(graph, vertex);
+            Integer maxPredecessorDepth = 0;
+            Double maxPredecessorProb = 0d;
+            AccessDto maxPredecessor = null;
+
+            for (AccessDto predecessor : predecessors) {
+                if (maxPredecessorProb != Math.max(maxPredecessorProb, vertexToProbMap.get(predecessor))) {
+                    maxPredecessorProb = Math.max(maxPredecessorProb, vertexToProbMap.get(predecessor));
+                    maxPredecessorDepth = Math.max(maxPredecessorDepth, vertexToDepthMap.get(predecessor));
+                    maxPredecessor = predecessor;
+                }
+            }
+
+            vertexToProbMap.put(vertex, predecessors.size() > 0? maxPredecessorProb * graph.getEdgeWeight(graph.getEdge(maxPredecessor, vertex)): 1f);
+            vertexToDepthMap.put(vertex, predecessors.size() > 0? maxPredecessorDepth + 1: maxPredecessorDepth);
+        }
+
+        System.out.println("ran all nodes");
+        
+        // get ending of path
+        AccessDto pathEnd = null;
+
+        List<AccessDto> endingVertexes = vertexToProbMap.keySet().stream().filter(v -> Graphs.successorListOf(graph, v).size() == 0).collect(Collectors.toList());
+
+        // end of path is the most probable final node
+        for (AccessDto vertex : endingVertexes) {
+            if (pathEnd == null || vertexToProbMap.get(vertex) > vertexToProbMap.get(pathEnd)
+                ||
+                vertexToProbMap.get(vertex) == vertexToProbMap.get(pathEnd) && vertexToDepthMap.get(vertex) > vertexToDepthMap.get(pathEnd)
+                ){
+                pathEnd = vertex;
+            }
+        }
+
+        if (pathEnd == null) {
+            throw new JSONException(functionalityName + ": no max path");
+        }
+
+        // get longest path
+        List<ReducedTraceElementDto> path = new ArrayList<>();
+        path.add(pathEnd);
+
+        List<AccessDto> predecessors = Graphs.predecessorListOf(graph, pathEnd);
+        
+        System.out.println("getting most probable path");
+        while (!predecessors.isEmpty()) {
+            AccessDto maxPredecessor = null;
+            for (AccessDto predecessor : predecessors) {
+                if (maxPredecessor == null || vertexToProbMap.get(predecessor) > vertexToProbMap.get(maxPredecessor)) {
+                    maxPredecessor = predecessor;
+                }
+            }
+
+            path.add(maxPredecessor);
+            predecessors = Graphs.predecessorListOf(graph, maxPredecessor);
+        }
+
+        System.out.println("finished max path, inverting");
+
+        Collections.reverse(path);
+
+        System.out.println("applying probability");
+
+        // register probability of each node
+        float carriedProbability = 1.0f; // used to carry probability from null nodes
+        List<AccessDto> emptyNodes = new ArrayList<>();
+        AccessDto previous = null;
+        for (ReducedTraceElementDto el : path) {
+            AccessDto access = (AccessDto)el;
+
+            if (previous != null) {
+                carriedProbability *= graph.getEdgeWeight(graph.getEdge(previous, access));
+            }
+
+            if (access.getEntityID() == -1) {
+                emptyNodes.add(access);
+            } else {
+                access.setProbability(carriedProbability);
+                carriedProbability = 1.0f;
+            }
+
+            previous = access;
+        }
+
+        path.removeAll(emptyNodes);
+
+        System.out.println("returning");
+
+        return new TraceDto(0, 0, path);
     }
 
     public List<TraceDto> getAllTraces() throws JSONException {

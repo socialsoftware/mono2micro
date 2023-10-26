@@ -22,7 +22,7 @@ public class TraceGraphCreationThread implements Callable<Pair<String, Functiona
             graph = iterator.getFunctionalityTraceGraph(functionalityName);
 
             functionalityInfo.setLongestPath(FunctionalityGraphTracesIterator.getLongestTrace(graph.getGraph(), functionalityName));
-            //TODO: add most probable
+            functionalityInfo.setMostProbablePath(FunctionalityGraphTracesIterator.getMostProbableTrace(graph.getGraph(), functionalityName));
             //TODO: add most different accesses
             //TODO: add all (pairCount and entityFunctionalities)
 
