@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -549,68 +550,64 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         System.out.println("\n\ngraph fill data structures");
         System.out.println(requestedFunctionality);
 
-
+        e1e2PairCount = _graphInfo.get(innerFunctionalityName(requestedFunctionality)).getE1e2PairCount();
+        entityFunctionalities = _graphInfo.get(innerFunctionalityName(requestedFunctionality)).getEntityFunctionalities();
         
     }
 
     public static void fillEntityDataStructures(
-            Access access,
-            List<Access> currentPath,
-            Float runningProbability,
+            Graph<AccessDto, DefaultWeightedEdge> graph,
             Map<String, Float> e1e2PairCount,
             Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities,
             String functionalityName
     ) {
 
-        short entityID = (short)access.getEntityAccessedId();
-        
-        
-        // System.out.println(functionalityName + " (" + countFill + ") -> " + entityID + ", " + access.getMode());
-        //System.out.println("[" + currentPath.size() + "]" + functionalityName + " (" + access.getContextIndex() + ") -> " + entityID + ", " + access.getMode());
-        /* int currentCountForAccess = 0;
-        if (accessCounter.containsKey(access.getContextIndex())) {
-            currentCountForAccess = accessCounter.get(access.getContextIndex());
-        }
-        currentCountForAccess++;
-        accessCounter.put(access.getContextIndex(), currentCountForAccess); */
-        /* List<Integer> countedThisTime = new ArrayList<>();
-        for (Access a : currentPath) {
-            if (countedThisTime.contains(a.getContextIndex())) continue;
+        Map<AccessDto, Double> vertexProbabilitiesMap = new HashMap<>();
+        Map<AccessDto, List<AccessDto>> vertexLastValidVertexesMap = new HashMap<>();
 
-            int currentCountForAccess = 0;
-            if (accessCounter.containsKey(a.getContextIndex())) {
-                currentCountForAccess = accessCounter.get(a.getContextIndex());
+        Iterator<AccessDto> iterator = new TopologicalOrderIterator<AccessDto, DefaultWeightedEdge>(graph);
+
+        for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
+            AccessDto vertex = it.next();
+            Short entityID = vertex.getEntityID();
+            byte mode = vertex.getMode();
+
+            List<AccessDto> predecessors = Graphs.predecessorListOf(graph, vertex);
+            Double addedPredecessorProbability = 0d;
+
+            List<AccessDto> allPredecessorValidVertexes = new ArrayList<>();
+
+            for (AccessDto predecessor : predecessors) {
+                Double edgeWeight = graph.getEdgeWeight(graph.getEdge(predecessor, vertex));
+                Double predecessorPreviousProbability = vertexProbabilitiesMap.get(predecessor);
+
+                addedPredecessorProbability += predecessorPreviousProbability * edgeWeight;
+
+                List<AccessDto> predecessorValidVertexes = vertexLastValidVertexesMap.get(predecessor);
+                if (entityID != -1) {
+                    // connect to pair
+                    for (AccessDto validVertex : predecessorValidVertexes) {
+                        Short validVertexEntityID = validVertex.getEntityID();
+                        if (entityID != validVertexEntityID) {
+                            String e1e2 = validVertexEntityID + "->" + entityID;
+                            String e2e1 = entityID + "->" + validVertexEntityID;
+        
+                            float count = e1e2PairCount.getOrDefault(e1e2, 0f);
+                            e1e2PairCount.put(e1e2, count + predecessorPreviousProbability.floatValue() * edgeWeight.floatValue());
+        
+                            count = e1e2PairCount.getOrDefault(e2e1, 0f);
+                            e1e2PairCount.put(e2e1, count + predecessorPreviousProbability.floatValue() * edgeWeight.floatValue());
+                        }
+                        
+                    }
+
+                }
+
+                allPredecessorValidVertexes.addAll(predecessorValidVertexes);
             }
-            currentCountForAccess++;
-            accessCounter.put(a.getContextIndex(), currentCountForAccess); 
-            countedThisTime.add(a.getContextIndex());
-        }*/
-        /* totalPaths++;
-        totalPathSizes += currentPath.size();
-        
-        accessCounter.put(access.getContextIndex(), totalPaths);
-        
-        for (Integer context : accessCounter.keySet()) {
-            System.out.println(context + ": " + accessCounter.get(context));
-        }
 
-        System.out.println("average path size: " + totalPathSizes/totalPaths);
-        if (currentPath.size() > 170) {
-            String section = "section: ";
-            
-            for (int i = 150; i < 170; i++) {
-                section += currentPath.get(i).getContextIndex() + "->";
-            }
-            System.out.println(section);
-        }
-        System.out.println();
-        System.out.println("---------------");*/
-
-        // fill entity functionalities
-        if (access.getMode() != null) {
-            byte mode = accessModeStringToByte(access.getMode());
-
-            if (entityFunctionalities.containsKey(entityID)) {
+            // collect entity functionalities
+            if (entityID != -1 && entityFunctionalities.containsKey(entityID)) {
                 Pair<String, Byte> thisFunctionalityPair = null;
                 float currentAccessingEntityProb = -1;
 
@@ -626,63 +623,25 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                     }
                 }
 
-                if (thisFunctionalityPair == null || currentAccessingEntityProb == -1 || runningProbability > currentAccessingEntityProb) {
+                if (thisFunctionalityPair == null || currentAccessingEntityProb == -1 || addedPredecessorProbability > currentAccessingEntityProb) {
                     if (thisFunctionalityPair == null) {
                         thisFunctionalityPair = new Pair<>(functionalityName, mode);
                     }
     
-                    entityFunctionalities.get(entityID).put(thisFunctionalityPair, runningProbability);
+                    entityFunctionalities.get(entityID).put(thisFunctionalityPair, addedPredecessorProbability.floatValue());
                 }
 
-            } else {
+            } else if (entityID != -1) {
                 Map<Pair<String, Byte>, Float> functionalitiesPairMap = new HashMap<>();
-                functionalitiesPairMap.put(new Pair<>(functionalityName, mode), runningProbability);
+                functionalitiesPairMap.put(new Pair<>(functionalityName, mode), addedPredecessorProbability.floatValue());
 
                 entityFunctionalities.put(entityID, functionalitiesPairMap);
             }
+
+            vertexProbabilitiesMap.put(vertex, predecessors.size() > 0? addedPredecessorProbability: 1f);
+            vertexLastValidVertexesMap.put(vertex, entityID == -1? allPredecessorValidVertexes: Arrays.asList(vertex));
         }
 
-        boolean hasBeenTraversed = currentPath.contains(access);
-
-        // fill e1e2 pair count
-        for (TraceGraphNode nextNode : access.getNextAccessProbabilities().keySet()) {
-            // if the current access has been traversed, only continue to non-traversed successors
-            if (hasBeenTraversed && currentPath.contains(nextNode)) continue;
-
-            List<Access> newCurrentPath = new ArrayList<>(currentPath);
-            newCurrentPath.add(access);
-
-            Access nextAccess = (Access)nextNode;
-
-            short nextEntityID = (short)nextAccess.getEntityAccessedId();
-
-            if (access.getMode() != null && nextAccess.getMode() != null && entityID != nextEntityID) {
-                connectAccesses(e1e2PairCount, entityID, nextEntityID, runningProbability * access.getNextAccessProbabilities().get(nextNode));
-                
-            } else if (access.getMode() == null && nextAccess.getMode() != null) {
-                List<Access> invertedCurrentPath = new ArrayList<>(currentPath);
-                Collections.reverse(invertedCurrentPath);
-                Optional<Access> lastValidAccess = invertedCurrentPath.stream().filter(a -> a.getMode() != null).findFirst();
-                
-                if (lastValidAccess.isPresent()) {
-                    connectAccesses(e1e2PairCount, (short)lastValidAccess.get().getEntityAccessedId(), nextEntityID, runningProbability * access.getNextAccessProbabilities().get(nextNode));
-                }
-            }
-            fillEntityDataStructures(nextAccess, newCurrentPath, runningProbability*access.getNextAccessProbabilities().get(nextNode), e1e2PairCount, entityFunctionalities, functionalityName);
-        }
-        // System.out.println("closed node (" + access.getContextIndex() + ")" + ", parent: " + currentPath.get(currentPath.size()-1).getContextIndex());
-
-    }
-
-    private static void connectAccesses(Map<String, Float> e1e2PairCount, short entityID, short nextEntityID, float probability) {
-        String e1e2 = entityID + "->" + nextEntityID;
-        String e2e1 = nextEntityID + "->" + entityID;
-
-        float count = e1e2PairCount.getOrDefault(e1e2, 0f);
-        e1e2PairCount.put(e1e2, count + probability);
-
-        count = e1e2PairCount.getOrDefault(e2e1, 0f);
-        e1e2PairCount.put(e2e1, count + probability);
     }
 
     /* Utils */

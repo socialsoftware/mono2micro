@@ -264,7 +264,7 @@ public class FunctionalityGraphTracesIteratorTests {
 				new Object[]{"&condition", 5}, new Object[]{"&then", 6}
 			},
             new Object[][]{
-				new Object[]{"W", -4}, new Object[]{"W", -5}
+				new Object[]{"W", 14}, new Object[]{"W", 15}
 			},
             new Object[][]{
 				new Object[]{"&call", 7}
@@ -283,9 +283,9 @@ public class FunctionalityGraphTracesIteratorTests {
 
         
         Map<String, Float> e1e2PairCount = new HashMap<>();
-        Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>();
+        Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities = new HashMap<>();
 
-        FunctionalityGraphTracesIterator.fillEntityDataStructures(processedSubTrace.getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, "requestedFunctionality");
+        FunctionalityGraphTracesIterator.fillEntityDataStructures(processedSubTrace.getGraph(), e1e2PairCount, entityFunctionalities, "requestedFunctionality");
 
         assertEquals(22, e1e2PairCount.size());
         assertEquals(10, entityFunctionalities.size());        
@@ -318,9 +318,9 @@ public class FunctionalityGraphTracesIteratorTests {
 
         
         Map<String, Float> e1e2PairCount = new HashMap<>();
-        Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>();
-        
-        FunctionalityGraphTracesIterator.fillEntityDataStructures(processedSubTrace.getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, "requestedFunctionality");
+        Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities = new HashMap<>();
+
+        FunctionalityGraphTracesIterator.fillEntityDataStructures(processedSubTrace.getGraph(), e1e2PairCount, entityFunctionalities, "requestedFunctionality");
         
 
         assertEquals(8, e1e2PairCount.size());

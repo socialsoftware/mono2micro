@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraph;
@@ -24,7 +26,14 @@ public class TraceGraphCreationThread implements Callable<Pair<String, Functiona
             functionalityInfo.setLongestPath(FunctionalityGraphTracesIterator.getLongestTrace(graph.getGraph(), functionalityName));
             functionalityInfo.setMostDifferentAccessesPath(FunctionalityGraphTracesIterator.getTraceWithMoreDifferentAccesses(graph.getGraph(), functionalityName));
             functionalityInfo.setMostProbablePath(FunctionalityGraphTracesIterator.getMostProbableTrace(graph.getGraph(), functionalityName));
-            //TODO: add all (pairCount and entityFunctionalities)
+            
+            Map<String, Float> e1e2PairCount = new HashMap<>();
+            Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities = new HashMap<>();
+
+            FunctionalityGraphTracesIterator.fillEntityDataStructures(graph.getGraph(), e1e2PairCount, entityFunctionalities, functionalityName);
+
+            functionalityInfo.setE1e2PairCount(e1e2PairCount);
+            functionalityInfo.setEntityFunctionalities(entityFunctionalities);
 
         } catch (Exception e) {
             System.out.println("JSON error handling functionality graph");
