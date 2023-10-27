@@ -35,7 +35,6 @@ public class ExportUtils {
                 .getJSONObject("functionalities"), idToEntityMap);
 
         JSONObject decompositionObject = new JSONObject();
-        //decompositionObject.put("name", getSimpleDecompositionName(refactorizationObject.getString("decomposition_name")));
         decompositionObject.put("name", decomposition.getStrategy().getCodebase().getName());
         decompositionObject.put("clusters", clustersList);
         decompositionObject.put("functionalities", functionalityList);
@@ -118,9 +117,5 @@ public class ExportUtils {
         }
 
         return accessesList;
-    }
-
-    private static String getSimpleDecompositionName(String decompositionName) {
-        return decompositionName.split(" - A Strategy ")[0];
     }
 }
