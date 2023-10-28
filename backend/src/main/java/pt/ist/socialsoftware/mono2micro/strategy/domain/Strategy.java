@@ -19,11 +19,21 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepre
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.*;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.StructureRepresentation.STRUCTURE;
 
 @Document("strategy")
 public class Strategy {
+
+    // A structural based decomposition strategy is not yet implemented.
+    // Only the minimum functionality was added for two reasons:
+    // 1. Allow a user to input structural data from the structure collector
+    // 2. Allow a user to be able to export decompositions if this data is present (implicates having a strategy defined)
+
+    // Feel free to modify the STRUCTURE_STRATEGY as needed.
+
     public static final String ACCESSES_STRATEGY = "Accesses";
     public static final String REPOSITORY_STRATEGY = "Repository";
+    public static final String STRUCTURE_STRATEGY = "Structure";
     public static final String CLASS_VECTORIZATION_STRATEGY = "Class Vectorization";
     public static final String ENTITY_VECTORIZATION_STRATEGY = "Entity Vectorization";
     public static final String FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY = "Functionality Vectorization Call Graph";
@@ -32,6 +42,7 @@ public class Strategy {
     public static final Map<String, List<String>> strategiesToRepresentations = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES))),
             new AbstractMap.SimpleImmutableEntry<>(REPOSITORY_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES, AUTHOR, COMMIT))),
+            new AbstractMap.SimpleImmutableEntry<>(STRUCTURE_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES, STRUCTURE))),
             new AbstractMap.SimpleImmutableEntry<>(CLASS_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
             new AbstractMap.SimpleImmutableEntry<>(ENTITY_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
             new AbstractMap.SimpleImmutableEntry<>(FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
@@ -41,6 +52,7 @@ public class Strategy {
     public static final Map<String, List<String>> strategiesToRepresentationTypes = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(REPOSITORY_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, REPOSITORY_TYPE))),
+            new AbstractMap.SimpleImmutableEntry<>(STRUCTURE_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, STRUCTURE_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(CLASS_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(ENTITY_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
