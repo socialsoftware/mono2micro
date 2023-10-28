@@ -5,6 +5,7 @@ import AuthorRepresentation from "./files/AuthorRepresentation";
 import CommitRepresentation from "./files/CommitRepresentation";
 import EntityToIDRepresentation from "./files/EntityToIDRepresentation";
 import CodeEmbeddingsRepresentation from "./files/CodeEmbeddingsRepresentation";
+import StructureRepresentation from "./files/StructureRepresentation";
 
 export abstract class RepresentationFactory {
     static getRepresentation(representation: any) : Representation {
@@ -21,6 +22,8 @@ export abstract class RepresentationFactory {
                 return new EntityToIDRepresentation(representation);
             case RepresentationFile.CODE_EMBEDDINGS:
                 return new CodeEmbeddingsRepresentation(representation);
+            case RepresentationFile.STRUCTURE:
+                return new StructureRepresentation(representation);
             default:
                 throw new Error('Type ' + representation.type + ' unknown.');
         }

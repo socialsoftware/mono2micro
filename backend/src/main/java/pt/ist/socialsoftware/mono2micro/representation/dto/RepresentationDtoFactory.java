@@ -30,6 +30,8 @@ public class RepresentationDtoFactory {
                 return new EntityToIDRepresentationDto((EntityToIDRepresentation) representation);
             case CodeEmbeddingsRepresentation.CODE_EMBEDDINGS:
                 return new CodeEmbeddingsRepresentationDto((CodeEmbeddingsRepresentation) representation);
+            case StructureRepresentation.STRUCTURE:
+                return new StructureRepresentationDto((StructureRepresentation) representation);
             default:
                 throw new RuntimeException("The type \"" + representation.getType() + "\" is not a valid representation type.");
         }
