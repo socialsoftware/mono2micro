@@ -24,8 +24,6 @@ import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresenta
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
-import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
-import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.TracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.TracesIteratorFactory;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -37,8 +35,6 @@ import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesGraphRepresentation.ACCESSES_GRAPH;
 
 
 public class AccessesInformation extends RepresentationInformation {

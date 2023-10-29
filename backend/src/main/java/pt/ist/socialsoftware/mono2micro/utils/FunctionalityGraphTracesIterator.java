@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
@@ -424,7 +423,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     }
 
     public List<TraceDto> getAllTraces() throws JSONException {
-        return null;
+        return new ArrayList<>();
     }
 
     public List<TraceDto> getTracesByType(Constants.TraceType traceType) throws JSONException {
@@ -443,7 +442,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 traceDtos.add(this.getTraceWithMoreDifferentAccesses());
                 break;
             default:
-                traceDtos.addAll(this.getAllTraces());
+                //traceDtos.addAll(this.getAllTraces());
+                traceDtos.add(this.getLongestTrace());
         }
         if (traceDtos.size() == 0)
             throw new RuntimeException("Functionality does not contain any trace.");
@@ -645,35 +645,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     }
 
     /* Utils */
-
-    public static TraceDto pathDataAccessListToTraceDto(List<PathDataAccess> accessList) {
-        List<ReducedTraceElementDto> traceElementList = new ArrayList<>();
-
-        AccessDto accessDto;
-        Access access;
-        float carriedProbability = 1.0f; // used to carry probability from null nodes
-        for (PathDataAccess pathDataAccess : accessList) {
-            access = pathDataAccess.getAccess();
-            carriedProbability *= pathDataAccess.getProbability();
-            if (access.getMode() == null) continue; // skip the first node
-
-            accessDto = accessToAccessDto(access, carriedProbability);
-
-            traceElementList.add(accessDto);
-            carriedProbability = 1.0f; // reset on valid nodes
-        }
-
-        return new TraceDto(0, 0, traceElementList);
-    }
-
-    public static AccessDto accessToAccessDto(Access access, float probability) {
-        AccessDto accessDto = new AccessDto();
-        accessDto.setEntityID((short)access.getEntityAccessedId());
-        accessDto.setMode(accessModeStringToByte(access.getMode()));
-        accessDto.setOccurrences(1);
-        accessDto.setProbability(probability);
-        return accessDto;
-    }
 
     public static byte accessModeStringToByte(String mode) {
         return (byte) (mode.equals("R") ? 1 : 2);
