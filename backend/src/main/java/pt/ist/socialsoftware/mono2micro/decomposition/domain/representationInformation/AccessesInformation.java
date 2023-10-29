@@ -27,6 +27,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.TracesIterator;
+import pt.ist.socialsoftware.mono2micro.utils.TracesIteratorFactory;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.io.IOException;
@@ -121,21 +122,6 @@ public class AccessesInformation extends RepresentationInformation {
         getFunctionalities().put(functionality.getName().replace(".", "_"), functionality);
     }
 
-    public static TracesIterator getTraceIterator(String representationType, String representationName, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
-        switch (representationType) {
-            case ACCESSES:
-                return new FunctionalityTracesIterator(accessesFile, tracesMaxLimit);
-        
-            case ACCESSES_GRAPH:
-                return new FunctionalityGraphTracesIterator(representationName, accessesFile);
-
-            default:
-                break;
-        }
-
-        return null;
-    }
-
     public void setupFunctionalities(Decomposition decomposition) throws Exception {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         FunctionalityRepository functionalityRepository = ContextManager.get().getBean(FunctionalityRepository.class);
@@ -145,7 +131,7 @@ public class AccessesInformation extends RepresentationInformation {
         InputStream inputStream = gridFsService.getFile(accesses.getName());
         Set<String> profileFunctionalities = accesses.getProfile(similarity.getProfile());
 
-        TracesIterator iter = getTraceIterator(Utils.getCodebaseAccessRepresentation(decomposition.getStrategy().getCodebase()).getType(), accesses.getName(), inputStream, similarity.getTracesMaxLimit());
+        TracesIterator iter = TracesIteratorFactory.getIterator(Utils.getCodebaseAccessRepresentation(decomposition.getStrategy().getCodebase()).getType(), accesses.getName(), inputStream, similarity.getTracesMaxLimit());
         Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
         List<Functionality> newFunctionalities = new ArrayList<>();
 
