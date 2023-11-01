@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,8 +14,6 @@ import java.util.stream.Collectors;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.Multigraph;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 

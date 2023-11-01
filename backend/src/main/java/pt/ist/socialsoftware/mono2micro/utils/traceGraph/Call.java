@@ -2,10 +2,6 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import java.util.List;
 
-import org.jgrapht.GraphTests;
-import org.jgrapht.Graphs;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.Multigraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
