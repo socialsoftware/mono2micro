@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
 @Service
@@ -81,7 +82,8 @@ public class AccessesDecompositionService {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         AccessesInformation accessesInformation = (AccessesInformation) decomposition.getRepresentationInformationByType(ACCESSES_TYPE);
         SimilarityScipy similarity = (SimilarityScipy) decomposition.getSimilarity();
-        AccessesRepresentation representation = Utils.getCodebaseAccessRepresentation(similarity.getStrategy().getCodebase());
+        // Access representation file will be used to calculate metrics, even when using Access Graph
+        AccessesRepresentation representation = (AccessesRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
 
         DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = accessesInformation.getFunctionality(functionalityName)
                 .createLocalTransactionGraphFromScratch(

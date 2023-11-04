@@ -33,7 +33,7 @@ public class Strategy {
 
     public static final Map<String, List<String>> strategiesToRepresentations = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES))),
-            new AbstractMap.SimpleImmutableEntry<>(ACCESSES_GRAPH_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES_GRAPH))),
+            new AbstractMap.SimpleImmutableEntry<>(ACCESSES_GRAPH_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES_GRAPH, ACCESSES))),
             new AbstractMap.SimpleImmutableEntry<>(REPOSITORY_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES, AUTHOR, COMMIT))),
             new AbstractMap.SimpleImmutableEntry<>(CLASS_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
             new AbstractMap.SimpleImmutableEntry<>(ENTITY_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),

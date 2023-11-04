@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationSequenceOfAccessesWeights.FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS;
@@ -95,7 +96,7 @@ public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses exten
         this.computeSequenceOfAccessesFunctionalityVectors(matrix, functionalityTraces, entitiesVectors);
 
         IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
-        AccessesRepresentation accessesInfo = Utils.getCodebaseAccessRepresentation(similarity.getStrategy().getCodebase());
+        AccessesRepresentation accessesInfo = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
         matrix.put("translationFileName", idToEntity.getName());
         matrix.put("accessesFileName", accessesInfo.getName());
 
@@ -296,7 +297,7 @@ public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses exten
     private JSONObject getFunctionalityTraces(Strategy strategy) throws IOException, JSONException {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
 
-        AccessesRepresentation accessesRepresentation = Utils.getCodebaseAccessRepresentation(strategy.getCodebase());
+        AccessesRepresentation accessesRepresentation = (AccessesRepresentation) strategy.getCodebase().getRepresentationByFileType(ACCESSES);
         return new JSONObject(
                 gridFsService.getFileAsString(accessesRepresentation.getName())
         );
@@ -313,7 +314,7 @@ public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses exten
         JSONObject functionalityTraces = getFunctionalityTraces(recommendation.getStrategy());
         Map<String, Short> entityToId = getEntitiesNamesToIds(recommendation.getStrategy());
         IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
-        AccessesRepresentation accessesInfo = Utils.getCodebaseAccessRepresentation(recommendation.getStrategy().getCodebase());
+        AccessesRepresentation accessesInfo = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
 
         int[] weights = new int[totalNumberOfWeights];
         weights[0] = INTERVAL;

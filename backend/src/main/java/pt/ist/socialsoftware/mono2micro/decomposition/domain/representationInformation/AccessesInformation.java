@@ -24,9 +24,8 @@ import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresenta
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.TracesIterator;
-import pt.ist.socialsoftware.mono2micro.utils.TracesIteratorFactory;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
 
@@ -123,11 +123,12 @@ public class AccessesInformation extends RepresentationInformation {
         FunctionalityRepository functionalityRepository = ContextManager.get().getBean(FunctionalityRepository.class);
 
         SimilarityScipy similarity = (SimilarityScipy) decomposition.getSimilarity();
-        AccessesRepresentation accesses = Utils.getCodebaseAccessRepresentation(decomposition.getStrategy().getCodebase());
+        // Access representation file will be used to calculate metrics, even when using Access Graph
+        AccessesRepresentation accesses = (AccessesRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
         InputStream inputStream = gridFsService.getFile(accesses.getName());
         Set<String> profileFunctionalities = accesses.getProfile(similarity.getProfile());
 
-        TracesIterator iter = TracesIteratorFactory.getIterator(Utils.getCodebaseAccessRepresentation(decomposition.getStrategy().getCodebase()).getType(), accesses.getName(), inputStream, similarity.getTracesMaxLimit());
+        TracesIterator iter = new FunctionalityTracesIterator(inputStream, similarity.getTracesMaxLimit());
         Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
         List<Functionality> newFunctionalities = new ArrayList<>();
 

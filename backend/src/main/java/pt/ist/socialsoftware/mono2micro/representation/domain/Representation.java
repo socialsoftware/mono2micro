@@ -29,7 +29,7 @@ public abstract class Representation {
 
     public static final Map<String, List<String>> representationGroupToRepresentations = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES))),
-            new AbstractMap.SimpleImmutableEntry<>(ACCESSES_GRAPH_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES_GRAPH))),
+            new AbstractMap.SimpleImmutableEntry<>(ACCESSES_GRAPH_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES_GRAPH, ACCESSES))),
             new AbstractMap.SimpleImmutableEntry<>(REPOSITORY_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES, AUTHOR, COMMIT))),
             new AbstractMap.SimpleImmutableEntry<>(CODE_EMBEDDINGS_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS)))
     ).collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue));
