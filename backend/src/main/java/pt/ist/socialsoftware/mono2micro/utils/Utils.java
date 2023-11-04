@@ -304,10 +304,10 @@ public class Utils {
     }
 
     public static AccessesRepresentation getCodebaseAccessRepresentation(Codebase codebase) {
-        Representation representation = codebase.getRepresentationByFileType(ACCESSES);
+        Representation representation = codebase.getRepresentationByFileType(ACCESSES_GRAPH);
 
         if (representation == null) {
-            return (AccessesRepresentation) codebase.getRepresentationByFileType(ACCESSES_GRAPH);
+            return (AccessesRepresentation) codebase.getRepresentationByFileType(ACCESSES);
         }
 
         return (AccessesRepresentation) representation;
