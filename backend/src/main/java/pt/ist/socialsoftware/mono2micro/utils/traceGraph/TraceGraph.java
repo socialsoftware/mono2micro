@@ -1,7 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,7 +29,7 @@ public class TraceGraph {
 
     public TraceGraph() {
         //graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        graph = GraphTypeBuilder.<AccessDto, DefaultWeightedEdge> directed().allowingMultipleEdges(true).weighted(true).edgeClass(DefaultWeightedEdge.class).buildGraph();
+        graph = GraphTypeBuilder.<AccessDto, DefaultWeightedEdge> directed().weighted(true).edgeClass(DefaultWeightedEdge.class).buildGraph();
         vertexesLockedToNewConnections = new HashSet<>();
 
         list = new ArrayList<>();
@@ -67,11 +65,9 @@ public class TraceGraph {
     }
 
     public void addEdge(AccessDto from, AccessDto to, float probability) {
+        if (isVertexLockedToNewConnections(from)) return;
         this.addVertex(from);
         this.addVertex(to);
-        if (from.equals(to)) {
-            System.out.println("repeated edge (invalid): " + from + " - " + to);
-        }
 
         DefaultWeightedEdge edge = this.graph.addEdge(from, to);
         this.graph.setEdgeWeight(edge, probability);
@@ -80,10 +76,6 @@ public class TraceGraph {
     public void addVertex(AccessDto vertex) {
         if (!this.graph.containsVertex(vertex)) {
             this.graph.addVertex(vertex);
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-
-            System.out.println(dtf.format(now) + " -> " + vertex.getEntityID());
         }
 
         if (this.firstAccess == null) {
@@ -115,6 +107,10 @@ public class TraceGraph {
             if (!this.list.contains(accessDto)) {
                 this.list.add(accessDto);
             }
+        }
+
+        for (AccessDto accessDto : other.vertexesLockedToNewConnections) {
+            this.lockVertexToNewConnections(accessDto);
         }
     }
 
@@ -175,6 +171,10 @@ public class TraceGraph {
 
                 duplicate.addEdge(vertexCopy, successorCopy, (float)this.graph.getEdgeWeight(this.graph.getEdge(vertex, successor)));
                 
+            }
+
+            for (AccessDto accessDto : this.vertexesLockedToNewConnections) {
+                duplicate.lockVertexToNewConnections(accessDto);
             }
 
             

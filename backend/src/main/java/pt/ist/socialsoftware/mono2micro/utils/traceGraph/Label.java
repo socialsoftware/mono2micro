@@ -30,7 +30,7 @@ public class Label extends TraceGraphNode {
 
         switch (this.getContent()) {
             case HeuristicLabelType.CONTINUE:
-                    if (lastAccess != null && lastLoopStart != null && !traceGraph.isVertexLockedToNewConnections(lastAccess)) {
+                    if (lastAccess != null && lastLoopStart != null) {
                         traceGraph.addEdge(lastAccess, lastLoopStart, 1f);
                         traceGraph.lockVertexToNewConnections(lastAccess);
                     }
@@ -38,7 +38,7 @@ public class Label extends TraceGraphNode {
                 break;
         
             case HeuristicLabelType.BREAK:
-                    if (lastAccess != null && lastLoopEnd != null && !traceGraph.isVertexLockedToNewConnections(lastAccess)){
+                    if (lastAccess != null && lastLoopEnd != null){
                         traceGraph.addEdge(lastAccess, lastLoopEnd, 1f);
                         traceGraph.lockVertexToNewConnections(lastAccess);
                     }
@@ -46,15 +46,15 @@ public class Label extends TraceGraphNode {
                 break;
 
             case HeuristicLabelType.RETURN:
-                    if (lastAccess != null && lastCallEnd != null && !traceGraph.isVertexLockedToNewConnections(lastAccess)) {
-                        traceGraph.addEdge(lastAccess, lastCallEnd, 1f); //FIXME: lastCallEnd may not be in the graph
+                    if (lastAccess != null && lastCallEnd != null) {
+                        traceGraph.addEdge(lastAccess, lastCallEnd, 1f);
                         traceGraph.lockVertexToNewConnections(lastAccess);
                     }
                     heuristicFlags.hasReturn = true;
                 break;
 
             case HeuristicLabelType.ZERO_COMPARISON:
-                    heuristicFlags.zeroComparison = true;
+                heuristicFlags.zeroComparison = true;
                 break;
 
             case HeuristicLabelType.OBJECT_COMPARISON:

@@ -93,28 +93,32 @@ public class If extends TraceGraphNode {
             baseNode = startingNode;
         }
 
-        if (thenGraph != null && !thenGraph.isEmpty()) {
-            processedSubTrace.addGraph(thenGraph);
-            
-            processedSubTrace.addEdge(baseNode, thenGraph.getFirstAccess(), thenProbability);
-
-            processedSubTrace.addEdge(thenGraph.getLastAccess(), endingNode, 1f);
+        if (!(thenGraph == null || thenGraph.isEmpty()) || !(elseGraph == null || elseGraph.isEmpty())) {
+            if (thenGraph != null && !thenGraph.isEmpty()) {
+                processedSubTrace.addGraph(thenGraph);
+                
+                processedSubTrace.addEdge(baseNode, thenGraph.getFirstAccess(), thenProbability);
+    
+                processedSubTrace.addEdge(thenGraph.getLastAccess(), endingNode, 1f);
+    
+            } else {
+                processedSubTrace.addEdge(baseNode, endingNode, thenProbability);
+            }
+    
+            if (elseGraph != null && !elseGraph.isEmpty()) {
+                processedSubTrace.addGraph(elseGraph);
+                
+                processedSubTrace.addEdge(baseNode, elseGraph.getFirstAccess(), 1-thenProbability);
+    
+                processedSubTrace.addEdge(elseGraph.getLastAccess(), endingNode, 1f);
+    
+            } else {
+                processedSubTrace.addEdge(baseNode, endingNode, 1-thenProbability);
+            }
 
         } else {
-            processedSubTrace.addEdge(baseNode, endingNode, thenProbability);
+            processedSubTrace.addEdge(baseNode, endingNode, 1);
         }
-
-        if (elseGraph != null && !elseGraph.isEmpty()) {
-            processedSubTrace.addGraph(elseGraph);
-            
-            processedSubTrace.addEdge(baseNode, elseGraph.getFirstAccess(), 1-thenProbability);
-
-            processedSubTrace.addEdge(elseGraph.getLastAccess(), endingNode, 1f);
-
-        } else {
-            processedSubTrace.addEdge(baseNode, endingNode, 1-thenProbability);
-        }
-
 
 
         if (!processedSubTrace.isEmpty()) {

@@ -36,12 +36,15 @@ public class Call extends TraceGraphNode {
         
         TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
 
+        if (bodyGraph == null || bodyGraph.isEmpty()) return;
+
         if (bodyGraph != null && !bodyGraph.isEmpty()) {
             processedSubTrace.addGraph(bodyGraph);
 
             processedSubTrace.addEdge(startingNode, bodyGraph.getFirstAccess(), 1f);
 
-            processedSubTrace.addEdge(bodyGraph.getLastAccess(), endingNode, 1f);
+            if (bodyGraph.getLastAccess() != endingNode && !bodyGraph.getGraph().containsEdge(bodyGraph.getLastAccess(), endingNode))
+                processedSubTrace.addEdge(bodyGraph.getLastAccess(), endingNode, 1f);
 
         } else {
             processedSubTrace.addEdge(startingNode, endingNode, 1f);
