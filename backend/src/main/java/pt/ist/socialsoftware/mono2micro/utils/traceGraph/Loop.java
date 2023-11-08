@@ -85,40 +85,30 @@ public class Loop extends TraceGraphNode {
             processedSubTrace.addGraph(expressionGraphCopy);
 
 
-        if (expressionGraph != null && !expressionGraph.isEmpty()) {
-            // enter condition
+        if ((expressionGraph != null && !expressionGraph.isEmpty()) && (bodyGraph != null && !bodyGraph.isEmpty())) {
             processedSubTrace.addEdge(startingNode, expressionGraph.getFirstAccess(), 1f);
 
-            // return to head (if no body)
-            // will go to a copy to avoid creating a loop in the graph,
-            // which works because we only want to consider the code loop
-            // running once (1 expression + 1 body + 1 expression + exit)
-            if(bodyGraph == null || bodyGraph.isEmpty()) {
-                processedSubTrace.addEdge(expressionGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), enterLoopProbability);
-            }
-            
-            // exit body
+            processedSubTrace.addEdge(expressionGraph.getLastAccess(), bodyGraph.getFirstAccess(), enterLoopProbability);
+            processedSubTrace.addEdge(bodyGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), 1f);
             processedSubTrace.addEdge(expressionGraphCopy.getLastAccess(), endingNode, exitLoopProbability);
-        }
 
-        if (bodyGraph != null && !bodyGraph.isEmpty()) {
-            // enter body
-            if (expressionGraph != null && !expressionGraph.isEmpty()) {
-                processedSubTrace.addEdge(expressionGraph.getLastAccess(), bodyGraph.getFirstAccess(), enterLoopProbability);
-            } else {
-                processedSubTrace.addEdge(startingNode, bodyGraph.getFirstAccess(), enterLoopProbability);
+            processedSubTrace.addEdge(expressionGraph.getLastAccess(), endingNode, exitLoopProbability);
 
-                // not enter body (since expression is "empty")
-                processedSubTrace.addEdge(startingNode, endingNode, exitLoopProbability);
-            }
+        } else if ((expressionGraph == null || expressionGraph.isEmpty()) && (bodyGraph != null && !bodyGraph.isEmpty())) {
+            processedSubTrace.addEdge(startingNode, bodyGraph.getFirstAccess(), enterLoopProbability);
 
-            // return to head
-            if (expressionGraph != null && !expressionGraph.isEmpty()) {
-                processedSubTrace.addEdge(bodyGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), 1f);
-            } else {               
-                // exit body (since expression is "empty")
-                processedSubTrace.addEdge(bodyGraph.getLastAccess(), endingNode, exitLoopProbability);
-            }
+            processedSubTrace.addEdge(bodyGraph.getLastAccess(), endingNode, exitLoopProbability);
+
+            processedSubTrace.addEdge(startingNode, endingNode, exitLoopProbability);
+
+        } else if ((expressionGraph != null && !expressionGraph.isEmpty()) && (bodyGraph == null || bodyGraph.isEmpty())) {
+            processedSubTrace.addEdge(startingNode, expressionGraph.getFirstAccess(), 1f);
+
+            processedSubTrace.addEdge(expressionGraph.getLastAccess(), expressionGraphCopy.getLastAccess(), enterLoopProbability);
+            processedSubTrace.addEdge(expressionGraphCopy.getLastAccess(), endingNode, exitLoopProbability);
+
+            processedSubTrace.addEdge(expressionGraph.getLastAccess(), endingNode, exitLoopProbability);
+
         }
 
         if (!processedSubTrace.isEmpty()) {
