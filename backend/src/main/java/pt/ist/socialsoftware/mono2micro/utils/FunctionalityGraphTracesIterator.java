@@ -562,7 +562,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 addedPredecessorProbability += predecessorPreviousProbability * edgeWeight;
 
                 if (addedPredecessorProbability-1 >= 0.1) {
-                    System.out.println("Invalid probability: " + addedPredecessorProbability);
+                    throw new RuntimeException("Invalid vertex probability (" + addedPredecessorProbability + ").");
                 }
 
                 addedPredecessorProbability = Math.min(addedPredecessorProbability, 1);
