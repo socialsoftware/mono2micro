@@ -62,10 +62,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             String functionality = it.next();
 
             if (!_graphInfo.containsKey(innerFunctionalityName(functionality))) {
-                System.out.println("Launching creation thread: " + innerFunctionalityName(functionality));
                 tasks.add(new TraceGraphCreationThread(this, functionality));
             } else {
-                System.out.println("Loading from cache: " + innerFunctionalityName(functionality));
             }
         }
 
@@ -74,7 +72,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             List<Future<Pair<String, FunctionalityInfo>>> futures = executor.invokeAll(tasks);
             for (Future<Pair<String, FunctionalityInfo>> future : futures) {
                 addFunctionalityInfo(future.get().getFirst(), future.get().getSecond());
-                System.out.println("Thread finished " + future.get().getSecond());
             }
             
         } catch (Exception e) {
@@ -120,8 +117,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
             vertexToDepthMap.put(vertex, predecessors.size() > 0? maxPredecessorDepth + 1: maxPredecessorDepth);
         }
-
-        System.out.println("ran all nodes");
         
         // get ending of longest path
         AccessDto maxPathEnd = null;
@@ -142,7 +137,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
         List<AccessDto> predecessors = Graphs.predecessorListOf(graph, maxPathEnd);
         
-        System.out.println("getting longest path");
         while (!predecessors.isEmpty()) {
             AccessDto maxPredecessor = null;
             for (AccessDto predecessor : predecessors) {
@@ -155,11 +149,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             predecessors = Graphs.predecessorListOf(graph, maxPredecessor);
         }
 
-        System.out.println("finished max path, inverting");
-
         Collections.reverse(path);
-
-        System.out.println("applying probability");
 
         // register probability of each node
         float carriedProbability = 1.0f; // used to carry probability from null nodes
@@ -183,8 +173,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         }
 
         path.removeAll(emptyNodes);
-
-        System.out.println("returning");
 
         return new TraceDto(0, 0, path);
     }
@@ -231,8 +219,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             vertexToDiffAccessesMap.put(vertex, vertexDiffAccesses);
             vertexToDepthMap.put(vertex, predecessors.size() > 0? maxPredecessorDepth + 1: maxPredecessorDepth);
         }
-
-        System.out.println("ran all nodes");
         
         // get ending of path
         AccessDto pathEnd = null;
@@ -260,8 +246,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         List<Short> pathEntities = new ArrayList<>();
 
         List<AccessDto> predecessors = Graphs.predecessorListOf(graph, pathEnd);
-        
-        System.out.println("getting most diff accesses path");
+
         while (!predecessors.isEmpty()) {
             AccessDto maxPredecessor = null;
             for (AccessDto predecessor : predecessors) {
@@ -282,11 +267,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             pathEntities.add(maxPredecessor.getEntityID());
         }
 
-        System.out.println("finished max path, inverting");
-
         Collections.reverse(path);
-
-        System.out.println("applying probability");
 
         // register probability of each node
         float carriedProbability = 1.0f; // used to carry probability from null nodes
@@ -310,8 +291,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         }
 
         path.removeAll(emptyNodes);
-
-        System.out.println("returning");
 
         return new TraceDto(0, 0, path);
     }
@@ -347,8 +326,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             vertexToProbMap.put(vertex, predecessors.size() > 0? maxPredecessorProb * graph.getEdgeWeight(graph.getEdge(maxPredecessor, vertex)): 1f);
             vertexToDepthMap.put(vertex, predecessors.size() > 0? maxPredecessorDepth + 1: maxPredecessorDepth);
         }
-
-        System.out.println("ran all nodes");
         
         // get ending of path
         AccessDto pathEnd = null;
@@ -374,8 +351,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         path.add(pathEnd);
 
         List<AccessDto> predecessors = Graphs.predecessorListOf(graph, pathEnd);
-        
-        System.out.println("getting most probable path");
+
         while (!predecessors.isEmpty()) {
             AccessDto maxPredecessor = null;
             for (AccessDto predecessor : predecessors) {
@@ -388,11 +364,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             predecessors = Graphs.predecessorListOf(graph, maxPredecessor);
         }
 
-        System.out.println("finished max path, inverting");
-
         Collections.reverse(path);
-
-        System.out.println("applying probability");
 
         // register probability of each node
         float carriedProbability = 1.0f; // used to carry probability from null nodes
@@ -416,8 +388,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         }
 
         path.removeAll(emptyNodes);
-
-        System.out.println("returning");
 
         return new TraceDto(0, 0, path);
     }
