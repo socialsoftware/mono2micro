@@ -122,13 +122,27 @@ public class If extends TraceGraphNode {
 
 
         if (!processedSubTrace.isEmpty()) {
+            boolean thenIsLocked = false;
+            boolean elseIsLocked = false;
+            
             try {
-                processedSubTrace.setLastAccess(endingNode);
+                if (thenGraph != null && thenGraph.getLastAccess() != null) {
+                    thenIsLocked = processedSubTrace.isVertexLockedToNewConnections(thenGraph.getLastAccess());
+                }
+
+                if (elseGraph != null && elseGraph.getLastAccess() != null) {
+                    elseIsLocked = processedSubTrace.isVertexLockedToNewConnections(elseGraph.getLastAccess());
+                }
+
+
+                if (!(thenIsLocked && elseIsLocked)) processedSubTrace.setLastAccess(endingNode);
+
                 boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
                 traceGraph.addGraph(processedSubTrace);
                 if (traceGraphHadLast)
                     traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
-                traceGraph.setLastAccess(endingNode);
+
+                if (!(thenIsLocked && elseIsLocked)) traceGraph.setLastAccess(endingNode);
             } catch (Exception e) {
                 e.printStackTrace();
             }
