@@ -520,8 +520,16 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         System.out.println("\n\ngraph fill data structures");
         System.out.println(requestedFunctionality);
 
-        e1e2PairCount = _graphInfo.get(innerFunctionalityName(requestedFunctionality)).getE1e2PairCount();
-        entityFunctionalities = _graphInfo.get(innerFunctionalityName(requestedFunctionality)).getEntityFunctionalities();
+        Map<String, Float> cachedE1e2PairCount = _graphInfo.get(innerFunctionalityName(requestedFunctionality)).getE1e2PairCount();
+        for (String pairDesc : cachedE1e2PairCount.keySet()) {
+            Float value = cachedE1e2PairCount.get(pairDesc);
+            if (e1e2PairCount.containsKey(pairDesc)) {
+                value += e1e2PairCount.get(pairDesc);
+            }
+            e1e2PairCount.put(pairDesc, value);
+        }
+        
+        entityFunctionalities.putAll(_graphInfo.get(innerFunctionalityName(requestedFunctionality)).getEntityFunctionalities());
         
     }
 
@@ -552,6 +560,12 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 Double predecessorPreviousProbability = vertexProbabilitiesMap.get(predecessor);
 
                 addedPredecessorProbability += predecessorPreviousProbability * edgeWeight;
+
+                if (addedPredecessorProbability-1 >= 0.1) {
+                    System.out.println("Invalid probability: " + addedPredecessorProbability);
+                }
+
+                addedPredecessorProbability = Math.min(addedPredecessorProbability, 1);
 
                 List<AccessDto> predecessorValidVertexes = vertexLastValidVertexesMap.get(predecessor);
                 if (entityID != -1) {
