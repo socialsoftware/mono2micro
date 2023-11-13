@@ -413,7 +413,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 break;
             default:
                 //traceDtos.addAll(this.getAllTraces());
-                traceDtos.add(this.getLongestTrace());
+                //traceDtos.add(this.getLongestTrace());
+                traceDtos.add(new TraceDto());
         }
         if (traceDtos.size() == 0)
             throw new RuntimeException("Functionality does not contain any trace.");
