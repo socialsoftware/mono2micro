@@ -576,11 +576,11 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                         map.put("label", DefaultAttribute.createAttribute(v.toString()));
                         return map;
                     });
-                    Writer writer = new StringWriter();
-                    exporter.exportGraph(graph, writer);
+                    //Writer writer = new StringWriter();
+                    //exporter.exportGraph(graph, writer);
                     exporter.exportGraph(graph, new File("/" + functionalityName + ".dot"));
-                    System.out.println("Print Graph");
-                    System.out.println(writer.toString());
+                    //System.out.println("Print Graph");
+                    //System.out.println(writer.toString());
 
                     throw new RuntimeException("Invalid vertex probability (" + functionalityName + ", id=" + vertex.getId() + ", prob=" + addedPredecessorProbability + ").");
                 }
