@@ -1,12 +1,16 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +25,9 @@ import org.apache.commons.io.IOUtils;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.DefaultAttribute;
+import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -563,7 +570,19 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 addedPredecessorProbability += predecessorPreviousProbability * edgeWeight;
 
                 if (addedPredecessorProbability-1 >= 0.1) {
-                    throw new RuntimeException("Invalid vertex probability (" + addedPredecessorProbability + ").");
+                    DOTExporter<AccessDto, DefaultWeightedEdge> exporter = new DOTExporter<>();
+                    exporter.setVertexAttributeProvider((v) -> {
+                        Map<String, Attribute> map = new LinkedHashMap<>();
+                        map.put("label", DefaultAttribute.createAttribute(v.toString()));
+                        return map;
+                    });
+                    Writer writer = new StringWriter();
+                    exporter.exportGraph(graph, writer);
+                    exporter.exportGraph(graph, new File("/" + functionalityName + ".dot"));
+                    System.out.println("Print Graph");
+                    System.out.println(writer.toString());
+
+                    throw new RuntimeException("Invalid vertex probability (" + functionalityName + ", id=" + vertex.getId() + ", prob=" + addedPredecessorProbability + ").");
                 }
 
                 addedPredecessorProbability = Math.min(addedPredecessorProbability, 1);

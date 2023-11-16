@@ -32,6 +32,10 @@ public class AccessDto extends ReducedTraceElementDto {
     public float getProbability() { return probability; }
     public void setProbability(float probability) { this.probability = probability; }
 
+    public long getId() {
+        return id;
+    }
+
     @Override
 	public boolean equals(final Object other) {
         if (other instanceof AccessDto) {
