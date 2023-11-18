@@ -323,7 +323,9 @@ public class SpringDataJPACollector extends SpoonCollector {
                                             if (!methodStack.contains(ctMethod.getPosition())) {
                                                 CtInvocation calleeLocationClone = ((CtInvocation) calleeLocation).clone();
                                                 updateCalleeLocationWithExplicitImplementation(calleeLocationClone, ctMethod);
+                                                openNewContext("call");
                                                 methodCallDFS(ctMethod, calleeLocationClone, methodStack);
+                                                closeCurrentContext();
                                             }
                                         }
                                         return;

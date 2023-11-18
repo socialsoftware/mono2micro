@@ -159,7 +159,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
                                 List<CtMethod> explicitImplementationsOfAbstractMethod = getExplicitImplementationsOfAbstractMethod(eDM);
                                 for (CtMethod ctMethod : explicitImplementationsOfAbstractMethod) {
                                     if (!methodStack.contains(ctMethod.getPosition())) {
+                                        openNewContext("call");
                                         methodCallDFS(ctMethod, calleeLocation, methodStack);
+                                        closeCurrentContext();
                                     }
                                 }
                                 return;
