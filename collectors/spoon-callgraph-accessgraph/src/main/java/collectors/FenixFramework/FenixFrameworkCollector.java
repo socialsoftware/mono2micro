@@ -9,6 +9,7 @@ import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtReturnImpl;
+import spoon.support.reflect.code.CtCatchImpl;
 import spoon.support.reflect.code.CtConstructorCallImpl;
 import spoon.support.reflect.code.CtDoImpl;
 import spoon.support.reflect.code.CtForEachImpl;
@@ -277,6 +278,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     super.scan(element);
                     closeCurrentContext();
 
+                } else if(element instanceof CtCatchImpl) {
+                    // Skip - there is no current heuristic for exceptions, so we need to skip the content of the catch conditional blocks
+                    
                 } else {
                     super.scan(element);
                 }
