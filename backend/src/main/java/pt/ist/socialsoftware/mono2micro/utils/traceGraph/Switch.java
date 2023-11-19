@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jgrapht.Graphs;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,7 +98,12 @@ public class Switch extends TraceGraphNode {
                 processedSubTrace.addEdge(baseNode, caseGraph.getFirstAccess(), optionProbability);
                 processedSubTrace.addEdge(caseGraph.getLastAccess(), endingNode, 1f);
             } else {
-                processedSubTrace.addEdge(baseNode, endingNode, optionProbability);
+                if (processedSubTrace.getGraph().containsEdge(startingNode, endingNode)) {
+                    DefaultWeightedEdge edge = processedSubTrace.getGraph().getEdge(startingNode, endingNode);
+                    processedSubTrace.getGraph().setEdgeWeight(edge, processedSubTrace.getGraph().getEdgeWeight(edge) + optionProbability);
+                } else {
+                    processedSubTrace.addEdge(startingNode, endingNode, optionProbability);
+                }
             }
             
         }
