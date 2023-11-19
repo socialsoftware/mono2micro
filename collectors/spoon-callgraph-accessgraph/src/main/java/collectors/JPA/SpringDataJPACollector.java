@@ -23,6 +23,7 @@ import spoon.support.reflect.code.CtForImpl;
 import spoon.support.reflect.code.CtIfImpl;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtLoopImpl;
+import spoon.support.reflect.code.CtSwitchImpl;
 import spoon.support.reflect.code.CtWhileImpl;
 import util.property_scanner.PropertyScanner;
 import util.*;
@@ -473,22 +474,28 @@ public class SpringDataJPACollector extends SpoonCollector {
                     }
                 }
 
+                List<CtRole> ifRoles = Arrays.asList(
+                        CtRole.CONDITION,
+                        CtRole.THEN,
+                        CtRole.ELSE
+                    );
                 List<CtRole> loopRoles = Arrays.asList(
                         CtRole.EXPRESSION,
                         CtRole.BODY,
                         CtRole.FOR_INIT,
                         CtRole.FOR_UPDATE
                     );
-                List<CtRole> ifRoles = Arrays.asList(
-                        CtRole.CONDITION,
-                        CtRole.THEN,
-                        CtRole.ELSE
+                List<CtRole> switchRoles = Arrays.asList(
+                        CtRole.EXPRESSION,
+                        CtRole.CASE
                     );
 
                 boolean roleOpened = false;
                 if( (elParent instanceof CtIfImpl && ifRoles.contains(role)) ||
-                    (elParent instanceof CtLoopImpl && loopRoles.contains(role))
+                    (elParent instanceof CtLoopImpl && loopRoles.contains(role)) ||
+                    (elParent instanceof CtSwitchImpl && switchRoles.contains(role))
                     ) {
+                        
                     openNewContext(role.toString());
                     roleOpened = true;
 
@@ -522,7 +529,12 @@ public class SpringDataJPACollector extends SpoonCollector {
 
                 } else if(element instanceof CtCatchImpl) {
                     // Skip - there is no current heuristic for exceptions, so we need to skip the content of the catch conditional blocks
-
+                    
+                } else if(element instanceof CtSwitchImpl) {
+                    openNewContext("sw"); // switch
+                    super.scan(element);
+                    closeCurrentContext();
+                 
                 } else {
                     super.scan(element);
                 }

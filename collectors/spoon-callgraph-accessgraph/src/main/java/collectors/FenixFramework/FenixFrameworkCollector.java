@@ -9,6 +9,7 @@ import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtReturnImpl;
+import spoon.support.reflect.code.CtSwitchImpl;
 import spoon.support.reflect.code.CtCatchImpl;
 import spoon.support.reflect.code.CtConstructorCallImpl;
 import spoon.support.reflect.code.CtDoImpl;
@@ -235,22 +236,28 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     }
                 }
 
+                List<CtRole> ifRoles = Arrays.asList(
+                        CtRole.CONDITION,
+                        CtRole.THEN,
+                        CtRole.ELSE
+                    );
                 List<CtRole> loopRoles = Arrays.asList(
                         CtRole.EXPRESSION,
                         CtRole.BODY,
                         CtRole.FOR_INIT,
                         CtRole.FOR_UPDATE
                     );
-                List<CtRole> ifRoles = Arrays.asList(
-                        CtRole.CONDITION,
-                        CtRole.THEN,
-                        CtRole.ELSE
+                List<CtRole> switchRoles = Arrays.asList(
+                        CtRole.EXPRESSION,
+                        CtRole.CASE
                     );
 
                 boolean roleOpened = false;
                 if( (elParent instanceof CtIfImpl && ifRoles.contains(role)) ||
-                    (elParent instanceof CtLoopImpl && loopRoles.contains(role))
+                    (elParent instanceof CtLoopImpl && loopRoles.contains(role)) ||
+                    (elParent instanceof CtSwitchImpl && switchRoles.contains(role))
                     ) {
+
                     openNewContext(role.toString());
                     roleOpened = true;
 
@@ -284,6 +291,11 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
                 } else if(element instanceof CtCatchImpl) {
                     // Skip - there is no current heuristic for exceptions, so we need to skip the content of the catch conditional blocks
+                    
+                } else if(element instanceof CtSwitchImpl) {
+                    openNewContext("sw"); // switch
+                    super.scan(element);
+                    closeCurrentContext();
                     
                 } else {
                     super.scan(element);
