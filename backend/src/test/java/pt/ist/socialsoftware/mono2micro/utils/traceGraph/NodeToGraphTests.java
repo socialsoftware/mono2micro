@@ -12,6 +12,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,13 @@ public class NodeToGraphTests {
         traceGraph = new TraceGraph();
 		processedSubTrace = traceGraph.getGraph();
     }
+
+	@After
+	public void after(){
+		// ensure that there is always only the root node without a predecessor
+		assertEquals(1, processedSubTrace.vertexSet().stream().filter(v -> Graphs.predecessorListOf(processedSubTrace, v).size() == 0).toList().size());
+		
+	}
 
 	// Access
 
