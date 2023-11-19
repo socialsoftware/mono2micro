@@ -88,25 +88,20 @@ public class Switch extends TraceGraphNode {
             baseNode = startingNode;
         }
 
-        boolean emptyCases = true;
-
         for (List<TraceGraphNode> caseTrace : this.getCases()) {
             TraceGraph caseGraph = FunctionalityGraphTracesIterator.processSubTrace(caseTrace, endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
 
             if (!caseGraph.isEmpty()) {
-                emptyCases = false;
                 processedSubTrace.addGraph(caseGraph);
     
                 processedSubTrace.addEdge(baseNode, caseGraph.getFirstAccess(), optionProbability);
                 processedSubTrace.addEdge(caseGraph.getLastAccess(), endingNode, 1f);
+            } else {
+                processedSubTrace.addEdge(baseNode, endingNode, optionProbability);
             }
             
         }
-
-        if (emptyCases) {
-            processedSubTrace.addEdge(baseNode, endingNode, 1f);
-        }
-
+        
         
         if (!processedSubTrace.isEmpty()) {
             try {
