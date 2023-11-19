@@ -319,15 +319,17 @@ public class SpringDataJPACollector extends SpoonCollector {
                                         // The getExplicitImplementationsOfAbstractMethodJPA will check and register calls
                                         // to other abstract methods within repository classes
                                         List<CtMethod> explicitImplementationsOfAbstractMethod = getExplicitImplementationsOfAbstractMethodJPA(eDM);
+                                        openNewContext("ac"); // abstract call
                                         for (CtMethod ctMethod : explicitImplementationsOfAbstractMethod) {
                                             if (!methodStack.contains(ctMethod.getPosition())) {
                                                 CtInvocation calleeLocationClone = ((CtInvocation) calleeLocation).clone();
                                                 updateCalleeLocationWithExplicitImplementation(calleeLocationClone, ctMethod);
-                                                openNewContext("call");
+                                                openNewContext("op"); // option
                                                 methodCallDFS(ctMethod, calleeLocationClone, methodStack);
                                                 closeCurrentContext();
                                             }
                                         }
+                                        closeCurrentContext();
                                         return;
                                     }
                                 }
