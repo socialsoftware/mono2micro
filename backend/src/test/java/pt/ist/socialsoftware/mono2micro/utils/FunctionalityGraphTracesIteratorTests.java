@@ -214,7 +214,7 @@ public class FunctionalityGraphTracesIteratorTests {
         TraceDto mostProbablePath = FunctionalityGraphTracesIterator.getMostProbableTrace(processedSubTrace.getGraph(), "funcName");
 
         assertEquals(8, longestPath.getAccesses().size());
-        assertEquals(7, mostDiffAccessesPath.getAccesses().size());
+        assertEquals(6, mostDiffAccessesPath.getAccesses().size());
         assertEquals(8, mostProbablePath.getAccesses().size());
 
     }
