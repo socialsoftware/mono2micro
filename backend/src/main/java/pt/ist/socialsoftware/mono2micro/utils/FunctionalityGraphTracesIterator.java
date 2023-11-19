@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
+import pt.ist.socialsoftware.mono2micro.utils.traceGraph.AbstractCall;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Access;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Call;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.HeuristicFlags;
@@ -472,6 +473,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                             translatedTrace.add(new Loop(totalTrace, totalTraceArray, traceElementJSON));
                         } else if (description.contains("call")) {
                             translatedTrace.add(new Call(totalTrace, totalTraceArray, traceElementJSON));
+                        } else if (description.contains("ac")) {
+                            translatedTrace.add(new AbstractCall(totalTrace, totalTraceArray, traceElementJSON));
                         }
                         
                         break;
@@ -501,6 +504,20 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             }
         }
         return null;
+    }
+
+    public static List<JSONArray> getAllOfRoleInSubTrace(String role, JSONArray traceArray) {
+        List<JSONArray> matches = new ArrayList<>();
+        for (int i = 0; i < traceArray.length(); i++) {
+            try {
+                if (traceArray.getJSONArray(i).getString(0).contains(role)) {
+                    matches.add(traceArray.getJSONArray(i));
+                }                
+            } catch (JSONException e) {
+                // continue
+            }
+        }
+        return matches;
     }
 
     public static TraceGraph processSubTrace(List<TraceGraphNode> subTrace) {

@@ -4,13 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.Multigraph;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
-import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIteratorTests;
 
 @RunWith(SpringRunner.class)
 @SuiteClasses({Access.class, Call.class, If.class, Label.class, Loop.class})
@@ -30,6 +27,8 @@ public class NodeToGraphTests {
 
 	TraceGraph traceGraph;
 	Graph<AccessDto, DefaultWeightedEdge> processedSubTrace;
+
+	final double DOUBLE_DELTA = 0.01;
 
 
 	@Before
@@ -658,12 +657,6 @@ public class NodeToGraphTests {
 			},
 			new Object[][]{
 				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
-			},
-			new Object[][]{
-				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
-			},
-			new Object[][]{
-				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
 			}
 			});
 		
@@ -1274,6 +1267,88 @@ public class NodeToGraphTests {
 
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(secondExpressionExitAccess, a)).toList().contains(exitPoint));
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(lastBodyAccess, a)).toList().contains(secondExpressionEntryAccess));
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_AbstractCall_Simple() throws JSONException{
+		// setup
+		Access access1 = createAccess("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&ac", 1}
+			},
+			new Object[][]{
+				new Object[]{"&op", 2}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		AbstractCall acNode = new AbstractCall(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		acNode.nodeToAccessGraph(traceGraph, null, null, null, null);
+
+		// result
+		assertEquals(3, processedSubTrace.vertexSet().size());
+
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(2);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(Graphs.successorListOf(traceGraph.getGraph(), exitPoint).isEmpty());
+
+		for (AccessDto overrideOption : Graphs.successorListOf(traceGraph.getGraph(), entryPoint)) {
+			assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(entryPoint, overrideOption)), DOUBLE_DELTA);
+			assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(overrideOption, exitPoint)), DOUBLE_DELTA);
+		}
+	
+    }
+
+	@Test  
+    public void nodeToAccessGraph_AbstractCall_MultipleOptions() throws JSONException{
+		// setup
+		Access access1 = createAccess("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&ac", 1}
+			},
+			new Object[][]{
+				new Object[]{"&op", 2}, new Object[]{"&op", 2}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		AbstractCall acNode = new AbstractCall(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		acNode.nodeToAccessGraph(traceGraph, null, null, null, null);
+
+		// result
+		assertEquals(4, processedSubTrace.vertexSet().size());
+
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(Graphs.successorListOf(traceGraph.getGraph(), exitPoint).isEmpty());
+
+		for (AccessDto overrideOption : Graphs.successorListOf(traceGraph.getGraph(), entryPoint)) {
+			assertEquals(0.5, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(entryPoint, overrideOption)), DOUBLE_DELTA);
+			assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(overrideOption, exitPoint)), DOUBLE_DELTA);
+		}
 		
     }
 

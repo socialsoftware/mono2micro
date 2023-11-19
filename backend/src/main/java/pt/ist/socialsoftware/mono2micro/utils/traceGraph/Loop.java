@@ -71,7 +71,7 @@ public class Loop extends TraceGraphNode {
 
         List<String> appliableHeuristics = BranchHeuristics.getAppliableHeuristics(expressionHeuristicFlags, bodyHeuristicFlags, null);
         appliableHeuristics.add(BranchHeuristics.LOOP_BRANCH_H); // add heuristic beacuse the loop is repeated if path taken
-        Float enterLoopProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
+        Float enterLoopProbability = BranchHeuristics.calculateBranchProbability(0.5f, appliableHeuristics);
         Float exitLoopProbability = 1-enterLoopProbability;
 
 
