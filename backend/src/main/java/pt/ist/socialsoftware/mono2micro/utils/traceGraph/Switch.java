@@ -74,7 +74,7 @@ public class Switch extends TraceGraphNode {
 
         AccessDto baseNode;
         
-        TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, lastLoopStart, lastLoopEnd, null);
+        TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, lastLoopStart, lastLoopEnd, new HeuristicFlags());
 
         //List<String> appliableHeuristics = BranchHeuristics.getAppliableHeuristics(conditionHeuristicFlags, thenHeuristicFlags, elseHeuristicFlags);
 
@@ -89,7 +89,7 @@ public class Switch extends TraceGraphNode {
         }
 
         for (List<TraceGraphNode> caseTrace : this.getCases()) {
-            TraceGraph caseGraph = FunctionalityGraphTracesIterator.processSubTrace(caseTrace, endingNode, lastLoopStart, lastLoopEnd, null);
+            TraceGraph caseGraph = FunctionalityGraphTracesIterator.processSubTrace(caseTrace, endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
 
             processedSubTrace.addGraph(caseGraph);
 

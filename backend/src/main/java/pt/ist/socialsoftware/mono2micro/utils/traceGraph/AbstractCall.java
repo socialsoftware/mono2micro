@@ -55,7 +55,7 @@ public class AbstractCall extends TraceGraphNode {
         float optionProbability = 1f / this.getOverrideOptions().size();
 
         for (List<TraceGraphNode> overrideOption : this.getOverrideOptions()) {
-            TraceGraph override = FunctionalityGraphTracesIterator.processSubTrace(overrideOption, endingNode, lastLoopStart, lastLoopEnd, null);
+            TraceGraph override = FunctionalityGraphTracesIterator.processSubTrace(overrideOption, endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
 
             processedSubTrace.addGraph(override);
 
