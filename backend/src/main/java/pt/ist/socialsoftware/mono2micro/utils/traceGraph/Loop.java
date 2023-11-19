@@ -81,7 +81,7 @@ public class Loop extends TraceGraphNode {
         if (bodyGraph != null && !bodyGraph.isEmpty())
             processedSubTrace.addGraph(bodyGraph);
 
-        if (expressionGraph != null && !expressionGraph.isEmpty())
+        if (expressionGraph != null && !expressionGraph.isEmpty() && (bodyGraph != null && !processedSubTrace.isVertexLockedToNewConnections(bodyGraph.getLastAccess()) || bodyGraph == null))
             processedSubTrace.addGraph(expressionGraphCopy);
 
 
@@ -89,8 +89,11 @@ public class Loop extends TraceGraphNode {
             processedSubTrace.addEdge(startingNode, expressionGraph.getFirstAccess(), 1f);
 
             processedSubTrace.addEdge(expressionGraph.getLastAccess(), bodyGraph.getFirstAccess(), enterLoopProbability);
-            processedSubTrace.addEdge(bodyGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), 1f);
-            processedSubTrace.addEdge(expressionGraphCopy.getLastAccess(), endingNode, exitLoopProbability);
+
+            if (!processedSubTrace.isVertexLockedToNewConnections(bodyGraph.getLastAccess())) {
+                processedSubTrace.addEdge(bodyGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), 1f);
+                processedSubTrace.addEdge(expressionGraphCopy.getLastAccess(), endingNode, exitLoopProbability);
+            }
 
             processedSubTrace.addEdge(expressionGraph.getLastAccess(), endingNode, exitLoopProbability);
 

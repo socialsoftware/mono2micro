@@ -907,7 +907,7 @@ public class NodeToGraphTests {
 				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
 			},
 			new Object[][]{
-				new Object[]{"R", 6}
+				new Object[]{"R", 7}
 			},
 			new Object[][]{
 				new Object[]{"R", 6}, new Object[]{"#break"}
@@ -924,11 +924,11 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(5, processedSubTrace.vertexSet().size());
+		assertEquals(4, processedSubTrace.vertexSet().size());
 
 		AccessDto loopEnd = traceGraph.toList().get(3);		
 		AccessDto bodyEnd = traceGraph.toList().get(2);
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(bodyEnd, a)).toList().contains(loopEnd));
+		assertTrue(processedSubTrace.containsEdge(bodyEnd, loopEnd));
 			
     }
 
@@ -969,7 +969,7 @@ public class NodeToGraphTests {
 		loopNode.nodeToAccessGraph(traceGraph, null, null, null, heuristicFlags);
 
 		// result
-		assertEquals(9, processedSubTrace.vertexSet().size());
+		assertEquals(8, processedSubTrace.vertexSet().size());
 
 		AccessDto innerLoopEnd = traceGraph.toList().get(5);		
 		AccessDto innerBodyEnd = traceGraph.toList().get(4);
