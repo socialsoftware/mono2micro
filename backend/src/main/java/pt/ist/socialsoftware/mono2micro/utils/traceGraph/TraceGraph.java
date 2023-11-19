@@ -70,9 +70,9 @@ public class TraceGraph {
         this.addVertex(to);
 
         if (from.equals(to)) {
-            throw new RuntimeException("Attemped to create edge with same start and end vertexes.");
+            throw new RuntimeException("Attempted to create edge with same start and end vertexes.");
         } else if (this.graph.containsEdge(from, to)) {
-            throw new RuntimeException("Attemped to create edge that already exists.");
+            throw new RuntimeException("Attempted to create edge that already exists.");
         }
 
         DefaultWeightedEdge edge = this.graph.addEdge(from, to);
