@@ -1352,6 +1352,135 @@ public class NodeToGraphTests {
 		
     }
 
+	@Test  
+    public void nodeToAccessGraph_Switch_Simple() throws JSONException{
+		// setup
+		Access access1 = createAccess("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&sw", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&case", 2}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Switch switchNode = new Switch(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		switchNode.nodeToAccessGraph(traceGraph, null, null, null, null);
+
+		// result
+		assertEquals(4, processedSubTrace.vertexSet().size());
+
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(3);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(Graphs.successorListOf(traceGraph.getGraph(), exitPoint).isEmpty());
+
+		AccessDto expression = traceGraph.toList().get(1);
+		assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(entryPoint, expression)), DOUBLE_DELTA);
+
+		for (AccessDto c : Graphs.successorListOf(traceGraph.getGraph(), expression)) {
+			assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(expression, c)), DOUBLE_DELTA);
+			assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(c, exitPoint)), DOUBLE_DELTA);
+		}
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_Switch_MultipleCases() throws JSONException{
+		// setup
+		Access access1 = createAccess("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&sw", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&case", 2}, new Object[]{"&case", 2}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Switch switchNode = new Switch(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		switchNode.nodeToAccessGraph(traceGraph, null, null, null, null);
+
+		// result
+		assertEquals(5, processedSubTrace.vertexSet().size());
+
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(4);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(Graphs.successorListOf(traceGraph.getGraph(), exitPoint).isEmpty());
+
+		AccessDto expression = traceGraph.toList().get(1);
+		assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(entryPoint, expression)), DOUBLE_DELTA);
+
+		for (AccessDto c : Graphs.successorListOf(traceGraph.getGraph(), expression)) {
+			assertEquals(0.5, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(expression, c)), DOUBLE_DELTA);
+			assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(c, exitPoint)), DOUBLE_DELTA);
+		}
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_Switch_NoExpression() throws JSONException{
+		// setup
+		Access access1 = createAccess("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&sw", 1}
+			},
+			new Object[][]{
+				new Object[]{"&case", 2}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Switch switchNode = new Switch(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		switchNode.nodeToAccessGraph(traceGraph, null, null, null, null);
+
+		// result
+		assertEquals(3, processedSubTrace.vertexSet().size());
+
+		AccessDto entryPoint = traceGraph.toList().get(0);
+		AccessDto exitPoint = traceGraph.toList().get(2);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, exitPoint.getEntityID());
+		assertTrue(Graphs.successorListOf(traceGraph.getGraph(), exitPoint).isEmpty());
+
+		for (AccessDto c : Graphs.successorListOf(traceGraph.getGraph(), entryPoint)) {
+			assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(entryPoint, c)), DOUBLE_DELTA);
+			assertEquals(1, traceGraph.getGraph().getEdgeWeight(traceGraph.getGraph().getEdge(c, exitPoint)), DOUBLE_DELTA);
+		}
+		
+    }
+
 	
 	// Utils
 

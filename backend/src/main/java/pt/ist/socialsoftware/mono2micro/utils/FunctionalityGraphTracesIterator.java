@@ -43,6 +43,7 @@ import pt.ist.socialsoftware.mono2micro.utils.traceGraph.HeuristicFlags;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.If;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Label;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Loop;
+import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Switch;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraph;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
 
@@ -475,6 +476,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                             translatedTrace.add(new Call(totalTrace, totalTraceArray, traceElementJSON));
                         } else if (description.contains("ac")) {
                             translatedTrace.add(new AbstractCall(totalTrace, totalTraceArray, traceElementJSON));
+                        } else if (description.contains("sw")) {
+                            translatedTrace.add(new Switch(totalTrace, totalTraceArray, traceElementJSON));
                         }
                         
                         break;

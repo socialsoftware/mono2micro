@@ -24,9 +24,7 @@ public class AbstractCall extends TraceGraphNode {
         List<JSONArray> overrides = FunctionalityGraphTracesIterator.getAllOfRoleInSubTrace("op", referenceElements);
         if (overrides != null && !overrides.isEmpty()) {
             for (JSONArray override : overrides) {
-                this.addOverrideOptions(FunctionalityGraphTracesIterator.translateSubTrace(totalTrace, totalTraceArray.getJSONObject(override
-                .getInt(1))));
-                
+                this.addOverrideOption(FunctionalityGraphTracesIterator.translateSubTrace(totalTrace, totalTraceArray.getJSONObject(override.getInt(1))));
             }
         }
     }
@@ -39,7 +37,7 @@ public class AbstractCall extends TraceGraphNode {
         this.overrideOptions = overrideOptions;
     }
 
-    public void addOverrideOptions(List<TraceGraphNode> option) {
+    public void addOverrideOption(List<TraceGraphNode> option) {
         this.overrideOptions.add(option);
     }
 
@@ -56,7 +54,7 @@ public class AbstractCall extends TraceGraphNode {
 
         float optionProbability = 1f / this.getOverrideOptions().size();
 
-        for (List<TraceGraphNode> overrideOption : overrideOptions) {
+        for (List<TraceGraphNode> overrideOption : this.getOverrideOptions()) {
             TraceGraph override = FunctionalityGraphTracesIterator.processSubTrace(overrideOption, endingNode, lastLoopStart, lastLoopEnd, null);
 
             processedSubTrace.addGraph(override);
