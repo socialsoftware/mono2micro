@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
-import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Access;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.NodeToGraphTests;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraph;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
@@ -64,11 +63,7 @@ public class FunctionalityGraphTracesIteratorTests {
 			});
 
         
-        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
-
-        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
-
-        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.getFunctionalityTraceGraph(trace);
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
@@ -97,11 +92,7 @@ public class FunctionalityGraphTracesIteratorTests {
 			});
 
         
-        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
-
-        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
-
-        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.getFunctionalityTraceGraph(trace);
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
@@ -139,11 +130,7 @@ public class FunctionalityGraphTracesIteratorTests {
 			});
 
         
-        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
-
-        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
-
-        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.getFunctionalityTraceGraph(trace);
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
@@ -169,11 +156,7 @@ public class FunctionalityGraphTracesIteratorTests {
 			});
 
         
-        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
-
-        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
-
-        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.getFunctionalityTraceGraph(trace);
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
@@ -192,12 +175,7 @@ public class FunctionalityGraphTracesIteratorTests {
 			}
 			});
 
-        
-        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
-
-        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
-
-        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.getFunctionalityTraceGraph(trace);
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
 
@@ -229,11 +207,7 @@ public class FunctionalityGraphTracesIteratorTests {
 			});
 
         
-        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
-
-        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
-
-        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.getFunctionalityTraceGraph(trace);
 
         TraceDto longestPath = FunctionalityGraphTracesIterator.getLongestTrace(processedSubTrace.getGraph(), "funcName");
         TraceDto mostDiffAccessesPath = FunctionalityGraphTracesIterator.getTraceWithMoreDifferentAccesses(processedSubTrace.getGraph(), "funcName");
@@ -310,11 +284,7 @@ public class FunctionalityGraphTracesIteratorTests {
 			});
 
         
-        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
-
-        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
-
-        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.getFunctionalityTraceGraph(trace);
 
         
         Map<String, Float> e1e2PairCount = new HashMap<>();

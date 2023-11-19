@@ -189,4 +189,36 @@ public class TraceGraph {
 
         return duplicate;
     }
+
+    public void cleanAuxiliaryNodes() {
+        Iterator<AccessDto> iterator = new TopologicalOrderIterator<AccessDto, DefaultWeightedEdge>(this.graph);
+
+        boolean first = true;
+        for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
+            if (first) { // don't remove root node
+                first = false;
+                continue;
+            }
+
+            AccessDto vertex = it.next();
+
+            if (vertex.getEntityID() == -1) {
+                List<AccessDto> predecessors = Graphs.predecessorListOf(this.graph, vertex);
+                List<AccessDto> successors = Graphs.successorListOf(this.graph, vertex);
+
+                for (AccessDto predecessor : predecessors) {
+                    for (AccessDto successor : successors) {
+                        DefaultWeightedEdge newEdge = this.graph.addEdge(predecessor, successor);
+                        this.graph.setEdgeWeight(newEdge, this.graph.getEdgeWeight(this.graph.getEdge(predecessor, vertex)) * this.graph.getEdgeWeight(this.graph.getEdge(vertex, successor)));
+                    }
+                }
+
+                this.graph.removeVertex(vertex);
+
+
+            }
+        }
+
+    }
+
 }
