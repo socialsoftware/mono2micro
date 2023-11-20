@@ -108,7 +108,7 @@ public class Switch extends TraceGraphNode {
         }
 
         if (numberOfEmptyOptions > 0) {
-            processedSubTrace.addEdge(startingNode, endingNode, numberOfEmptyOptions * optionProbability);
+            processedSubTrace.addEdge(baseNode, endingNode, numberOfEmptyOptions * optionProbability);
         }
         
         

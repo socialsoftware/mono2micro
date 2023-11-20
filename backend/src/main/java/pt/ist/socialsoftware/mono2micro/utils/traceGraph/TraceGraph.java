@@ -85,7 +85,7 @@ public class TraceGraph {
                 if (!trace.equals("")) trace += "+";
                 trace += this.graph.getEdgeWeight(e);
             }
-            throw new RuntimeException("Added edge breaks the total probability of outgoing edges (" + trace + "=" + outgoingProbability + " is more than 1)."); 
+            throw new RuntimeException("Added edge (" + probability + ") breaks the total probability of outgoing edges (" + trace + "=" + outgoingProbability + " is more than 1)."); 
         }
     }
 
