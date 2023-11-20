@@ -39,9 +39,9 @@ public class TraceGraph {
         return firstAccess;
     }
 
-    public void setFirstAccess(AccessDto firstAccess) throws Exception {
+    public void setFirstAccess(AccessDto firstAccess) {
         if (!this.graph.containsVertex(firstAccess))
-            throw new Exception("trying to set first access but access not in graph");
+            throw new RuntimeException("trying to set first access but access not in graph");
         this.firstAccess = firstAccess;
     }
 
@@ -49,9 +49,9 @@ public class TraceGraph {
         return lastAccess;
     }
 
-    public void setLastAccess(AccessDto lastAccess) throws Exception {
+    public void setLastAccess(AccessDto lastAccess) {
         if (!this.graph.containsVertex(lastAccess))
-            throw new Exception("trying to set last access but access not in graph");
+            throw new RuntimeException("trying to set last access but access not in graph");
         this.lastAccess = lastAccess;
 
     }
@@ -95,11 +95,11 @@ public class TraceGraph {
         }
 
         if (this.firstAccess == null) {
-            this.firstAccess = vertex;
+            this.setFirstAccess(vertex);
         }
 
         if (this.lastAccess == null) {
-            this.lastAccess = vertex;
+            this.setLastAccess(vertex);;
         }
 
         if (!this.list.contains(vertex)) {
@@ -111,11 +111,11 @@ public class TraceGraph {
         Graphs.addGraph(this.graph, other.getGraph());
         
         if (this.firstAccess == null) {
-            this.firstAccess = other.firstAccess;
+            this.setFirstAccess(other.firstAccess);
         }
         
         if (this.lastAccess == null) {
-            this.lastAccess = other.lastAccess;
+            this.setLastAccess(other.lastAccess);
         }
         
         // only add vertexes that are not on the list yet
