@@ -111,7 +111,7 @@ public class Switch extends TraceGraphNode {
         
         if (!processedSubTrace.isEmpty()) {
             try {
-                boolean endingConnected = !Graphs.predecessorListOf(processedSubTrace.getGraph(), endingNode).isEmpty();
+                boolean endingConnected = processedSubTrace.getGraph().containsVertex(endingNode) && !Graphs.predecessorListOf(processedSubTrace.getGraph(), endingNode).isEmpty();
                 if (endingConnected) processedSubTrace.setLastAccess(endingNode);
 
                 boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
