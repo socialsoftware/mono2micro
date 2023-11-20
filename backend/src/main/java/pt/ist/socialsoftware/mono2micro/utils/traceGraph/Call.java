@@ -34,7 +34,7 @@ public class Call extends TraceGraphNode {
 
         processedSubTrace.addVertex(startingNode);
         
-        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
+        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), endingNode, null, null, new HeuristicFlags());
 
         if (bodyGraph == null || bodyGraph.isEmpty()) return;
 
