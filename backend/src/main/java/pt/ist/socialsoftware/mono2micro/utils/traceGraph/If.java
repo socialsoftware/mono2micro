@@ -83,9 +83,6 @@ public class If extends TraceGraphNode {
         if (elseGraph == null) elseHeuristicFlags.postDominant = true;
         thenProbability = BranchHeuristics.calculateBranchProbability(0.5f, appliableHeuristics);
 
-        System.out.println("If: " + thenProbability);
-        System.out.println("Ife: " + (1-thenProbability));
-
         if (condition != null && !condition.isEmpty()) {
             processedSubTrace.addGraph(condition);
 

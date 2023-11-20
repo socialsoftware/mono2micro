@@ -55,8 +55,6 @@ public class AbstractCall extends TraceGraphNode {
 
         float optionProbability = 1f / this.getOverrideOptions().size();
 
-        System.out.println("AbstractCall: " + optionProbability);
-
         int numberOfEmptyOptions = 0;
 
         for (List<TraceGraphNode> overrideOption : this.getOverrideOptions()) {
