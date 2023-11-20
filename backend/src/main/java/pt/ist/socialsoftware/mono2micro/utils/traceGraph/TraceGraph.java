@@ -77,6 +77,10 @@ public class TraceGraph {
 
         DefaultWeightedEdge edge = this.graph.addEdge(from, to);
         this.graph.setEdgeWeight(edge, probability);
+
+        if (this.graph.outgoingEdgesOf(from).stream().reduce(0d, (subtotal, element) -> subtotal + this.graph.getEdgeWeight(element), Double::sum) > 1d) {
+            throw new RuntimeException("Added edge breaks the total probability of outgoing edges (more than 1)."); 
+        }
     }
 
     public void addVertex(AccessDto vertex) {
