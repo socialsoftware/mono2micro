@@ -106,7 +106,7 @@ public class Loop extends TraceGraphNode {
         } else if ((expressionGraph != null && !expressionGraph.isEmpty()) && (bodyGraph == null || bodyGraph.isEmpty())) {
             processedSubTrace.addEdge(startingNode, expressionGraph.getFirstAccess(), 1f);
 
-            processedSubTrace.addEdge(expressionGraph.getLastAccess(), expressionGraphCopy.getLastAccess(), enterLoopProbability);
+            processedSubTrace.addEdge(expressionGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), enterLoopProbability);
             processedSubTrace.addEdge(expressionGraphCopy.getLastAccess(), endingNode, exitLoopProbability);
 
             processedSubTrace.addEdge(expressionGraph.getLastAccess(), endingNode, exitLoopProbability);
