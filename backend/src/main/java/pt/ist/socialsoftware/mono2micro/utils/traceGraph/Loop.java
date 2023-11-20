@@ -74,6 +74,8 @@ public class Loop extends TraceGraphNode {
         Float enterLoopProbability = BranchHeuristics.calculateBranchProbability(0.5f, appliableHeuristics);
         Float exitLoopProbability = 1-enterLoopProbability;
 
+        System.out.println("LoopEnter: " + enterLoopProbability);
+        System.out.println("LoopExit: " + exitLoopProbability);
 
         if (expressionGraph != null && !expressionGraph.isEmpty())
             processedSubTrace.addGraph(expressionGraph);

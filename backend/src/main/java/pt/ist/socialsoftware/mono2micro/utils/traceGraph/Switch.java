@@ -73,6 +73,8 @@ public class Switch extends TraceGraphNode {
 
         float optionProbability = 1f / this.getCases().size();
 
+        System.out.println("Switch: " + optionProbability);
+
         AccessDto baseNode;
         
         TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, lastLoopStart, lastLoopEnd, new HeuristicFlags());
