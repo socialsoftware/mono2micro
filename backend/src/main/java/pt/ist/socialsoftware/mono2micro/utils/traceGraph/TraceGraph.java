@@ -78,13 +78,14 @@ public class TraceGraph {
         DefaultWeightedEdge edge = this.graph.addEdge(from, to);
         this.graph.setEdgeWeight(edge, probability);
 
-        if (this.graph.outgoingEdgesOf(from).stream().reduce(0d, (subtotal, element) -> subtotal + this.graph.getEdgeWeight(element), Double::sum) > 1.1d) {
+        double outgoingProbability = this.graph.outgoingEdgesOf(from).stream().reduce(0d, (subtotal, element) -> subtotal + this.graph.getEdgeWeight(element), Double::sum);
+        if (outgoingProbability > 1.1d) {
             String trace = "";
             for (DefaultWeightedEdge e : this.graph.outgoingEdgesOf(from)) {
                 if (!trace.equals("")) trace += "+";
                 trace += this.graph.getEdgeWeight(e);
             }
-            throw new RuntimeException("Added edge breaks the total probability of outgoing edges (" + trace + " is more than 1)."); 
+            throw new RuntimeException("Added edge breaks the total probability of outgoing edges (" + trace + "=" + outgoingProbability + " is more than 1)."); 
         }
     }
 
