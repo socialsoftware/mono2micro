@@ -214,8 +214,15 @@ public class TraceGraph {
 
                 for (AccessDto predecessor : predecessors) {
                     for (AccessDto successor : successors) {
-                        DefaultWeightedEdge newEdge = this.graph.addEdge(predecessor, successor);
-                        this.graph.setEdgeWeight(newEdge, this.graph.getEdgeWeight(this.graph.getEdge(predecessor, vertex)) * this.graph.getEdgeWeight(this.graph.getEdge(vertex, successor)));
+                        double pathProbability = this.graph.getEdgeWeight(this.graph.getEdge(predecessor, vertex)) * this.graph.getEdgeWeight(this.graph.getEdge(vertex, successor));
+
+                        if (this.graph.containsEdge(predecessor, successor)) {
+                            DefaultWeightedEdge curEdge = this.graph.getEdge(predecessor, successor);
+                            this.graph.setEdgeWeight(curEdge, pathProbability + this.graph.getEdgeWeight(curEdge));
+                        } else {
+                            DefaultWeightedEdge newEdge = this.graph.addEdge(predecessor, successor);
+                            this.graph.setEdgeWeight(newEdge, pathProbability);
+                        }
                     }
                 }
 
