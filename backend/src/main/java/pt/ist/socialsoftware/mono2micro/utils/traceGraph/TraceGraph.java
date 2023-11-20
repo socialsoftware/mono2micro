@@ -78,7 +78,7 @@ public class TraceGraph {
         DefaultWeightedEdge edge = this.graph.addEdge(from, to);
         this.graph.setEdgeWeight(edge, probability);
 
-        if (this.graph.outgoingEdgesOf(from).stream().reduce(0d, (subtotal, element) -> subtotal + this.graph.getEdgeWeight(element), Double::sum) > 1d) {
+        if (this.graph.outgoingEdgesOf(from).stream().reduce(0d, (subtotal, element) -> subtotal + this.graph.getEdgeWeight(element), Double::sum) > 1.1d) {
             String trace = "";
             for (DefaultWeightedEdge e : this.graph.outgoingEdgesOf(from)) {
                 if (!trace.equals("")) trace += "+";
