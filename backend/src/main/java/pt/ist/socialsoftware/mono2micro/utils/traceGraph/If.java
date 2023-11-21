@@ -143,6 +143,7 @@ public class If extends TraceGraphNode {
                     traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
 
                 if (!(thenIsLocked && elseIsLocked)) traceGraph.setLastAccess(endingNode);
+                else traceGraph.setLastAccess(null);
             } catch (Exception e) {
                 e.printStackTrace();
             }

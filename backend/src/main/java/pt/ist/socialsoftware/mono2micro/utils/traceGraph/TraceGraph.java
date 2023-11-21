@@ -50,7 +50,7 @@ public class TraceGraph {
     }
 
     public void setLastAccess(AccessDto lastAccess) {
-        if (!this.graph.containsVertex(lastAccess))
+        if (lastAccess != null && !this.graph.containsVertex(lastAccess))
             throw new RuntimeException("trying to set last access but access not in graph");
         this.lastAccess = lastAccess;
 
@@ -139,6 +139,8 @@ public class TraceGraph {
 	}
 
     public boolean isVertexLockedToNewConnections(AccessDto vertex) {
+        if (vertex == null) return true;
+
         return this.vertexesLockedToNewConnections.contains(vertex);
     }
 
