@@ -456,7 +456,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 throw new RuntimeException("Resulting graph has a node other than the root with no predecessor."); 
         }
 
-        processedSubTrace.cleanAuxiliaryNodes();
+        //processedSubTrace.cleanAuxiliaryNodes();
         
         return processedSubTrace;
     }
