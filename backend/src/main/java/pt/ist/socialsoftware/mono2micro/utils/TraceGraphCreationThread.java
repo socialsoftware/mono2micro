@@ -36,7 +36,7 @@ public class TraceGraphCreationThread implements Callable<Pair<String, Functiona
             functionalityInfo.setEntityFunctionalities(entityFunctionalities);
 
         } catch (Exception e) {
-            System.out.println("JSON error handling functionality graph");
+            System.out.println("JSON error handling functionality graph (" + this.functionalityName + ")");
             e.printStackTrace();
         }
 
