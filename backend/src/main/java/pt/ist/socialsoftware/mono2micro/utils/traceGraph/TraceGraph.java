@@ -90,6 +90,8 @@ public class TraceGraph {
     }
 
     public void addVertex(AccessDto vertex) {
+        if (vertex == null) return;
+
         if (!this.graph.containsVertex(vertex)) {
             this.graph.addVertex(vertex);
         }
@@ -131,7 +133,7 @@ public class TraceGraph {
     }
 
     public List<AccessDto> toList() {
-        if (this.firstAccess != this.lastAccess) {
+        if (this.firstAccess != this.lastAccess && this.lastAccess != null) {
             this.list.remove(this.lastAccess);
             this.list.add(this.lastAccess); // ensure it is the last member of the list
         }
@@ -205,7 +207,21 @@ public class TraceGraph {
             }
         }
 
+        duplicate.validate();
+
         return duplicate;
+    }
+
+    public void validate() {
+        Iterator<AccessDto> iterator = new TopologicalOrderIterator<AccessDto, DefaultWeightedEdge>(this.getGraph());
+        if (iterator.hasNext()) {
+            iterator.next(); // skip first
+            for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
+                AccessDto vertex = iterator.next();
+                if (this.getGraph().inDegreeOf(vertex) == 0)
+                    throw new RuntimeException("Resulting graph has a node other than the root with no predecessor."); 
+            }
+        }
     }
 
     public void cleanAuxiliaryNodes() {

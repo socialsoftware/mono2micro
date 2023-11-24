@@ -149,6 +149,8 @@ public class If extends TraceGraphNode {
             }
         }
 
+        traceGraph.validate();
+
     }
 
 }

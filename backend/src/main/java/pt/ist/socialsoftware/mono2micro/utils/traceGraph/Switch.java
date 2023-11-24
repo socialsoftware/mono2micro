@@ -126,6 +126,8 @@ public class Switch extends TraceGraphNode {
             }
         }
 
+        traceGraph.validate();
+
     }
 
 }

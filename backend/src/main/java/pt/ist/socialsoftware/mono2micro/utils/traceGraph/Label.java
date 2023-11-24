@@ -68,5 +68,7 @@ public class Label extends TraceGraphNode {
                 break;
         }
 
+        traceGraph.validate();
+
     }
 }

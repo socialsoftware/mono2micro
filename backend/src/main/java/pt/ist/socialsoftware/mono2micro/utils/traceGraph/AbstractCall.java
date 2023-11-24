@@ -92,6 +92,8 @@ public class AbstractCall extends TraceGraphNode {
             }
         }
 
+        traceGraph.validate();
+
     }
 
 }

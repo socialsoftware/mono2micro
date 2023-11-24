@@ -59,6 +59,8 @@ public class Access extends TraceGraphNode {
         if (heuristicFlags != null && getMode() == "W") {
             heuristicFlags.hasStore = true;
         }
+        
+        traceGraph.validate();
     }
 
 }

@@ -130,6 +130,8 @@ public class Loop extends TraceGraphNode {
             heuristicFlags.hasLoop = true;
         }
 
+        traceGraph.validate();
+
     }
 
 }

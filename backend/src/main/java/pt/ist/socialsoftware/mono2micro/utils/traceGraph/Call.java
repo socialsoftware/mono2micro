@@ -69,6 +69,8 @@ public class Call extends TraceGraphNode {
             heuristicFlags.hasCall = true;
         }
 
+        traceGraph.validate();
+
     }
 
 }

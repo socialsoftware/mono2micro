@@ -448,13 +448,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
         TraceGraph processedSubTrace = processSubTrace(preProcessedTraces);
         
-        Iterator<AccessDto> iterator = new TopologicalOrderIterator<AccessDto, DefaultWeightedEdge>(processedSubTrace.getGraph());
-        iterator.next(); // skip first
-        for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
-            AccessDto vertex = iterator.next();
-            if (processedSubTrace.getGraph().inDegreeOf(vertex) == 0)
-                throw new RuntimeException("Resulting graph has a node other than the root with no predecessor."); 
-        }
+        processedSubTrace.validate();
 
         //processedSubTrace.cleanAuxiliaryNodes();
         
