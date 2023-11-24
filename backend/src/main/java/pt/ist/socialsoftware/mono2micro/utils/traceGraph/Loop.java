@@ -80,7 +80,7 @@ public class Loop extends TraceGraphNode {
         if (bodyGraph != null && !bodyGraph.isEmpty())
             processedSubTrace.addGraph(bodyGraph);
 
-        if (expressionGraph != null && !expressionGraph.isEmpty() && (bodyGraph == null || bodyGraph.isEmpty() || !processedSubTrace.isVertexLockedToNewConnections(bodyGraph.getLastAccess())))
+        if (expressionGraph != null && !expressionGraph.isEmpty() && (bodyGraph == null || !processedSubTrace.isVertexLockedToNewConnections(bodyGraph.getLastAccess()) || bodyGraph.isEmpty()))
             processedSubTrace.addGraph(expressionGraphCopy);
 
 
