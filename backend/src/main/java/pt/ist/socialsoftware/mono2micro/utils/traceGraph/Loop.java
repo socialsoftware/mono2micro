@@ -114,8 +114,6 @@ public class Loop extends TraceGraphNode {
         }
 
         if (!processedSubTrace.isEmpty()) {
-            System.out.println("not empty " + this.getContextIndex());
-
             processedSubTrace.setLastAccess(endingNode);
             boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
             traceGraph.addGraph(processedSubTrace);
