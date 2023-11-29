@@ -109,19 +109,15 @@ public class Switch extends TraceGraphNode {
         
         
         if (!processedSubTrace.isEmpty()) {
-            try {
-                boolean endingConnected = processedSubTrace.getGraph().containsVertex(endingNode) && !Graphs.predecessorListOf(processedSubTrace.getGraph(), endingNode).isEmpty();
-                if (endingConnected) processedSubTrace.setLastAccess(endingNode);
+            boolean endingConnected = processedSubTrace.getGraph().containsVertex(endingNode) && !Graphs.predecessorListOf(processedSubTrace.getGraph(), endingNode).isEmpty();
+            if (endingConnected) processedSubTrace.setLastAccess(endingNode);
 
-                boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
-                traceGraph.addGraph(processedSubTrace);
-                if (traceGraphHadLast)
-                    traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
+            boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
+            traceGraph.addGraph(processedSubTrace);
+            if (traceGraphHadLast)
+                traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
 
-                if (endingConnected) traceGraph.setLastAccess(endingNode);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            if (endingConnected) traceGraph.setLastAccess(endingNode);
         }
 
         traceGraph.validate();

@@ -114,16 +114,14 @@ public class Loop extends TraceGraphNode {
         }
 
         if (!processedSubTrace.isEmpty()) {
-            try {
-                processedSubTrace.setLastAccess(endingNode);
-                boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
-                traceGraph.addGraph(processedSubTrace);
-                if (traceGraphHadLast)
-                    traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1f);
-                traceGraph.setLastAccess(endingNode);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            System.out.println("not empty " + this.getContextIndex());
+
+            processedSubTrace.setLastAccess(endingNode);
+            boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
+            traceGraph.addGraph(processedSubTrace);
+            if (traceGraphHadLast)
+                traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1f);
+            traceGraph.setLastAccess(endingNode);
         }
 
         if (heuristicFlags != null) {

@@ -125,28 +125,24 @@ public class If extends TraceGraphNode {
             boolean thenIsLocked = false;
             boolean elseIsLocked = false;
             
-            try {
-                if (thenGraph != null && thenGraph.getLastAccess() != null) {
-                    thenIsLocked = processedSubTrace.isVertexLockedToNewConnections(thenGraph.getLastAccess());
-                }
-
-                if (elseGraph != null && elseGraph.getLastAccess() != null) {
-                    elseIsLocked = processedSubTrace.isVertexLockedToNewConnections(elseGraph.getLastAccess());
-                }
-
-
-                if (!(thenIsLocked && elseIsLocked)) processedSubTrace.setLastAccess(endingNode);
-
-                boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
-                traceGraph.addGraph(processedSubTrace);
-                if (traceGraphHadLast)
-                    traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
-
-                if (!(thenIsLocked && elseIsLocked)) traceGraph.setLastAccess(endingNode);
-                else traceGraph.setLastAccess(null);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (thenGraph != null && thenGraph.getLastAccess() != null) {
+                thenIsLocked = processedSubTrace.isVertexLockedToNewConnections(thenGraph.getLastAccess());
             }
+
+            if (elseGraph != null && elseGraph.getLastAccess() != null) {
+                elseIsLocked = processedSubTrace.isVertexLockedToNewConnections(elseGraph.getLastAccess());
+            }
+
+
+            if (!(thenIsLocked && elseIsLocked)) processedSubTrace.setLastAccess(endingNode);
+
+            boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
+            traceGraph.addGraph(processedSubTrace);
+            if (traceGraphHadLast)
+                traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
+
+            if (!(thenIsLocked && elseIsLocked)) traceGraph.setLastAccess(endingNode);
+            else traceGraph.setLastAccess(null);
         }
 
         traceGraph.validate();
