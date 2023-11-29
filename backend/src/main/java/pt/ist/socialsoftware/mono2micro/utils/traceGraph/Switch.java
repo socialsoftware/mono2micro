@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jgrapht.Graphs;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,7 +70,7 @@ public class Switch extends TraceGraphNode {
 
         processedSubTrace.addVertex(startingNode);
 
-        float optionProbability = 1f / this.getCases().size();
+        float optionProbability = this.getCases().isEmpty()? 0 : 1f / this.getCases().size();
 
         AccessDto baseNode;
         
@@ -89,7 +88,7 @@ public class Switch extends TraceGraphNode {
             baseNode = startingNode;
         }
 
-        int numberOfEmptyOptions = 0;
+        int numberOfOptions = 0;
 
         for (List<TraceGraphNode> caseTrace : this.getCases()) {
             TraceGraph caseGraph = FunctionalityGraphTracesIterator.processSubTrace(caseTrace, endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
@@ -99,14 +98,13 @@ public class Switch extends TraceGraphNode {
     
                 processedSubTrace.addEdge(baseNode, caseGraph.getFirstAccess(), optionProbability);
                 processedSubTrace.addEdge(caseGraph.getLastAccess(), endingNode, 1f);
-            } else {
-                numberOfEmptyOptions++;
+                numberOfOptions++;
             }
             
         }
 
-        if (numberOfEmptyOptions > 0) {
-            processedSubTrace.addEdge(baseNode, endingNode, numberOfEmptyOptions * optionProbability);
+        if (this.getCases().isEmpty() || numberOfOptions < this.getCases().size()) {
+            processedSubTrace.addEdge(baseNode, endingNode, 1f - numberOfOptions * optionProbability);
         }
         
         
