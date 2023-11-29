@@ -181,10 +181,11 @@ public class TraceGraph {
         // calculate all possible path lengths
         for(Iterator<AccessDto> it = iterator; it.hasNext(); ) {
             AccessDto vertex = it.next();
-            AccessDto vertexCopy = new AccessDto();
+            AccessDto vertexCopy;
             if (copiedVertices.containsKey(vertex)) {
                 vertexCopy = copiedVertices.get(vertex);
             } else {
+                vertexCopy = new AccessDto();
                 vertexCopy.setEntityID(vertex.getEntityID());
                 vertexCopy.setMode(vertex.getMode());
                 duplicate.addVertex(vertexCopy);
@@ -195,10 +196,11 @@ public class TraceGraph {
             List<AccessDto> successors = Graphs.successorListOf(this.graph, vertex);
 
             for (AccessDto successor : successors) {
-                AccessDto successorCopy = new AccessDto();
+                AccessDto successorCopy;
                 if (copiedVertices.containsKey(successor)) {
                     successorCopy = copiedVertices.get(successor);
                 } else {
+                    successorCopy = new AccessDto();
                     successorCopy.setEntityID(successor.getEntityID());
                     successorCopy.setMode(successor.getMode());
 
