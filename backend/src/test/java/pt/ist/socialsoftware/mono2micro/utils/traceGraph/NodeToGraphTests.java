@@ -40,9 +40,7 @@ public class NodeToGraphTests {
 
 	@After
 	public void after(){
-		// ensure that there is always only the root node without a predecessor
-		assertEquals(1, processedSubTrace.vertexSet().stream().filter(v -> Graphs.predecessorListOf(processedSubTrace, v).size() == 0).toList().size());
-		
+		traceGraph.validate();
 	}
 
 	// Access
@@ -363,7 +361,6 @@ public class NodeToGraphTests {
 		// result
 		assertEquals(7, processedSubTrace.vertexSet().size());
 
-		List<AccessDto> a1 = traceGraph.toList();
 		AccessDto entryPoint = traceGraph.toList().get(1);
 		AccessDto exitPoint = traceGraph.toList().get(5);
 		assertEquals(-1, entryPoint.getEntityID());
@@ -375,23 +372,23 @@ public class NodeToGraphTests {
 		for (int i = 2; i < 5; i++) {
 			access = traceGraph.toList().get(i);
 			if(condition == null) {
-				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access));
+				assertTrue(processedSubTrace.containsEdge(entryPoint, access));
 				condition = access;
 			} else {
 				final AccessDto cond = condition;
 				final AccessDto acc = access;
-				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
-				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(exitPoint));
+				assertTrue(processedSubTrace.containsEdge(cond, access));
+				assertTrue(processedSubTrace.containsEdge(acc, exitPoint));
 			}
 			
 		}
 
 		access = traceGraph.toList().get(0);
 		final AccessDto acc = access;
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(entryPoint));
+		assertTrue(processedSubTrace.containsEdge(acc, entryPoint));
 
 		access = traceGraph.toList().get(6);
-		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(exitPoint, a)).toList().contains(access));
+		assertTrue(processedSubTrace.containsEdge(exitPoint, access));
 		
     }
 
@@ -405,7 +402,7 @@ public class NodeToGraphTests {
 				new Object[]{"&if", 1}
 			},
 			new Object[][]{
-				new Object[]{"&condition", 2}, new Object[]{"&then", 3}, new Object[]{"&else", 7}
+				new Object[]{"&condition", 2}, new Object[]{"&then", 3}, new Object[]{"&else", 8}
 			},
 			new Object[][]{
 				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
@@ -414,7 +411,7 @@ public class NodeToGraphTests {
 				new Object[]{"&if", 4}
 			},
 			new Object[][]{
-				new Object[]{"&condition", 5}, new Object[]{"&then", 6}, new Object[]{"&else", 8}
+				new Object[]{"&condition", 5}, new Object[]{"&then", 6}, new Object[]{"&else", 7}
 			},
 			new Object[][]{
 				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
@@ -698,6 +695,68 @@ public class NodeToGraphTests {
 				final AccessDto acc = access;
 				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
 				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(exitPoint));
+			}
+			
+		}
+		
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_If_InsideCallSidesBothReturn() throws JSONException{
+		// setup
+		Access access1 = createAccess("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&call", 1}, new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{"&if", 2}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 3}, new Object[]{"&then", 4}, new Object[]{"&else", 4}, new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}, new Object[]{"#return"}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		callNode.nodeToAccessGraph(traceGraph, null, null, null, null);
+
+		traceGraph.validate();
+
+		// result
+		assertEquals(6, processedSubTrace.vertexSet().size());
+
+		AccessDto entryPoint = traceGraph.toList().get(1);
+		AccessDto callExitPoint = traceGraph.toList().get(6);
+		assertEquals(-1, entryPoint.getEntityID());
+		assertEquals(-1, callExitPoint.getEntityID());
+		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(callExitPoint, a)).toList().isEmpty());
+		
+		AccessDto access;
+		AccessDto condition = null;
+
+		for (int i = 2; i < 4; i++) {
+			access = traceGraph.toList().get(i);
+			if(condition == null) {
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(entryPoint, a)).toList().contains(access));
+				condition = access;
+			} else {
+				final AccessDto cond = condition;
+				final AccessDto acc = access;
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(cond, a)).toList().contains(access));
+				assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(acc, a)).toList().contains(callExitPoint));
 			}
 			
 		}
