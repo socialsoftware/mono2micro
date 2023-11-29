@@ -43,6 +43,9 @@ public class TraceGraph {
         if (!this.graph.containsVertex(firstAccess))
             throw new RuntimeException("trying to set first access but access not in graph");
         this.firstAccess = firstAccess;
+
+        this.removeFromList(this.firstAccess);
+        this.addToList(0, this.firstAccess);
     }
 
     public AccessDto getLastAccess() {
@@ -54,6 +57,8 @@ public class TraceGraph {
             throw new RuntimeException("trying to set last access but access not in graph");
         this.lastAccess = lastAccess;
 
+        this.removeFromList(this.lastAccess);
+        this.addToList(this.lastAccess);
     }
 
     public Graph<AccessDto, DefaultWeightedEdge> getGraph() {
@@ -105,26 +110,30 @@ public class TraceGraph {
         }
 
         if (!this.list.contains(vertex)) {
-            this.list.add(vertex);
+            this.addToList(vertex);
         }
     }
 
     public void addGraph(TraceGraph other) {
-        Graphs.addGraph(this.graph, other.getGraph());
-        
+        boolean hasLastAccess = this.lastAccess == null;
+
         if (this.firstAccess == null) {
+            this.addVertex(other.firstAccess);
             this.setFirstAccess(other.firstAccess);
         }
         
-        if (this.lastAccess == null) {
+        if (hasLastAccess) {
+            this.addVertex(other.lastAccess);
             this.setLastAccess(other.lastAccess);
         }
+
+        for (DefaultWeightedEdge edge : other.getGraph().edgeSet()) {
+            this.addEdge(other.getGraph().getEdgeSource(edge), other.getGraph().getEdgeTarget(edge), (float)other.getGraph().getEdgeWeight(edge));
+        }
         
-        // only add vertexes that are not on the list yet
         for (AccessDto accessDto : other.toList()) {
-            if (!this.list.contains(accessDto)) {
-                this.list.add(accessDto);
-            }
+            this.removeFromList(accessDto);
+            this.addToList(accessDto);
         }
 
         for (AccessDto accessDto : other.vertexesLockedToNewConnections) {
@@ -132,11 +141,19 @@ public class TraceGraph {
         }
     }
 
+    public void addToList(AccessDto access) {
+        this.list.add(access);
+    }
+
+    public void addToList(int index, AccessDto access) {
+        this.list.add(index, access);
+    }
+
+    public void removeFromList(AccessDto access) {
+        this.list.remove(access);
+    }
+
     public List<AccessDto> toList() {
-        if (this.firstAccess != this.lastAccess && this.lastAccess != null) {
-            this.list.remove(this.lastAccess);
-            this.list.add(this.lastAccess); // ensure it is the last member of the list
-        }
 		return this.list;
 	}
 
