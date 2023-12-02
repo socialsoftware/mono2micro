@@ -9,13 +9,13 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRep
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesGraphRepresentation.ACCESSES_GRAPH;
 
 public class TracesIteratorFactory {
-    public static TracesIterator getIterator(String representationType, String representationName, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
+    public static TracesIterator getIterator(String representationType, String representationName, InputStream accessesFile, int tracesMaxLimit, boolean startFromScratch) throws JSONException, IOException {
         switch (representationType) {
             case ACCESSES:
                 return new FunctionalityTracesIterator(accessesFile, tracesMaxLimit);
         
             case ACCESSES_GRAPH:
-                return new FunctionalityGraphTracesIterator(representationName, accessesFile);
+                return new FunctionalityGraphTracesIterator(representationName, accessesFile, startFromScratch);
 
             default:
                 break;

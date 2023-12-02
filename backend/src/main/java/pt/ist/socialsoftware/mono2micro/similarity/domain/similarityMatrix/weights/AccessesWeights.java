@@ -157,7 +157,7 @@ public class AccessesWeights extends Weights {
         Map<String, Float> e1e2PairCount = new HashMap<>();
         Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
         System.out.println("fill data structures");
-        fillDataStructures(entities, e1e2PairCount, entityFunctionalities, TracesIteratorFactory.getIterator(representationType, representationName, accessesFile, tracesMaxLimit), profileFunctionalities, traceType);
+        fillDataStructures(entities, e1e2PairCount, entityFunctionalities, TracesIteratorFactory.getIterator(representationType, representationName, accessesFile, tracesMaxLimit, true), profileFunctionalities, traceType);
         System.out.println("fill raw matrix");
         fillRawMatrix(rawMatrix, entities, e1e2PairCount, entityFunctionalities, fillFromIndex);
     }

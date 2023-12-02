@@ -56,7 +56,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     private static ConcurrentMap<String, FunctionalityInfo> _graphInfo = new ConcurrentHashMap<>();
     private String requestedFunctionality;
 
-    public FunctionalityGraphTracesIterator(String representationName, InputStream file) throws IOException, JSONException {
+    public FunctionalityGraphTracesIterator(String representationName, InputStream file, boolean startFromScratch) throws IOException, JSONException {
         _representationName = representationName;
         _codebaseAsJSON = new JSONObject(new String(IOUtils.toByteArray(file)));
         file.close();
@@ -70,7 +70,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         for(Iterator<String> it = functionalities; it.hasNext(); ) {
             String functionality = it.next();
 
-            if (!_graphInfo.containsKey(innerFunctionalityName(functionality))) {
+            if (!_graphInfo.containsKey(innerFunctionalityName(functionality)) || startFromScratch) {
                 tasks.add(new TraceGraphCreationThread(this, functionality));
             } else {
             }
