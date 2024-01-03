@@ -107,7 +107,7 @@ export default class PartitionsDecomposition extends Decomposition {
                             <br/>
                         </>
                     }
-                    {this.representationInformationsTypes.includes(RepresentationType.ACCESSES_TYPE) &&
+                    {this.representationInformationsTypes.includes(RepresentationType.STRUCTURE_TYPE) &&
                         <>
                             <Button
                                 onClick={() => handleExportDecomposition(this.name)}

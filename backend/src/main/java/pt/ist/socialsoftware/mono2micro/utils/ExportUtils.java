@@ -25,23 +25,29 @@ public class ExportUtils {
 
     public static String serializeDecompositionDataForContextMapper(
             Decomposition decomposition,
-            byte[] refactorizationData) throws JSONException
+            byte[] refactorizationData,
+            byte[] structureData) throws JSONException
     {
         Map<Short, String> idToEntityMap = new HashMap<>();
 
         JSONObject refactorizationObject = new JSONObject(new String(refactorizationData));
+        JSONObject structureObject = new JSONObject(new String(structureData));
         JSONArray clustersList = serializeClusterData(decomposition.getClusters().values(), idToEntityMap);
         JSONArray functionalityList = serializeFunctionalityData(refactorizationObject
                 .getJSONObject("functionalities"), idToEntityMap);
+        JSONArray entitiesList = serializeStructureData(structureObject
+                .getJSONArray("entities"));
+
 
         JSONObject decompositionObject = new JSONObject();
         decompositionObject.put("name", decomposition.getStrategy().getCodebase().getName());
         decompositionObject.put("clusters", clustersList);
         decompositionObject.put("functionalities", functionalityList);
+        decompositionObject.put("entities", entitiesList);
         return decompositionObject.toString(2);
     }
 
-    private static JSONArray serializeClusterData(
+    protected static JSONArray serializeClusterData(
             Collection<Cluster> clusters,
             Map<Short, String> idToEntityMap) throws JSONException
     {
@@ -65,7 +71,7 @@ public class ExportUtils {
         return clustersList;
     }
 
-    private static JSONArray serializeFunctionalityData(
+    protected static JSONArray serializeFunctionalityData(
             JSONObject refFunctionalitiesObject,
             Map<Short, String> idToEntityMap) throws JSONException
     {
@@ -117,5 +123,9 @@ public class ExportUtils {
         }
 
         return accessesList;
+    }
+
+    protected static JSONArray serializeStructureData(JSONArray refEntitiesObject) {
+        return refEntitiesObject;
     }
 }
