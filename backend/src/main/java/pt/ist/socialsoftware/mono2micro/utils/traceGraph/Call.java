@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -26,6 +27,7 @@ public class Call extends TraceGraphNode {
     }
 
     public void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
+        List<AccessDto> internalEndings = new ArrayList<>();
 
         TraceGraph processedSubTrace = new TraceGraph();
 
@@ -43,22 +45,26 @@ public class Call extends TraceGraphNode {
 
             processedSubTrace.addEdge(startingNode, bodyGraph.getFirstAccess(), 1f);
 
-            if (bodyGraph.getLastAccess() != endingNode && !bodyGraph.getGraph().containsEdge(bodyGraph.getLastAccess(), endingNode))
+            if (bodyGraph.getLastAccess() != null) {
                 processedSubTrace.addEdge(bodyGraph.getLastAccess(), endingNode, 1f);
+
+                internalEndings.add(bodyGraph.getLastAccess());
+            }
 
         } else {
             processedSubTrace.addEdge(startingNode, endingNode, 1f);
+
+            internalEndings.add(startingNode);
         }
 
         
 
         if (!processedSubTrace.isEmpty()) {
-            processedSubTrace.setLastAccess(endingNode);
-            boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
             traceGraph.addGraph(processedSubTrace);
-            if (traceGraphHadLast)
-                traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1f);
-            traceGraph.setLastAccess(endingNode);
+            if (traceGraph.getLastAccess() != null)
+                traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
+
+            traceGraph.setLastAccess(endingNode, internalEndings);
         }
 
         if (heuristicFlags != null) {

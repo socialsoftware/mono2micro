@@ -43,6 +43,7 @@ public class AbstractCall extends TraceGraphNode {
     }
 
     public void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
+        List<AccessDto> internalEndings = new ArrayList<>();
 
         if (this.getOverrideOptions().isEmpty()) return;
 
@@ -66,25 +67,25 @@ public class AbstractCall extends TraceGraphNode {
                 processedSubTrace.addEdge(startingNode, override.getFirstAccess(), optionProbability);
                 processedSubTrace.addEdge(override.getLastAccess(), endingNode, 1f);
                 numberOfOptions++;
+
+                internalEndings.add(override.getLastAccess());
             }
             
         }
 
         if (this.getOverrideOptions().isEmpty() || numberOfOptions < this.getOverrideOptions().size()) {
             processedSubTrace.addEdge(startingNode, endingNode, 1f - numberOfOptions * optionProbability);
+
+            internalEndings.add(startingNode);
         }
 
         
         if (!processedSubTrace.isEmpty()) {
-            boolean endingConnected = processedSubTrace.getGraph().containsVertex(endingNode) && !Graphs.predecessorListOf(processedSubTrace.getGraph(), endingNode).isEmpty();
-            if (endingConnected) processedSubTrace.setLastAccess(endingNode);
-
-            boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
             traceGraph.addGraph(processedSubTrace);
-            if (traceGraphHadLast)
+            if (traceGraph.getLastAccess() != null)
                 traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
 
-            if (endingConnected) traceGraph.setLastAccess(endingNode);
+            traceGraph.setLastAccess(endingNode, internalEndings);
         }
 
         traceGraph.validate();

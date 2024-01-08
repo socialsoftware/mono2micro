@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -60,6 +61,8 @@ public class If extends TraceGraphNode {
     }
 
     public void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
+        List<AccessDto> internalEndings = new ArrayList<>();
+
         HeuristicFlags conditionHeuristicFlags = new HeuristicFlags();
         HeuristicFlags thenHeuristicFlags = new HeuristicFlags();
         HeuristicFlags elseHeuristicFlags = new HeuristicFlags();
@@ -100,9 +103,12 @@ public class If extends TraceGraphNode {
                 processedSubTrace.addEdge(baseNode, thenGraph.getFirstAccess(), thenProbability);
     
                 processedSubTrace.addEdge(thenGraph.getLastAccess(), endingNode, 1f);
-    
+
+                internalEndings.add(thenGraph.getLastAccess());
             } else {
                 processedSubTrace.addEdge(baseNode, endingNode, thenProbability);
+
+                internalEndings.add(baseNode);
             }
     
             if (elseGraph != null && !elseGraph.isEmpty()) {
@@ -112,37 +118,26 @@ public class If extends TraceGraphNode {
     
                 processedSubTrace.addEdge(elseGraph.getLastAccess(), endingNode, 1f);
     
+                internalEndings.add(elseGraph.getLastAccess());
             } else {
                 processedSubTrace.addEdge(baseNode, endingNode, 1-thenProbability);
+
+                internalEndings.add(baseNode);
             }
 
         } else {
             processedSubTrace.addEdge(baseNode, endingNode, 1);
+
+            internalEndings.add(baseNode);
         }
 
 
         if (!processedSubTrace.isEmpty()) {
-            boolean thenIsLocked = false;
-            boolean elseIsLocked = false;
-            
-            if (thenGraph != null && thenGraph.getLastAccess() != null) {
-                thenIsLocked = processedSubTrace.isVertexLockedToNewConnections(thenGraph.getLastAccess());
-            }
-
-            if (elseGraph != null && elseGraph.getLastAccess() != null) {
-                elseIsLocked = processedSubTrace.isVertexLockedToNewConnections(elseGraph.getLastAccess());
-            }
-
-
-            if (!(thenIsLocked && elseIsLocked)) processedSubTrace.setLastAccess(endingNode);
-
-            boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
             traceGraph.addGraph(processedSubTrace);
-            if (traceGraphHadLast)
+            if (traceGraph.getLastAccess() != null)
                 traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
 
-            if (!(thenIsLocked && elseIsLocked)) traceGraph.setLastAccess(endingNode);
-            else traceGraph.setLastAccess(null);
+            traceGraph.setLastAccess(endingNode, internalEndings);
         }
 
         traceGraph.validate();
