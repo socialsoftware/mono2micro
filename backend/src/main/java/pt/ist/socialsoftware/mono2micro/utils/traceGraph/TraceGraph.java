@@ -52,13 +52,39 @@ public class TraceGraph {
         return lastAccess;
     }
 
-    public void setLastAccess(AccessDto lastAccess) {
-        if (lastAccess != null && !this.graph.containsVertex(lastAccess))
-            throw new RuntimeException("trying to set last access but access not in graph");
-        this.lastAccess = lastAccess;
+    public void setLastAccess(AccessDto lastAccess, List<AccessDto> internalEnds) {
+        if (lastAccess == null)
+                throw new RuntimeException("trying to set last access as null");
 
-        this.removeFromList(this.lastAccess);
-        this.addToList(this.lastAccess);
+        boolean allInternalEndsLocked = internalEnds != null; // true by default if there are internal endings
+
+        if (internalEnds != null) {
+            for (AccessDto accessDto : internalEnds) {
+                if (!this.isVertexLockedToNewConnections(accessDto) || this.graph.containsEdge(accessDto, lastAccess)) {
+                    allInternalEndsLocked = false;
+    
+                    // confirm internal ending vertex is connected to last access candidate
+                    if (!this.graph.containsEdge(accessDto, lastAccess)) {
+                        throw new RuntimeException("setting last access, but internal endings are not all connected");
+                    } 
+    
+                    break;
+                }
+            }
+        }
+
+        if (!allInternalEndsLocked) {
+            if (!this.graph.containsVertex(lastAccess))
+                throw new RuntimeException("trying to set last access but access not in graph");
+
+            this.lastAccess = lastAccess;
+
+            this.removeFromList(this.lastAccess);
+            this.addToList(this.lastAccess);
+        } else {
+            this.lastAccess = null; // if all internal endings are locked, everything is connected and doesn't need last access
+        }
+
     }
 
     public Graph<AccessDto, DefaultWeightedEdge> getGraph() {
@@ -71,16 +97,24 @@ public class TraceGraph {
 
     public void addEdge(AccessDto from, AccessDto to, float probability) {
         if (isVertexLockedToNewConnections(from)) return;
-        this.addVertex(from);
-        this.addVertex(to);
 
-        if (from.equals(to)) {
+        if (from == null || to == null) {
+            throw new RuntimeException("Attempted to create edge with null vertex.");
+        }else if (from.equals(to)) {
             throw new RuntimeException("Attempted to create edge with same start and end vertexes.");
         } else if (this.graph.containsEdge(from, to)) {
             throw new RuntimeException("Attempted to create edge that already exists.");
         }
 
+        this.addVertex(from);
+        this.addVertex(to);
+
         DefaultWeightedEdge edge = this.graph.addEdge(from, to);
+
+        if (edge == null) {
+            throw new RuntimeException("Edge was not created, when it should have." + from + " " + to);
+        }
+
         this.graph.setEdgeWeight(edge, probability);
 
         double outgoingProbability = this.graph.outgoingEdgesOf(from).stream().reduce(0d, (subtotal, element) -> subtotal + this.graph.getEdgeWeight(element), Double::sum);
@@ -105,10 +139,6 @@ public class TraceGraph {
             this.setFirstAccess(vertex);
         }
 
-        if (this.lastAccess == null) {
-            this.setLastAccess(vertex);;
-        }
-
         if (!this.list.contains(vertex)) {
             this.addToList(vertex);
         }
@@ -124,7 +154,6 @@ public class TraceGraph {
         
         if (hasLastAccess) {
             this.addVertex(other.lastAccess);
-            this.setLastAccess(other.lastAccess);
         }
 
         for (DefaultWeightedEdge edge : other.getGraph().edgeSet()) {
@@ -158,7 +187,7 @@ public class TraceGraph {
 	}
 
     public boolean isVertexLockedToNewConnections(AccessDto vertex) {
-        if (vertex == null) return true;
+        if (vertex == null) return true; //FIXME: should resturn false
 
         return this.vertexesLockedToNewConnections.contains(vertex);
     }
@@ -219,7 +248,7 @@ public class TraceGraph {
             
             if (this.getLastAccess() == vertex) {
                 try {
-                    duplicate.setLastAccess(vertexCopy);
+                    duplicate.setLastAccess(vertexCopy, null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

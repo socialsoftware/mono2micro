@@ -50,7 +50,7 @@ public class Access extends TraceGraphNode {
         else
             traceGraph.addVertex(access);
 
-        traceGraph.setLastAccess(access);
+        traceGraph.setLastAccess(access, null);
 
         if (heuristicFlags != null && getMode() == "W") {
             heuristicFlags.hasStore = true;

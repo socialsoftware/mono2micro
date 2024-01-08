@@ -739,7 +739,7 @@ public class NodeToGraphTests {
 		assertEquals(6, processedSubTrace.vertexSet().size());
 
 		AccessDto entryPoint = traceGraph.toList().get(1);
-		AccessDto callExitPoint = traceGraph.toList().get(6);
+		AccessDto callExitPoint = traceGraph.toList().get(5);
 		assertEquals(-1, entryPoint.getEntityID());
 		assertEquals(-1, callExitPoint.getEntityID());
 		assertTrue(processedSubTrace.vertexSet().stream().filter(a -> processedSubTrace.containsEdge(callExitPoint, a)).toList().isEmpty());

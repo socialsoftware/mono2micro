@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -45,6 +46,8 @@ public class Loop extends TraceGraphNode {
     }
 
     public void nodeToAccessGraph(TraceGraph traceGraph, AccessDto lastCallEnd, AccessDto lastLoopStart, AccessDto lastLoopEnd, HeuristicFlags heuristicFlags) {
+        List<AccessDto> internalEndings = new ArrayList<>();
+
         HeuristicFlags expressionHeuristicFlags = new HeuristicFlags();
         HeuristicFlags bodyHeuristicFlags = new HeuristicFlags();
 
@@ -92,9 +95,13 @@ public class Loop extends TraceGraphNode {
             if (!processedSubTrace.isVertexLockedToNewConnections(bodyGraph.getLastAccess())) {
                 processedSubTrace.addEdge(bodyGraph.getLastAccess(), expressionGraphCopy.getFirstAccess(), 1f);
                 processedSubTrace.addEdge(expressionGraphCopy.getLastAccess(), endingNode, exitLoopProbability);
+
+                internalEndings.add(expressionGraphCopy.getLastAccess());
             }
 
             processedSubTrace.addEdge(expressionGraph.getLastAccess(), endingNode, exitLoopProbability);
+
+            internalEndings.add(expressionGraph.getLastAccess());
 
         } else if ((expressionGraph == null || expressionGraph.isEmpty()) && (bodyGraph != null && !bodyGraph.isEmpty())) {
             processedSubTrace.addEdge(startingNode, bodyGraph.getFirstAccess(), enterLoopProbability);
@@ -102,6 +109,9 @@ public class Loop extends TraceGraphNode {
             processedSubTrace.addEdge(bodyGraph.getLastAccess(), endingNode, exitLoopProbability);
 
             processedSubTrace.addEdge(startingNode, endingNode, exitLoopProbability);
+
+            internalEndings.add(bodyGraph.getLastAccess());
+            internalEndings.add(startingNode);
 
         } else if ((expressionGraph != null && !expressionGraph.isEmpty()) && (bodyGraph == null || bodyGraph.isEmpty())) {
             processedSubTrace.addEdge(startingNode, expressionGraph.getFirstAccess(), 1f);
@@ -111,15 +121,16 @@ public class Loop extends TraceGraphNode {
 
             processedSubTrace.addEdge(expressionGraph.getLastAccess(), endingNode, exitLoopProbability);
 
+            internalEndings.add(expressionGraphCopy.getLastAccess());
+            internalEndings.add(expressionGraph.getLastAccess());
         }
 
         if (!processedSubTrace.isEmpty()) {
-            processedSubTrace.setLastAccess(endingNode);
-            boolean traceGraphHadLast = traceGraph.getLastAccess() != null;
             traceGraph.addGraph(processedSubTrace);
-            if (traceGraphHadLast)
-                traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1f);
-            traceGraph.setLastAccess(endingNode);
+            if (traceGraph.getLastAccess() != null)
+                traceGraph.addEdge(traceGraph.getLastAccess(), startingNode, 1.0f);
+
+            traceGraph.setLastAccess(endingNode, internalEndings);
         }
 
         if (heuristicFlags != null) {
