@@ -119,7 +119,7 @@ public class DecompositionController {
 		try {
 			response.setHeader("Content-Disposition", "attachment; filename=m2m_decomposition_data.zip");
 			response.setContentType("application/zip");
-			decompositionService.exportDecomposition(decompositionName, new ZipOutputStream(response.getOutputStream()));
+			decompositionService.exportDecompositionToContextMapper(decompositionName, new ZipOutputStream(response.getOutputStream()));
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.flushBuffer();
 
