@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.service;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +20,11 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
-import pt.ist.socialsoftware.mono2micro.utils.ExportUtils;
+import pt.ist.socialsoftware.mono2micro.utils.export.ContextMapperContractBuilder;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.StructureRepresentation.STRUCTURE;
@@ -89,12 +89,17 @@ public class DecompositionService {
         return decompositionRepository.findByName(decompositionName);
     }
 
-    public void exportDecomposition(String decompositionName, ZipOutputStream zipOutputStream) throws IOException, JSONException {
+    public void exportDecompositionToContextMapper(String decompositionName, ZipOutputStream zipOutputStream) throws IOException, JSONException {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        String serializedData = ExportUtils.serializeDecompositionDataForContextMapper(decomposition,
-                IOUtils.toByteArray(gridFsService.getFile(decompositionName + "_refactorization")),
-                IOUtils.toByteArray(gridFsService.getFile(decomposition.getStrategy().getCodebase().getRepresentationByFileType(STRUCTURE).getName())));
-        ExportUtils.zipSerializedData("m2m_decomposition.json", serializedData, zipOutputStream);
+
+        zipOutputStream.putNextEntry(new ZipEntry("m2m_decomposition.json"));
+        zipOutputStream.write(new ContextMapperContractBuilder(decomposition)
+                .addStructureRepresentationData(gridFsService.getFile(
+                        decomposition.getStrategy().getCodebase().getRepresentationByFileType(STRUCTURE).getName()))
+                .addSagaRefactorizationData(gridFsService.getFile(decompositionName + "_refactorization"))
+                .buildContract()
+                .getBytes());
+        zipOutputStream.closeEntry();
         zipOutputStream.close();
     }
 

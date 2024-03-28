@@ -2,6 +2,8 @@ package pt.ist.socialsoftware.cml.converter.strategies.naming;
 
 import pt.ist.socialsoftware.cml.converter.domain.EntityAccess;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +28,9 @@ public class IgnoreAccessOrder extends IgnoreAccessTypes {
 
     @Override
     public String resolveOperationName() {
-        for (String operationNameComponent : operationNameComponents) {
+        List<String> sortedOperationNameComponents = new ArrayList<>(operationNameComponents);
+        Collections.sort(sortedOperationNameComponents);
+        for (String operationNameComponent : sortedOperationNameComponents) {
             appendToOperationName("_");
             appendToOperationName(operationNameComponent);
         }

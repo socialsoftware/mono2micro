@@ -1503,72 +1503,45 @@
   ],
   "functionalities": [
     {
-      "name": "QuizController.removeNonFilledQuizAnswers",
+      "name": "DashboardController.getDashboard",
       "orchestrator": "Cluster1",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "QuestionAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "RW"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "RW"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        }
-      ]
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
     },
     {
       "name": "DiscussionController.changeDiscussionStatus",
@@ -1577,10 +1550,6 @@
         {
           "accesses": [
             {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
               "entity": "Discussion",
               "type": "RW"
             },
@@ -1590,6 +1559,10 @@
             },
             {
               "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
               "type": "R"
             },
             {
@@ -1614,14 +1587,6 @@
         {
           "accesses": [
             {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
               "entity": "Image",
               "type": "R"
             },
@@ -1631,6 +1596,14 @@
             },
             {
               "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
               "type": "R"
             }
           ],
@@ -1639,11 +1612,15 @@
       ]
     },
     {
-      "name": "QuizController.updateQuiz",
+      "name": "DiscussionController.getOpenCourseExecutionDiscussions",
       "orchestrator": "Cluster3",
       "steps": [
         {
           "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
             {
               "entity": "QuestionDetails",
               "type": "R"
@@ -1659,16 +1636,67 @@
             {
               "entity": "CodeFillInQuestion",
               "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
             }
           ],
           "cluster": "Cluster3"
         },
         {
           "accesses": [
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "QuizController.updateQuiz",
+      "orchestrator": "Cluster1",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
             {
               "entity": "Discussion",
               "type": "R"
@@ -1680,13 +1708,542 @@
             {
               "entity": "QuizQuestion",
               "type": "W"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        }
+      ]
+    },
+    {
+      "name": "TopicController.updateTopic",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionController.updateQuestionTopics",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "TournamentController.getTournament",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Tournament",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionSubmissionController.getQuestionSubmissionReviews",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Review",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuizController.deleteQuiz",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Quiz",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Tournament",
+            "type": "R"
+          },
+          {
+            "entity": "QuizQuestion",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "TournamentController.removeTournament",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Quiz",
+            "type": "W"
+          },
+          {
+            "entity": "Tournament",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AuthController.demoStudentAuth",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "AuthDemoUser",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthTecnicoUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "TournamentController.leaveTournament",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AuthController.externalUserAuth",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionController.exportQuestions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Course",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionController.getCourseQuestionsByQuery",
+      "orchestrator": "Cluster1",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "Course",
+              "type": "R"
             },
             {
               "entity": "Quiz",
-              "type": "RW"
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
             },
             {
-              "entity": "CourseExecution",
+              "entity": "CodeFillInOption",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderSlot",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInSpot",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Option",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        }
+      ]
+    },
+    {
+      "name": "AssessmentController.getTopicConjunctionQuestions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "FailedAnswerController.removeFailedAnswer",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Dashboard",
+            "type": "W"
+          },
+          {
+            "entity": "FailedAnswer",
+            "type": "R"
+          },
+          {
+            "entity": "FailedAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionSubmissionController.createReview",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionSubmission",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionSubmission",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "Review",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionSubmissionController.toggleTeacherNotificationRead",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "QuestionSubmission",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionSubmission",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionController.updateQuestion",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionAnswer",
               "type": "R"
             },
             {
@@ -1699,58 +2256,111 @@
       ]
     },
     {
-      "name": "AnswerController.getNewQuiz",
-      "orchestrator": "Cluster3",
+      "name": "QuestionSubmissionController.getStudentQuestionSubmissions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "QuestionSubmission",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionSubmissionController.removeSubmittedQuestion",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionSubmission",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionSubmission",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "Review",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "QuizQuestion",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "FailedAnswerController.updateFailedAnswers",
+      "orchestrator": "Cluster1",
       "steps": [
         {
           "accesses": [
             {
-              "entity": "Image",
+              "entity": "Dashboard",
               "type": "R"
             },
             {
-              "entity": "QuestionDetails",
+              "entity": "Student",
               "type": "R"
             },
             {
-              "entity": "CodeOrderQuestion",
+              "entity": "QuizQuestion",
               "type": "R"
             },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
             {
               "entity": "Quiz",
-              "type": "W"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            },
-            {
-              "entity": "Course",
               "type": "R"
             },
             {
@@ -1758,20 +2368,123 @@
               "type": "W"
             },
             {
-              "entity": "AuthUser",
+              "entity": "Question",
               "type": "R"
             },
             {
-              "entity": "Assessment",
+              "entity": "FailedAnswer",
               "type": "R"
             },
             {
-              "entity": "Student",
+              "entity": "QuestionAnswer",
               "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "MultipleChoiceAnswer",
+              "type": "R"
+            },
+            {
+              "entity": "AnswerDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInAnswer",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderAnswer",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "R"
+            },
+            {
+              "entity": "Option",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "FailedAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Dashboard",
+              "type": "W"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
             },
             {
               "entity": "QuizQuestion",
-              "type": "RW"
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "R"
             }
           ],
           "cluster": "Cluster1"
@@ -1779,53 +2492,200 @@
       ]
     },
     {
-      "name": "ImportExportController.importAll",
+      "name": "AssessmentController.getExecutionCourseTopicConjunctions",
       "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "TournamentController.solveQuiz",
+      "orchestrator": "Cluster3",
       "steps": [
         {
           "accesses": [
             {
-              "entity": "AuthTecnicoUser",
-              "type": "W"
+              "entity": "CodeOrderQuestion",
+              "type": "R"
             },
             {
-              "entity": "AuthDemoUser",
-              "type": "W"
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInSpot",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "RW"
             },
             {
               "entity": "User",
-              "type": "RW"
+              "type": "R"
             },
             {
-              "entity": "AuthUser",
-              "type": "RW"
+              "entity": "TopicConjunction",
+              "type": "R"
             },
             {
-              "entity": "Course",
-              "type": "RW"
-            },
-            {
-              "entity": "Teacher",
+              "entity": "QuizAnswer",
               "type": "W"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
             },
             {
               "entity": "CourseExecution",
               "type": "RW"
             },
             {
+              "entity": "Assessment",
+              "type": "R"
+            },
+            {
+              "entity": "Tournament",
+              "type": "RW"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "RW"
+            },
+            {
               "entity": "Student",
-              "type": "W"
+              "type": "RW"
+            },
+            {
+              "entity": "Course",
+              "type": "R"
             },
             {
               "entity": "Question",
               "type": "RW"
             },
             {
-              "entity": "AuthExternalUser",
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "Topic",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuestionAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceAnswerItem",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster2"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
               "type": "W"
             },
             {
-              "entity": "DemoAdmin",
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "QuestionController.createQuestion",
+      "orchestrator": "Cluster1",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Course",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
               "type": "W"
             }
           ],
@@ -1834,19 +2694,11 @@
         {
           "accesses": [
             {
-              "entity": "CodeOrderSlot",
-              "type": "W"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "RW"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "W"
-            },
-            {
               "entity": "CodeFillInQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "CodeFillInOption",
               "type": "W"
             },
             {
@@ -1858,12 +2710,20 @@
               "type": "RW"
             },
             {
+              "entity": "CodeOrderQuestion",
+              "type": "W"
+            },
+            {
               "entity": "Image",
               "type": "W"
             },
             {
-              "entity": "CodeFillInOption",
+              "entity": "CodeOrderSlot",
               "type": "W"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "RW"
             },
             {
               "entity": "CodeFillInSpot",
@@ -1875,51 +2735,550 @@
         {
           "accesses": [
             {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
               "entity": "Quiz",
-              "type": "RW"
-            },
-            {
-              "entity": "AuthUser",
               "type": "R"
             },
             {
-              "entity": "QuestionAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
+              "entity": "Discussion",
+              "type": "R"
             },
             {
               "entity": "Reply",
               "type": "R"
             },
             {
-              "entity": "Topic",
+              "entity": "Question",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "QuestionSubmissionController.createQuestionSubmission",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Course",
               "type": "RW"
             },
             {
-              "entity": "QuizAnswer",
+              "entity": "Question",
               "type": "W"
             },
             {
-              "entity": "QuizQuestion",
+              "entity": "CourseExecution",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInSpot",
               "type": "RW"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "Image",
+              "type": "W"
+            },
+            {
+              "entity": "Option",
+              "type": "W"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "W"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "RW"
+            },
+            {
+              "entity": "CodeOrderSlot",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "RW"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionSubmission",
+              "type": "W"
             },
             {
               "entity": "Student",
               "type": "RW"
             },
             {
+              "entity": "User",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "AssessmentController.updateAssessment",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "Assessment",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AnswerController.getQuestionForQuizAnswer",
+      "orchestrator": "Cluster1",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "Teacher",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        }
+      ]
+    },
+    {
+      "name": "QuestionController.getAvailableQuestions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Question",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionController.uploadImage",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [{
+            "entity": "Image",
+            "type": "R"
+          }],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
               "entity": "Course",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [{
+            "entity": "Image",
+            "type": "RW"
+          }],
+          "cluster": "Cluster3"
+        }
+      ]
+    },
+    {
+      "name": "DiscussionController.getCourseExecutionDiscussions",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "TopicController.getTopicQuestions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Topic",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AssessmentController.assessmentSetStatus",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "Assessment",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "CourseExecutionController.activateCourseExecution",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Teacher",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "CourseExecutionController.importQuestions",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Course",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Option",
+              "type": "W"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "RW"
+            },
+            {
+              "entity": "CodeFillInSpot",
+              "type": "RW"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "RW"
+            },
+            {
+              "entity": "Image",
+              "type": "W"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "CodeOrderSlot",
+              "type": "W"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Course",
+              "type": "RW"
+            },
+            {
+              "entity": "Topic",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "W"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "DiscussionController.changeReplyAvailability",
+      "orchestrator": "Cluster1",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
               "type": "RW"
             },
             {
@@ -1932,36 +3291,109 @@
         {
           "accesses": [
             {
-              "entity": "CodeFillInAnswer",
-              "type": "W"
+              "entity": "Image",
+              "type": "R"
             },
             {
-              "entity": "CodeOrderAnswer",
-              "type": "W"
+              "entity": "QuestionDetails",
+              "type": "R"
             },
             {
-              "entity": "MultipleChoiceAnswer",
-              "type": "W"
+              "entity": "CodeOrderQuestion",
+              "type": "R"
             },
             {
-              "entity": "CodeOrderAnswerSlot",
-              "type": "W"
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
             },
             {
-              "entity": "AnswerDetails",
-              "type": "RW"
+              "entity": "CodeFillInQuestion",
+              "type": "R"
             }
           ],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [{
-            "entity": "QuestionAnswer",
-            "type": "W"
-          }],
-          "cluster": "Cluster1"
+          "cluster": "Cluster3"
         }
       ]
+    },
+    {
+      "name": "TournamentController.getTournamentsForCourseExecution",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Tournament",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionController.getCourseQuestions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Question",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionController.removeQuestion",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionSubmission",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "QuizQuestion",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AssessmentController.getAvailableAssessments",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
     },
     {
       "name": "AnswerController.concludeQuiz",
@@ -1974,11 +3406,11 @@
               "type": "R"
             },
             {
-              "entity": "Option",
+              "entity": "QuestionDetails",
               "type": "R"
             },
             {
-              "entity": "QuestionDetails",
+              "entity": "Option",
               "type": "R"
             }
           ],
@@ -1986,10 +3418,6 @@
         },
         {
           "accesses": [
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
             {
               "entity": "QuizAnswer",
               "type": "RW"
@@ -2005,6 +3433,10 @@
             {
               "entity": "Question",
               "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
             }
           ],
           "cluster": "Cluster1"
@@ -2016,11 +3448,7 @@
         {
           "accesses": [
             {
-              "entity": "AnswerDetails",
-              "type": "RW"
-            },
-            {
-              "entity": "CodeOrderAnswer",
+              "entity": "CodeFillInAnswer",
               "type": "W"
             },
             {
@@ -2028,12 +3456,16 @@
               "type": "W"
             },
             {
-              "entity": "CodeFillInAnswer",
+              "entity": "CodeOrderAnswer",
               "type": "W"
             },
             {
               "entity": "QuizAnswerItem",
               "type": "W"
+            },
+            {
+              "entity": "AnswerDetails",
+              "type": "RW"
             }
           ],
           "cluster": "Cluster0"
@@ -2044,6 +3476,14 @@
         },
         {
           "accesses": [
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
             {
               "entity": "CourseExecution",
               "type": "RW"
@@ -2059,14 +3499,6 @@
             {
               "entity": "Student",
               "type": "RW"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
             }
           ],
           "cluster": "Cluster1"
@@ -2074,101 +3506,66 @@
       ]
     },
     {
-      "name": "QuestionSubmissionController.updateQuestionSubmission",
-      "orchestrator": "Cluster3",
+      "name": "DifficultQuestionController.updateDashboardDifficultQuestions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "DifficultQuestion",
+            "type": "R"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AssessmentController.getExecutionCourseAssessments",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionController.getStatementQuestion",
+      "orchestrator": "Cluster1",
       "steps": [
         {
-          "accesses": [
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
+          "accesses": [{
+            "entity": "Question",
+            "type": "R"
+          }],
+          "cluster": "Cluster1"
         },
         {
           "accesses": [
             {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionSubmission",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
-      "name": "AnswerController.getQuizByQRCode",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInOption",
-              "type": "R"
-            },
-            {
               "entity": "Image",
               "type": "R"
             },
             {
               "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInSpot",
               "type": "R"
             },
             {
@@ -2185,179 +3582,61 @@
             }
           ],
           "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Quiz",
-              "type": "W"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "W"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswerItem",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster2"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
         }
       ]
     },
     {
-      "name": "QuizController.createQuiz",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuizQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
-              "entity": "Quiz",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
+      "name": "AuthController.demoAdminAuth",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "AuthDemoUser",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthTecnicoUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "W"
+          },
+          {
+            "entity": "DemoAdmin",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
     },
     {
       "name": "TournamentController.updateTournament",
@@ -2366,6 +3645,14 @@
         {
           "accesses": [
             {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
               "entity": "CodeOrderQuestion",
               "type": "R"
             },
@@ -2376,14 +3663,6 @@
             {
               "entity": "CodeFillInQuestion",
               "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
             }
           ],
           "cluster": "Cluster3"
@@ -2391,32 +3670,8 @@
         {
           "accesses": [
             {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            },
-            {
-              "entity": "Topic",
-              "type": "RW"
-            },
-            {
-              "entity": "Quiz",
-              "type": "RW"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
+              "entity": "QuizAnswer",
+              "type": "W"
             },
             {
               "entity": "User",
@@ -2427,24 +3682,48 @@
               "type": "R"
             },
             {
-              "entity": "Course",
-              "type": "R"
+              "entity": "Quiz",
+              "type": "RW"
             },
             {
-              "entity": "QuizQuestion",
-              "type": "W"
+              "entity": "Topic",
+              "type": "RW"
             },
             {
               "entity": "QuestionAnswer",
               "type": "RW"
             },
             {
+              "entity": "QuizQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
               "entity": "Tournament",
               "type": "RW"
             },
             {
-              "entity": "QuizAnswer",
-              "type": "W"
+              "entity": "Course",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
             }
           ],
           "cluster": "Cluster1"
@@ -2479,1307 +3758,296 @@
     },
     {
       "name": "DiscussionController.createDiscussion",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Student",
-              "type": "RW"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "Discussion",
-              "type": "RW"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
-      "name": "AnswerController.getQuizByCode",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInSpot",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInOption",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Quiz",
-              "type": "W"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "W"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceAnswerItem",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster2"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
-      "name": "QuizController.populateWithQuizAnswers",
       "orchestrator": "Cluster1",
       "steps": [
         {
           "accesses": [
             {
-              "entity": "Quiz",
-              "type": "RW"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
               "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
               "type": "RW"
             },
             {
-              "entity": "QuestionAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "RW"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "AuthUser",
+              "entity": "Quiz",
               "type": "R"
             },
             {
               "entity": "Reply",
               "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        }
-      ]
-    },
-    {
-      "name": "AnswerController.startQuiz",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInSpot",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInOption",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Quiz",
-              "type": "W"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "W"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
             },
             {
               "entity": "QuizQuestion",
               "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceAnswerItem",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster2"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
             },
             {
               "entity": "QuestionAnswer",
               "type": "RW"
             },
             {
-              "entity": "Question",
+              "entity": "User",
               "type": "R"
             },
             {
-              "entity": "QuizQuestion",
+              "entity": "QuizAnswer",
               "type": "R"
             },
             {
-              "entity": "Quiz",
+              "entity": "Discussion",
+              "type": "RW"
+            },
+            {
+              "entity": "AuthUser",
               "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
             }
           ],
           "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
         }
       ]
     },
     {
-      "name": "QuestionController.updateQuestion",
+      "name": "CourseExecutionController.createExternalCourseExecution",
       "orchestrator": "Cluster1",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        }
-      ]
-    },
-    {
-      "name": "FailedAnswerController.updateFailedAnswers",
-      "orchestrator": "Cluster0",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "AnswerDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceAnswer",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "FailedAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Dashboard",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Option",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInOption",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "FailedAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Dashboard",
-              "type": "W"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
-      "name": "TournamentController.solveQuiz",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInSpot",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInOption",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Tournament",
-              "type": "RW"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Topic",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Quiz",
-              "type": "RW"
-            },
-            {
-              "entity": "Student",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            },
-            {
-              "entity": "Course",
-              "type": "R"
-            },
-            {
-              "entity": "TopicConjunction",
-              "type": "R"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
-              "entity": "Assessment",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceAnswerItem",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster2"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
-      "name": "QuestionController.createQuestion",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Course",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "RW"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "RW"
-            },
-            {
-              "entity": "CodeOrderSlot",
-              "type": "W"
-            },
-            {
-              "entity": "Image",
-              "type": "W"
-            },
-            {
-              "entity": "CodeFillInOption",
-              "type": "W"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "Option",
-              "type": "W"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "CodeFillInSpot",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
-      "name": "QuestionSubmissionController.createQuestionSubmission",
-      "orchestrator": "Cluster1",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "Course",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "RW"
-            },
-            {
-              "entity": "Option",
-              "type": "W"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "CodeOrderSlot",
-              "type": "W"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "RW"
-            },
-            {
-              "entity": "CodeFillInOption",
-              "type": "W"
-            },
-            {
-              "entity": "Image",
-              "type": "W"
-            },
-            {
-              "entity": "CodeFillInSpot",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionSubmission",
-              "type": "W"
-            },
-            {
-              "entity": "Student",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
-      "name": "QuizController.getQuizAnswers",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInSpot",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInOption",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "Option",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderSlot",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [{
-            "entity": "QuizAnswerItem",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
             "type": "R"
-          }],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [{
-            "entity": "QuestionAnswerItem",
+          },
+          {
+            "entity": "Course",
             "type": "R"
-          }],
-          "cluster": "Cluster2"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "Teacher",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "CodeOrderAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "AnswerDetails",
-              "type": "RW"
-            },
-            {
-              "entity": "MultipleChoiceAnswer",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Student",
-              "type": "RW"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
-              "entity": "Dashboard",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuizAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswerItem",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster0"
-        }
-      ]
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Teacher",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
     },
     {
-      "name": "AnswerController.getQuestionForQuizAnswer",
+      "name": "DifficultQuestionController.updateCourseExecutionDifficultQuestions",
       "orchestrator": "Cluster1",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "Teacher",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        }
-      ]
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "W"
+          },
+          {
+            "entity": "DifficultQuestion",
+            "type": "R"
+          },
+          {
+            "entity": "DifficultQuestion",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "UserController.registerExternalUser",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "AuthDemoUser",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Teacher",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthTecnicoUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AnswerController.getSolvedQuizzes",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionSubmissionController.updateQuestionSubmissionTopics",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "QuestionSubmission",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
     },
     {
       "name": "AdminController.anonymizeCourseExecutionUsers",
@@ -3795,15 +4063,15 @@
         {
           "accesses": [
             {
-              "entity": "AuthUser",
-              "type": "RW"
-            },
-            {
               "entity": "CourseExecution",
               "type": "RW"
             },
             {
               "entity": "User",
+              "type": "RW"
+            },
+            {
+              "entity": "AuthUser",
               "type": "RW"
             }
           ],
@@ -3812,314 +4080,86 @@
       ]
     },
     {
-      "name": "QuestionController.uploadImage",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [{
-            "entity": "Image",
+      "name": "AuthController.fenixAuth",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
             "type": "R"
-          }],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Course",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [{
-            "entity": "Image",
-            "type": "RW"
-          }],
-          "cluster": "Cluster3"
-        }
-      ]
+          },
+          {
+            "entity": "AuthDemoUser",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Teacher",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthTecnicoUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
     },
     {
-      "name": "CourseExecutionController.exportCourseExecutionInfo",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInOption",
-              "type": "R"
-            },
-            {
-              "entity": "Option",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderSlot",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [{
-            "entity": "QuizAnswerItem",
+      "name": "DifficultQuestionController.deleteDifficultQuestions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
             "type": "R"
-          }],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeFillInAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceAnswerItem",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster2"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Teacher",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "CodeOrderAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "AnswerDetails",
-              "type": "RW"
-            },
-            {
-              "entity": "MultipleChoiceAnswer",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Student",
-              "type": "RW"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
-              "entity": "Dashboard",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuizAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "QuizAnswerItem",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster0"
-        },
-        {
-          "accesses": [],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "Course",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "RW"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "DifficultQuestion",
+            "type": "R"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
     },
     {
       "name": "FraudController.getQuizTimeFraudScores",
@@ -4145,13 +4185,1349 @@
         {
           "accesses": [
             {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
               "entity": "AuthUser",
               "type": "R"
             },
             {
               "entity": "QuizAnswer",
               "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [{
+            "entity": "QuizAnswerItem",
+            "type": "R"
+          }],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [{
+            "entity": "QuestionAnswerItem",
+            "type": "R"
+          }],
+          "cluster": "Cluster2"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "AuthUser",
+              "type": "R"
             },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Teacher",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "CodeOrderAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "MultipleChoiceAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "AnswerDetails",
+              "type": "RW"
+            }
+          ],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Student",
+              "type": "RW"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
+            },
+            {
+              "entity": "Dashboard",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuizAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswerItem",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster0"
+        }
+      ]
+    },
+    {
+      "name": "CourseExecutionController.getCourseExecutionById",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "CourseExecution",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "DiscussionController.addReply",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "Discussion",
+            "type": "R"
+          },
+          {
+            "entity": "Reply",
+            "type": "W"
+          },
+          {
+            "entity": "Discussion",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AssessmentController.removeAssessment",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Assessment",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "TopicController.createTopic",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuizController.duplicateQuiz",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuizQuestion",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "QuizController.removeNonFilledQuizAnswers",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "RW"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "RW"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "QuestionController.getQuestion",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Question",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AnswerController.getNewQuiz",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "RW"
+            },
+            {
+              "entity": "Course",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "W"
+            },
+            {
+              "entity": "Assessment",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "RW"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "CourseExecutionController.deleteExternalInactiveUsers",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Teacher",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "Reply",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "UserController.registerExternalUsersCsvFile",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "AuthDemoUser",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Teacher",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthTecnicoUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "DiscussionController.getClarificationsByQuestionId",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Discussion",
+            "type": "R"
+          },
+          {
+            "entity": "Reply",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionSubmissionController.updateQuestionSubmission",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionSubmission",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "TournamentController.getOpenedTournamentsForCourseExecution",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Tournament",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AnswerController.getQuizByQRCode",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInSpot",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Quiz",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "W"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuestionAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceAnswerItem",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster2"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "TopicController.removeTopic",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuizController.createQuiz",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "QuizController.populateWithQuizAnswers",
+      "orchestrator": "Cluster1",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "QuizQuestion",
+              "type": "RW"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Quiz",
+              "type": "RW"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "RW"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        }
+      ]
+    },
+    {
+      "name": "QuestionController.questionSetStatus",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AnswerController.startQuiz",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInSpot",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Quiz",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "W"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionAnswerItem",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster2"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "TopicController.getCourseTopics",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "FraudController.getQuizCommunicationFraudScores",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Quiz",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "TournamentController.createTournament",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuizController.getQuizAnswers",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderSlot",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "R"
+            },
+            {
+              "entity": "Option",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInSpot",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
             {
               "entity": "Quiz",
               "type": "R"
@@ -4162,6 +5538,14 @@
             },
             {
               "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
               "type": "R"
             }
           ],
@@ -4200,6 +5584,26 @@
               "type": "R"
             },
             {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Teacher",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "RW"
+            },
+            {
               "entity": "Question",
               "type": "R"
             },
@@ -4212,28 +5616,8 @@
               "type": "R"
             },
             {
-              "entity": "User",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "Teacher",
-              "type": "R"
-            },
-            {
               "entity": "QuizQuestion",
               "type": "R"
-            },
-            {
-              "entity": "QuestionAnswer",
-              "type": "RW"
-            },
-            {
-              "entity": "QuizAnswer",
-              "type": "RW"
             }
           ],
           "cluster": "Cluster1"
@@ -4245,6 +5629,10 @@
         {
           "accesses": [
             {
+              "entity": "MultipleChoiceAnswer",
+              "type": "W"
+            },
+            {
               "entity": "AnswerDetails",
               "type": "RW"
             },
@@ -4254,10 +5642,6 @@
             },
             {
               "entity": "CodeOrderAnswer",
-              "type": "W"
-            },
-            {
-              "entity": "MultipleChoiceAnswer",
               "type": "W"
             }
           ],
@@ -4269,10 +5653,6 @@
         },
         {
           "accesses": [
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
             {
               "entity": "Dashboard",
               "type": "W"
@@ -4291,6 +5671,18 @@
             },
             {
               "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
               "type": "R"
             }
           ],
@@ -4314,6 +5706,149 @@
           "cluster": "Cluster0"
         }
       ]
+    },
+    {
+      "name": "TournamentController.cancelTournament",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "Tournament",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "ImportExportController.exportAll",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "Quiz",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "QuizQuestion",
+            "type": "R"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "CourseExecutionController.getAvailableTopicsByCourseExecution",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
     },
     {
       "name": "AnswerController.submitAnswer",
@@ -4376,170 +5911,21 @@
       ]
     },
     {
-      "name": "CourseExecutionController.importQuestions",
-      "orchestrator": "Cluster1",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "Course",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "QuestionDetails",
-              "type": "RW"
-            },
-            {
-              "entity": "Option",
-              "type": "W"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "W"
-            },
-            {
-              "entity": "CodeOrderSlot",
-              "type": "W"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "RW"
-            },
-            {
-              "entity": "CodeFillInOption",
-              "type": "W"
-            },
-            {
-              "entity": "CodeFillInSpot",
-              "type": "RW"
-            },
-            {
-              "entity": "Image",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Course",
-              "type": "RW"
-            },
-            {
-              "entity": "Topic",
-              "type": "RW"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "W"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
-      "name": "QuizController.duplicateQuiz",
-      "orchestrator": "Cluster3",
-      "steps": [
-        {
-          "accesses": [
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "Image",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderQuestion",
-              "type": "R"
-            },
-            {
-              "entity": "MultipleChoiceQuestion",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "R"
-            },
-            {
-              "entity": "QuizQuestion",
-              "type": "RW"
-            },
-            {
-              "entity": "Quiz",
-              "type": "RW"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
-              "entity": "Question",
-              "type": "RW"
-            }
-          ],
-          "cluster": "Cluster1"
-        }
-      ]
-    },
-    {
       "name": "QuizController.exportQuiz",
       "orchestrator": "Cluster3",
       "steps": [
         {
           "accesses": [
             {
-              "entity": "CodeOrderQuestion",
+              "entity": "QuestionDetails",
               "type": "R"
             },
             {
-              "entity": "MultipleChoiceQuestion",
+              "entity": "CodeFillInOption",
+              "type": "R"
+            },
+            {
+              "entity": "Option",
               "type": "R"
             },
             {
@@ -4551,19 +5937,15 @@
               "type": "R"
             },
             {
-              "entity": "CodeFillInOption",
-              "type": "R"
-            },
-            {
-              "entity": "QuestionDetails",
-              "type": "R"
-            },
-            {
-              "entity": "Option",
-              "type": "R"
-            },
-            {
               "entity": "CodeOrderSlot",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
               "type": "R"
             }
           ],
@@ -4612,19 +5994,19 @@
         {
           "accesses": [
             {
-              "entity": "CodeFillInAnswerItem",
-              "type": "R"
-            },
-            {
-              "entity": "CodeOrderAnswerItem",
-              "type": "R"
-            },
-            {
               "entity": "QuestionAnswerItem",
               "type": "R"
             },
             {
+              "entity": "CodeFillInAnswerItem",
+              "type": "R"
+            },
+            {
               "entity": "MultipleChoiceAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderAnswerItem",
               "type": "R"
             }
           ],
@@ -4645,7 +6027,23 @@
               "type": "R"
             },
             {
+              "entity": "QuizAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
               "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
               "type": "R"
             },
             {
@@ -4653,12 +6051,687 @@
               "type": "R"
             },
             {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "AnswerDetails",
+              "type": "RW"
+            },
+            {
+              "entity": "CodeFillInAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "CodeOrderAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "MultipleChoiceAnswer",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Student",
+              "type": "RW"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
+            },
+            {
+              "entity": "Dashboard",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuizAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswerItem",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "RW"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
               "entity": "CourseExecution",
               "type": "R"
             },
             {
+              "entity": "Course",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "QuestionSubmissionController.getCourseExecutionQuestionSubmissions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "QuestionSubmission",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AssessmentController.createAssessment",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Assessment",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "W"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "CourseExecutionController.getCourseStudents",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AnswerController.getAvailableQuizzes",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
               "entity": "QuizAnswer",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "ImportExportController.importAll",
+      "orchestrator": "Cluster0",
+      "steps": [
+        {
+          "accesses": [],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "User",
               "type": "RW"
+            },
+            {
+              "entity": "DemoAdmin",
+              "type": "W"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
+            },
+            {
+              "entity": "AuthExternalUser",
+              "type": "W"
+            },
+            {
+              "entity": "Teacher",
+              "type": "W"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "RW"
+            },
+            {
+              "entity": "AuthTecnicoUser",
+              "type": "W"
+            },
+            {
+              "entity": "Student",
+              "type": "W"
+            },
+            {
+              "entity": "AuthDemoUser",
+              "type": "W"
+            },
+            {
+              "entity": "Course",
+              "type": "RW"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "Image",
+              "type": "W"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "W"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "RW"
+            },
+            {
+              "entity": "CodeOrderSlot",
+              "type": "W"
+            },
+            {
+              "entity": "CodeFillInSpot",
+              "type": "RW"
+            },
+            {
+              "entity": "Option",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "RW"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Course",
+              "type": "RW"
+            },
+            {
+              "entity": "Topic",
+              "type": "RW"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "RW"
+            },
+            {
+              "entity": "Student",
+              "type": "RW"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "RW"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "RW"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "MultipleChoiceAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "CodeFillInAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "AnswerDetails",
+              "type": "RW"
+            },
+            {
+              "entity": "CodeOrderAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "CodeOrderAnswerSlot",
+              "type": "W"
+            }
+          ],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [{
+            "entity": "QuestionAnswer",
+            "type": "W"
+          }],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "QuizController.findNonGeneratedQuizzes",
+      "orchestrator": "Cluster1",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Reply",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        }
+      ]
+    },
+    {
+      "name": "TournamentController.getClosedTournamentsForCourseExecution",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Tournament",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AnswerController.getQuizByCode",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInSpot",
+              "type": "R"
+            },
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Quiz",
+              "type": "W"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "W"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "W"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "W"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuestionAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceAnswerItem",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster2"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuizAnswer",
+              "type": "W"
             },
             {
               "entity": "QuestionAnswer",
@@ -4669,11 +6742,537 @@
               "type": "R"
             },
             {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        }
+      ]
+    },
+    {
+      "name": "WeeklyScoreController.updateWeeklyScores",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "W"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "R"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "WeeklyScore",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "QuizQuestion",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionSubmissionController.getAllStudentsQuestionSubmissionsInfo",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionSubmission",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AuthController.demoTeacherAuth",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "AuthDemoUser",
+            "type": "W"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "Course",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "Teacher",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthTecnicoUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "DashboardController.getStats",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Quiz",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionAnswer",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "Discussion",
+            "type": "R"
+          },
+          {
+            "entity": "QuizQuestion",
+            "type": "R"
+          },
+          {
+            "entity": "Dashboard",
+            "type": "R"
+          },
+          {
+            "entity": "QuizAnswer",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuizController.getQuiz",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [{
+          "entity": "Quiz",
+          "type": "R"
+        }],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "QuestionSubmissionController.toggleStudentNotificationRead",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "QuestionSubmission",
+            "type": "R"
+          },
+          {
+            "entity": "QuestionSubmission",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "CourseExecutionController.removeCourseExecution",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "Course",
+            "type": "R"
+          },
+          {
+            "entity": "CourseExecution",
+            "type": "W"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "CourseExecutionController.getCourseExecutions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "AssessmentController.getAssessmentQuestions",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "Assessment",
+            "type": "R"
+          },
+          {
+            "entity": "Question",
+            "type": "R"
+          },
+          {
+            "entity": "TopicConjunction",
+            "type": "R"
+          },
+          {
+            "entity": "Topic",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "TournamentController.joinTournament",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "CourseExecution",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "R"
+          },
+          {
+            "entity": "Tournament",
+            "type": "W"
+          },
+          {
+            "entity": "Student",
+            "type": "R"
+          },
+          {
+            "entity": "Student",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "UserController.confirmRegistration",
+      "orchestrator": "Cluster1",
+      "steps": [{
+        "accesses": [
+          {
+            "entity": "User",
+            "type": "R"
+          },
+          {
+            "entity": "User",
+            "type": "W"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthUser",
+            "type": "W"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "R"
+          },
+          {
+            "entity": "AuthExternalUser",
+            "type": "W"
+          }
+        ],
+        "cluster": "Cluster1"
+      }]
+    },
+    {
+      "name": "CourseExecutionController.exportCourseExecutionInfo",
+      "orchestrator": "Cluster3",
+      "steps": [
+        {
+          "accesses": [
+            {
+              "entity": "Image",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderSlot",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionDetails",
+              "type": "R"
+            },
+            {
+              "entity": "Option",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInOption",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
               "entity": "Student",
               "type": "R"
             },
             {
               "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [{
+            "entity": "QuizAnswerItem",
+            "type": "R"
+          }],
+          "cluster": "Cluster0"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "QuestionAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeFillInAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "CodeOrderAnswerItem",
+              "type": "R"
+            },
+            {
+              "entity": "MultipleChoiceAnswerItem",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster2"
+        },
+        {
+          "accesses": [],
+          "cluster": "Cluster3"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "QuizQuestion",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "Teacher",
+              "type": "R"
+            },
+            {
+              "entity": "QuizAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "User",
               "type": "R"
             }
           ],
@@ -4711,14 +7310,6 @@
         {
           "accesses": [
             {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "RW"
-            },
-            {
               "entity": "Dashboard",
               "type": "W"
             },
@@ -4732,6 +7323,14 @@
             },
             {
               "entity": "QuestionAnswer",
+              "type": "RW"
+            },
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
               "type": "RW"
             }
           ],
@@ -4761,8 +7360,8 @@
         {
           "accesses": [
             {
-              "entity": "QuizQuestion",
-              "type": "R"
+              "entity": "Quiz",
+              "type": "RW"
             },
             {
               "entity": "Student",
@@ -4773,15 +7372,15 @@
               "type": "R"
             },
             {
-              "entity": "Course",
-              "type": "R"
-            },
-            {
               "entity": "User",
               "type": "R"
             },
             {
-              "entity": "Quiz",
+              "entity": "Course",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
               "type": "RW"
             },
             {
@@ -4793,8 +7392,8 @@
               "type": "RW"
             },
             {
-              "entity": "Question",
-              "type": "RW"
+              "entity": "QuizQuestion",
+              "type": "R"
             }
           ],
           "cluster": "Cluster1"
@@ -4802,11 +7401,52 @@
       ]
     },
     {
-      "name": "DiscussionController.changeReplyAvailability",
-      "orchestrator": "Cluster3",
+      "name": "DiscussionController.getDiscussionsByUserId",
+      "orchestrator": "Cluster1",
       "steps": [
         {
           "accesses": [
+            {
+              "entity": "Quiz",
+              "type": "R"
+            },
+            {
+              "entity": "User",
+              "type": "R"
+            },
+            {
+              "entity": "Question",
+              "type": "R"
+            },
+            {
+              "entity": "CourseExecution",
+              "type": "R"
+            },
+            {
+              "entity": "Student",
+              "type": "R"
+            },
+            {
+              "entity": "AuthUser",
+              "type": "R"
+            },
+            {
+              "entity": "Discussion",
+              "type": "R"
+            },
+            {
+              "entity": "Reply",
+              "type": "R"
+            }
+          ],
+          "cluster": "Cluster1"
+        },
+        {
+          "accesses": [
+            {
+              "entity": "CodeFillInQuestion",
+              "type": "R"
+            },
             {
               "entity": "Image",
               "type": "R"
@@ -4822,50 +7462,9 @@
             {
               "entity": "MultipleChoiceQuestion",
               "type": "R"
-            },
-            {
-              "entity": "CodeFillInQuestion",
-              "type": "R"
             }
           ],
           "cluster": "Cluster3"
-        },
-        {
-          "accesses": [
-            {
-              "entity": "Student",
-              "type": "R"
-            },
-            {
-              "entity": "AuthUser",
-              "type": "R"
-            },
-            {
-              "entity": "Question",
-              "type": "R"
-            },
-            {
-              "entity": "Reply",
-              "type": "RW"
-            },
-            {
-              "entity": "Discussion",
-              "type": "R"
-            },
-            {
-              "entity": "Quiz",
-              "type": "R"
-            },
-            {
-              "entity": "CourseExecution",
-              "type": "R"
-            },
-            {
-              "entity": "User",
-              "type": "R"
-            }
-          ],
-          "cluster": "Cluster1"
         }
       ]
     }

@@ -26,12 +26,12 @@ func (r *RefactorCodebaseRequest) ShouldRefactorFunctionality(functionality *mon
 	}
 
 	shouldRefactor = true
-	if functionality.Type == "QUERY" {
-		fmt.Printf("wont refactor %s because its a Query\n", functionality.Name)
-		return false
-	}
+// 	if functionality.Type == "QUERY" {
+// 		fmt.Printf("wont refactor %s because its a Query\n", functionality.Name)
+// 		return false
+// 	}
 
-	if len(functionality.EntitiesPerCluster) <= 2 {
+	if len(functionality.EntitiesPerCluster) <= 0 {
 		fmt.Printf("wont refactor %s because it has less than 3 clusters\n", functionality.Name)
 		return false
 	}

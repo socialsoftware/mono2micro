@@ -11,11 +11,11 @@ import java.io.IOException;
 
 public class Converter {
 
-    private static final String OUT_NAME = "m2m_decomposition";
+    private static final String DEFAULT_OUT_NAME = "m2m_decomposition";
 
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
-            runDiscoverer("./src/test/resources/test-contract", OUT_NAME, 0);
+            runDiscoverer("./src/test/resources/test-contract", DEFAULT_OUT_NAME, 0);
         } else if (args.length == 3) {
             runDiscoverer(args[0], args[1], Integer.parseInt(args[2]));
         } else {
