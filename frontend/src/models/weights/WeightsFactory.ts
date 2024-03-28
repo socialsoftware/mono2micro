@@ -1,6 +1,7 @@
 import AccessesWeights, {ACCESSES_WEIGHTS} from "./AccessesWeights";
 import Weights from "./Weights";
 import RepositoryWeights, {REPOSITORY_WEIGHTS} from "./RepositoryWeights";
+import StructureWeights, {STRUCTURE_WEIGHTS} from "./StructureWeights";
 import ClassVectorizationWeights, {CLASS_VECTORIZATION_WEIGHTS} from "./ClassVectorizationWeights";
 import EntityVectorizationWeights, {ENTITY_VECTORIZATION_WEIGHTS} from "./EntityVectorizationWeights";
 import FunctionalityVectorizationCallGraphWeights, {FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS} from "./FunctionalityVectorizationCallGraphWeights";
@@ -14,6 +15,8 @@ export abstract class WeightsFactory {
                 return new AccessesWeights(weights);
             case REPOSITORY_WEIGHTS:
                 return new RepositoryWeights(weights);
+            case STRUCTURE_WEIGHTS:
+                return new StructureWeights(weights);
             case CLASS_VECTORIZATION_WEIGHTS:
                 return new ClassVectorizationWeights(weights);
             case ENTITY_VECTORIZATION_WEIGHTS:
@@ -42,6 +45,8 @@ export abstract class WeightsFactory {
             return [new AccessesWeights({accessMetricWeight: 25, writeMetricWeight: 25, readMetricWeight: 25, sequenceMetricWeight: 25})];
         else if (strategyTypes.includes(StrategyType.REPOSITORY_STRATEGY))
             return [new RepositoryWeights({authorMetricWeight: 50, commitMetricWeight: 50})];
+        else if (strategyTypes.includes(StrategyType.STRUCTURE_STRATEGY))
+            return [];
         else if (strategyTypes.includes(StrategyType.CLASS_VECTORIZATION_STRATEGY))
             return [];
         else if (strategyTypes.includes(StrategyType.ENTITY_VECTORIZATION_STRATEGY))

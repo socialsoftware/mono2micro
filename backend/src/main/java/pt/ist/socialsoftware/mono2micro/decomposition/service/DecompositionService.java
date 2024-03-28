@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.zip.ZipOutputStream;
 
+import static pt.ist.socialsoftware.mono2micro.representation.domain.StructureRepresentation.STRUCTURE;
+
 @Service
 public class DecompositionService {
     @Autowired
@@ -88,9 +90,10 @@ public class DecompositionService {
     }
 
     public void exportDecomposition(String decompositionName, ZipOutputStream zipOutputStream) throws IOException, JSONException {
-        String serializedData = ExportUtils.serializeDecompositionDataForContextMapper(
-                decompositionRepository.findByName(decompositionName),
-                IOUtils.toByteArray(gridFsService.getFile(decompositionName + "_refactorization")));
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        String serializedData = ExportUtils.serializeDecompositionDataForContextMapper(decomposition,
+                IOUtils.toByteArray(gridFsService.getFile(decompositionName + "_refactorization")),
+                IOUtils.toByteArray(gridFsService.getFile(decomposition.getStrategy().getCodebase().getRepresentationByFileType(STRUCTURE).getName())));
         ExportUtils.zipSerializedData("m2m_decomposition.json", serializedData, zipOutputStream);
         zipOutputStream.close();
     }
