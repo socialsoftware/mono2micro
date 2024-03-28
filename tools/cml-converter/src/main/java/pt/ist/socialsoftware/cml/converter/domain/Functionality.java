@@ -22,6 +22,10 @@ public class Functionality {
                 simpleName.substring(1);
     }
 
+    public String getSimpleLowerCaseName() {
+        return getName().split("\\.")[1];
+    }
+
     public String getOrchestrator() {
         return orchestrator;
     }

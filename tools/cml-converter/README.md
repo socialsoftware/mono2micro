@@ -29,7 +29,7 @@ You can then use maven to run the tool:
 
 - `<path/to/contract.json>` is the path to the decomposition contract;
 - `<output_name>` is the name of the output .cml file;
-- `<service_naming_mode>` is the naming strategy for service names, accepting `0` for full access trace transcription; `1` for ignoring access types (read/write); and `2` for ignoring access types and order.
+- `<service_naming_mode>` is the naming strategy for service names, accepting `1` for full access trace transcription; `2` for ignoring access types (read/write); and `3` for ignoring access types and order. Any other number will generate generic "stepN" names.
 
 After running, the output .cml will be created in the `./out/` folder of the tool.
 
