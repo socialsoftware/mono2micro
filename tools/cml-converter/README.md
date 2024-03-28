@@ -51,4 +51,4 @@ After running, the output .cml will be created in the `./out/` folder of the too
 
 ## Pre-generated results
 
-If you wish to see the results from the decomposition of the [Quizzes-Tutor](https://quizzes-tutor.tecnico.ulisboa.pt) monolith, the generated contract can be found [here](https://github.com/socialsoftware/mono2micro/blob/master/tools/cml-converter/src/test/resources/test-contract/m2m_contract.json), and the results using different heuristics here.
+If you wish to see the results from the decomposition of the [Quizzes-Tutor](https://quizzes-tutor.tecnico.ulisboa.pt) monolith, the generated contract can be found [here](https://github.com/socialsoftware/mono2micro/blob/master/tools/cml-converter/src/test/resources/test-contract/m2m_contract.json), and the results using different heuristics [here](https://github.com/socialsoftware/mono2micro/tree/feature/export-functionality/tools/cml-converter/out).
