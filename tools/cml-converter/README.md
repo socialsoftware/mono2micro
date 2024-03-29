@@ -24,24 +24,26 @@ Firstly, a candidate decomposition must be exported from the Mono2Micro tool.
 
 ### Generate Representation Files
 
-Once you are running Mono2Micro, you need to create your monolith representation files for domain entity accesses and structure.
+Start by creating your monolith representation files for domain entity accesses and structure.
 
 - Run the [Spoon Collector](https://github.com/socialsoftware/mono2micro/blob/master/collectors/spoon-callgraph/README.md) to create access-related files;
 - Run the [Structure Collector](https://github.com/socialsoftware/mono2micro/blob/master/collectors/structure-collector/README.md) to create structure-related files.
 
 ### Generate Decomposition
 
-With the representation files, you can [run Mono2Micro](https://github.com/socialsoftware/mono2micro/blob/master/README.md) and create a codebase with a "Structure Based" representation that uses "Access" and "Structure" criteria for the strategy.
+With the representation files, you can [run Mono2Micro](https://github.com/socialsoftware/mono2micro/blob/master/README.md) and create a codebase with a "Structure Based" representation that uses "Access" and "Structure" criteria for the strategy. From there, generate your decomposition.
 
-From there, generate your decomposition, and click "Export to CML" once you are satisfied with the result in Mono2Micro.  The result from exporting is a JSON formatted contract describing the properties of the candidate decomposition.
+### Refactor Functionalities and Create Contract
+
+Once you have a decomposition your are happy with, click "Refactorization Tool" to refactor functionalities into Sagas. After that, go back and click "Export to CML". The result from exporting is a JSON formatted contract describing the properties of the candidate decomposition.
 
 ### Generate CML
 
 With the contract, you can then use maven to run the tool:
 
-`mvn compile exec:java -Dexec.mainClass=pt.ist.socialsoftware.cml.converter.Converter -Dexec.args="<path/to/contract.json> <output_name> <service_naming_mode>"`
+`mvn compile exec:java -Dexec.mainClass=pt.ist.socialsoftware.cml.converter.Converter -Dexec.args="<path/to/m2m_contract.json> <output_name> <service_naming_mode>"`
 
-- `<path/to/contract.json>` is the path to the decomposition contract;
+- `<path/to/m2m_contract.json>` is the path to the decomposition contract (must be named m2m_contract!);
 - `<output_name>` is the name of the output .cml file;
 - `<service_naming_mode>` is the naming strategy for service names, accepting `1` for full access trace transcription; `2` for ignoring access types (read/write); and `3` for ignoring access types and order. Any other number will generate generic "stepN" names.
 
