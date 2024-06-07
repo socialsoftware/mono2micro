@@ -6,6 +6,8 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddi
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation.COMMIT;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.StructureRepresentation.STRUCTURE;
+
 
 public class RepresentationFactory {
     public static Representation getRepresentation(String representationType) {
@@ -22,6 +24,8 @@ public class RepresentationFactory {
                 return new EntityToIDRepresentation();
             case CODE_EMBEDDINGS:
                 return new CodeEmbeddingsRepresentation();
+            case STRUCTURE:
+                return new StructureRepresentation();
             default:
                 throw new RuntimeException("The type \"" + representationType + "\" is not a valid representation type.");
         }

@@ -31,6 +31,8 @@ public class RepresentationInformationFactory {
                 return new RepositoryInformation();
             case CODE_EMBEDDINGS_TYPE:
                 return null;
+            case STRUCTURE_TYPE:
+                return new StructureInformation();
             default:
                 throw new RuntimeException("Unknown Representation type: " + type);
         }

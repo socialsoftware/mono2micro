@@ -14,6 +14,8 @@ public class WeightsFactory {
                 return new FunctionalityVectorizationCallGraphWeights();
             case FunctionalityVectorizationSequenceOfAccessesWeights.FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS:
                 return new FunctionalityVectorizationSequenceOfAccessesWeights();
+            case StructureWeights.STRUCTURE_WEIGHTS:
+                return new StructureWeights();
             default:
                 throw new RuntimeException("The type \"" + type + "\" is not a valid weight type.");
         }

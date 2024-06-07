@@ -6,6 +6,7 @@ import EntityVectorizationWeights, {ENTITY_VECTORIZATION_WEIGHTS} from "./Entity
 import FunctionalityVectorizationCallGraphWeights, {FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS} from "./FunctionalityVectorizationCallGraphWeights";
 import FunctionalityVectorizationAccessesWeights, {FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS} from "./FunctionalityVectorizationAccessesWeights";
 import {StrategyType} from "../strategy/StrategyTypes";
+import StructureWeights, {STRUCTURE_WEIGHTS} from "./StructureWeights";
 
 export abstract class WeightsFactory {
     static getWeights(weights: any) : Weights {
@@ -22,6 +23,8 @@ export abstract class WeightsFactory {
                 return new FunctionalityVectorizationCallGraphWeights(weights);
             case FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS:
                 return new FunctionalityVectorizationAccessesWeights(weights);
+            case STRUCTURE_WEIGHTS:
+                return new StructureWeights(weights);
             default:
                 throw new Error('Type ' + weights.type + ' unknown.');
         }
@@ -50,6 +53,9 @@ export abstract class WeightsFactory {
             return [new FunctionalityVectorizationCallGraphWeights({controllersWeight: 25, servicesWeight: 25, intermediateMethodsWeight: 25, entitiesWeight: 25})];
         else if (strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY))
             return [new FunctionalityVectorizationAccessesWeights({readMetricWeight: 50, writeMetricWeight: 50})];
+        else if (strategyTypes.includes(StrategyType.STRUCTURE_STRATEGY))
+            return [new StructureWeights({oneToOneWeight: 50, oneToManyWeight: 50})];
+        else
         throw new Error('No known type of Representation Info in Weights Factory.');
     }
 }

@@ -10,6 +10,8 @@ import {SimilarityMatrixSciPyEntityVectorizationForm} from "./forms/SimilarityMa
 import {SimilarityMatrixSciPyClassVectorizationForm} from "./forms/SimilarityMatrixSciPyClassVectorizationForm";
 import {SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm} from "./forms/SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm";
 import {SimilarityMatrixScipyFunctionalityVectorizationSequenceOfAccessesForm} from "./forms/SimilarityMatrixScipyFunctionalityVectorizationSequenceOfAccessesForm";
+import {SimilarityMatrixSciPyStructureForm} from "./forms/SimilarityMatrixSciPyStructureForm";
+
 import { StrategyType } from '../../models/strategy/StrategyTypes';
 
 export const Similarities = () => {
@@ -122,6 +124,13 @@ export const Similarities = () => {
                     strategy.algorithmType === "SciPy Clustering" &&
                         strategy.strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY) ?
                         <SimilarityMatrixScipyFunctionalityVectorizationSequenceOfAccessesForm
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
+                        strategy.strategyTypes.includes(StrategyType.STRUCTURE_STRATEGY) ?
+                        <SimilarityMatrixSciPyStructureForm
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}

@@ -23,6 +23,8 @@ public class RepresentationInfoDtoFactory {
                 return new RepositoryInfoDto(representationInformation);
             case CODE_EMBEDDINGS_TYPE:
                 return new CodeEmbeddingsInfoDto(representationInformation);
+            case STRUCTURE_TYPE:
+                return new StructureInfoDto((representationInformation));
             default:
                 throw new RuntimeException("No known representation type: " + representationInformation.getType());
         }

@@ -8,6 +8,7 @@ import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository.SIMILARITY_SCIPY_ACCESSES_REPOSITORY;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationByCallGraph.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyStructure.SIMILARITY_SCIPY_STRUCTURE;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
@@ -15,7 +16,8 @@ import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy
         @JsonSubTypes.Type(value = SimilarityScipyClassVectorizationDto.class, name = SIMILARITY_SCIPY_CLASS_VECTORIZATION),
         @JsonSubTypes.Type(value = SimilarityScipyEntityVectorizationDto.class, name = SIMILARITY_SCIPY_ENTITY_VECTORIZATION),
         @JsonSubTypes.Type(value = SimilarityScipyFunctionalityVectorizationByCallGraphDto.class, name = SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH),
-        @JsonSubTypes.Type(value = SimilarityScipyFunctionalityVectorizationBySequenceOfAccessesDto.class, name = SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES)
+        @JsonSubTypes.Type(value = SimilarityScipyFunctionalityVectorizationBySequenceOfAccessesDto.class, name = SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES),
+        @JsonSubTypes.Type(value = SimilarityScipyStructureDto.class, name = SIMILARITY_SCIPY_STRUCTURE)
 })
 public abstract class SimilarityDto {
     String codebaseName;

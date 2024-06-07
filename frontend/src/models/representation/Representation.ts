@@ -21,11 +21,13 @@ export enum RepresentationFile {
     AUTHOR = 'Changes Authorship',
     COMMIT = 'File Changes',
     ENTITY_TO_ID = 'EntityToID',
-    CODE_EMBEDDINGS = 'Code Embeddings'
+    CODE_EMBEDDINGS = 'Code Embeddings',
+    STRUCTURE = 'Structure'
 }
 
 export enum RepresentationType {
     ACCESSES_TYPE = 'Accesses Based',
     REPOSITORY_TYPE = 'Repository Based',
-    CODE_EMBEDDINGS_TYPE = 'Code Embeddings Based'
+    CODE_EMBEDDINGS_TYPE = 'Code Embeddings Based',
+    STRUCTURE_TYPE = 'Structure Based'
 }

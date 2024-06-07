@@ -8,6 +8,7 @@ import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository.SIMILARITY_SCIPY_ACCESSES_REPOSITORY;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationByCallGraph.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyStructure.SIMILARITY_SCIPY_STRUCTURE;
 
 public class SimilarityFactory {
 
@@ -25,6 +26,8 @@ public class SimilarityFactory {
                 return new SimilarityScipyFunctionalityVectorizationByCallGraph(strategy, similarityDto.getName(), (SimilarityScipyFunctionalityVectorizationByCallGraphDto) similarityDto);
             case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES:
                 return new SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses(strategy, similarityDto.getName(), (SimilarityScipyFunctionalityVectorizationBySequenceOfAccessesDto) similarityDto);
+            case SIMILARITY_SCIPY_STRUCTURE:
+                return new SimilarityScipyStructure(strategy, similarityDto.getName(), (SimilarityScipyStructureDto) similarityDto);
             default:
                 throw new RuntimeException("The type \"" + similarityDto.getType() + "\" is not a valid similarityDto type.");
         }
