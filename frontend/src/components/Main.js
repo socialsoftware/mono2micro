@@ -11,6 +11,7 @@ import {Similarities} from "./similarity/Similarities";
 import {Recommendations} from "./recommendation/Recommendations";
 import {RepositoryView} from "./view/repositoryView/RepositoryView";
 import {AccessesViews} from "./view/accessesViews/AccessesViews";
+import {StructureView} from "./view/structureView/StructureView";
 
 export const Main = () => (
   <main>
@@ -24,6 +25,7 @@ export const Main = () => (
       <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/decomposition' element={<Decompositions/>} />
       <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/:decompositionName/accessesViews' element={<AccessesViews/>} />
       <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/:decompositionName/repositoryView' element={<RepositoryView/>} />
+      <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/:decompositionName/structureView' element={<StructureView/>} />
       <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/:decompositionName/functionalityRefactor' element={<FunctionalityRefactorToolMenu/>} />
 
       <Route exact path='/codebase/:codebaseName/:representationName/profiles' element={<Profiles/>} />

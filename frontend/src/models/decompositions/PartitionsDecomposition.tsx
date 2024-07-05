@@ -95,6 +95,18 @@ export default class PartitionsDecomposition extends Decomposition {
                             <br/>
                         </>
                     }
+                    {this.representationInformationsTypes.includes(RepresentationType.STRUCTURE_TYPE) &&
+                        <>
+                            <Button
+                                href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/structureView`}
+                                className="mb-2"
+                                variant={"success"}
+                            >
+                                View Structure
+                            </Button>
+                            <br/>
+                        </>
+                    }
                     {this.representationInformationsTypes.includes(RepresentationType.ACCESSES_TYPE) &&
                         <>
                             <Button

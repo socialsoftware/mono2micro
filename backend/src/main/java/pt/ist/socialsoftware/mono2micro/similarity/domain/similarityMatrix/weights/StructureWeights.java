@@ -120,11 +120,6 @@ public class StructureWeights extends Weights {
         fillRawMatrix(rawMatrix, entities, entityFields, fillFromIndex, weights);
     }
 
-    /*Questoes
-    * Entity parameters para ja está a string mas terei que passar a short
-    * Para que serve o linkage type ? eu sei que é por causa do dendograma mas o que faz ?
-    * Acho que na classe similarityScipy nao devia ter getTraceType*/
-
     /*Filter out the primitive types and leave only the entities*/
     public static void filterEntities(Map<String, List<FieldDto>> entityFields, Set<String> entities) {
         for (Map.Entry<String, List<FieldDto>> entry : entityFields.entrySet()) {
@@ -140,9 +135,6 @@ public class StructureWeights extends Weights {
         }
     }
 
-
-    /*Map<Entidade, Lista<FieldDTOS>> entityFields
-    * filtrar por tipos de dados primitivos*/
     public static void fillDataStructures(
             Set<String> entities,
             Map<String, List<FieldDto>> entityFields,
@@ -160,7 +152,7 @@ public class StructureWeights extends Weights {
             entityFields.put(entityName, fieldDtos);
         }
 
-        entities.addAll(entityFields.keySet()); //acho que isto nao e preciso porque ja tenho todas as entidades no profile
+        entities.addAll(entityFields.keySet());
     }
 
     public static void fillRawMatrix(

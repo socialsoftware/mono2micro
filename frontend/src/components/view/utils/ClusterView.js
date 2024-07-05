@@ -269,7 +269,7 @@ export const ClusterView = (
             // Check for the existence of a corrupted save
             if (graphPositions !== undefined && graphPositions.property === property) {
                 graphPositions.nodes.forEach(node => {
-                    if (corruptedSave) return;
+                    if (corruptedSave) {return;}
                     if (node.type === types.CLUSTER) {
                         const cluster = clusters.find(cluster => cluster.name === node.id);
                         if (cluster === undefined || node.elements === undefined || node.elements.length !== cluster.elements.length ||
@@ -287,14 +287,11 @@ export const ClusterView = (
             if (graphPositions === undefined || corruptedSave === true) {
                 const nodes = clusters.flatMap(cluster => createCluster(cluster));
                 const edges = generateAllEdges(edgeWeights, property, nodes);
-
                 newVisGraph = { nodes: new DataSet(nodes), edges: new DataSet(edges) };
                 setGraphPositions(undefined);
             }
             else newVisGraph = {nodes: new DataSet(graphPositions.nodes), edges: new DataSet(graphPositions.edges)};
-
             setVisGraph(newVisGraph);
-
             toastId = toast.loading( "Creating graph...");
 
             let newNetwork = new Network(container, newVisGraph, networkOptions);

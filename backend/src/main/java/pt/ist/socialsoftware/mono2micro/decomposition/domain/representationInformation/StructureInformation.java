@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -25,8 +27,9 @@ import pt.ist.socialsoftware.mono2micro.representation.domain.StructureRepresent
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
-import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.SimilarityStructureIterator;
+
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyStructure;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,24 +41,25 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.StructureRe
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.STRUCTURE_TYPE;
 
 public class StructureInformation extends RepresentationInformation {
-    @DBRef(lazy = true)
-    private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
+    private Map<String, ArrayList<String>> entitiesContained = new HashMap<>();
+    private Integer totalEntities;
 
     public StructureInformation() {}
 
     @Override
-    public void setup(Decomposition decomposition) throws Exception {
+    public void setup(Decomposition decomposition) throws IOException {
         this.decompositionName = decomposition.getName();
         decomposition.addRepresentationInformation(this);
-        //setupFunctionalities(decomposition);
+        setupEntities(decomposition);
     }
 
     @Override
-    public void snapshot(Decomposition snapshotDecomposition, Decomposition decomposition) throws IOException {
+    public void snapshot(Decomposition snapshotDecomposition, Decomposition decomposition) {
         this.decompositionName = snapshotDecomposition.getName();
         snapshotDecomposition.addRepresentationInformation(this);
-        StructureInformation structureInformation = (StructureInformation) snapshotDecomposition.getRepresentationInformationByType(STRUCTURE_TYPE);
-        //copyFunctionalities(structureInformation);
+        StructureInformation structureInformation = (StructureInformation) decomposition.getRepresentationInformationByType(STRUCTURE_TYPE);
+        this.entitiesContained = structureInformation.getEntitiesContained();
+        this.totalEntities = structureInformation.getTotalEntities();
     }
 
     @Override
@@ -64,9 +68,7 @@ public class StructureInformation extends RepresentationInformation {
     }
 
     @Override
-    public void update(Decomposition decomposition) throws Exception {
-        //setupFunctionalities(decomposition);
-    }
+    public void update(Decomposition decomposition) throws Exception {}
 
     @Override
     public List<DecompositionMetricCalculator> getDecompositionMetrics() {
@@ -80,144 +82,172 @@ public class StructureInformation extends RepresentationInformation {
     @Override
     public List<String> getParameters() {
         return new ArrayList<>(Arrays.asList(
-            RepresentationInformationParameters.PROFILE_PARAMETER.toString(),
-            RepresentationInformationParameters.TRACES_MAX_LIMIT_PARAMETER.toString(),
-            RepresentationInformationParameters.TRACE_TYPE_PARAMETER.toString()));
+                RepresentationInformationParameters.PROFILE_PARAMETER.toString(),
+                RepresentationInformationParameters.TRACES_MAX_LIMIT_PARAMETER.toString(),
+                RepresentationInformationParameters.TRACE_TYPE_PARAMETER.toString()));
     }
 
     @Override
-    public void deleteProperties() {
-        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
+    public void deleteProperties() {}
+
+
+    public Map<String, ArrayList<String>> getEntitiesContained() {
+        return entitiesContained;
+    }
+
+    public void setEntitiesContained(Map<String, ArrayList<String>> entitiesContained) {
+        this.entitiesContained = entitiesContained;
+    }
+
+    public Integer getTotalEntities() {
+        return totalEntities;
+    }
+
+    public void setTotalEntities(Integer totalEntities) {this.totalEntities = totalEntities;
+    }
+
+    private void setupEntities(Decomposition decomposition) throws IOException{
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        StructureRepresentation structureRepresentation = (StructureRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(STRUCTURE);
+        Map<String, Object> jsonData = new ObjectMapper().readValue(
+                gridFsService.getFileAsString(structureRepresentation.getName()),
+                new TypeReference<Map<String, Object>>() {}
+        );
 
-        functionalityService.deleteFunctionalities(getFunctionalities().values());
-        gridFsService.deleteFile(getDecompositionName() + "_refactorization");
+        Map<String, ArrayList<String>> entitiesContainedMap = mapEntitiesContained(jsonData);
+
+
+        /*Filter out all the primitive types*/
+        SimilarityScipyStructure s = (SimilarityScipyStructure) decomposition.getSimilarity();
+        StructureRepresentation structure = (StructureRepresentation) decomposition.getSimilarity().getStrategy().getCodebase().getRepresentationByFileType(STRUCTURE);
+        Set<String> entities = structure.getProfile(s.getProfile());
+        filterEntities(entitiesContainedMap, entities);
+
+        setEntitiesContained(entitiesContainedMap);
     }
 
-    /* public Map<String, Functionality> getFunctionalities() {
-        return functionalities;
-    } */
+    public static void filterEntities(Map<String, ArrayList<String>> entitiesContainedMap, Set<String> entities) {
+        for (Map.Entry<String, ArrayList<String>> entry : entitiesContainedMap.entrySet()) {
+            ArrayList<String> fields = entry.getValue();
+            Iterator<String> iterator = fields.iterator();
 
-    /* public void setFunctionalities(Map<String, Functionality> functionalities) {
-        this.functionalities = functionalities;
-    }
+            while (iterator.hasNext()) {
+                String field = iterator.next();
+                boolean shouldRemove = true;
 
-    public Functionality getFunctionality(String functionalityName) {
-        Functionality c = getFunctionalities().get(functionalityName.replace(".", "_"));
+                // Check if the entire field is in the entities set
+                if (entities.contains(field)) {
+                    shouldRemove = false;
+                } else {
+                    // Check if any part of the field split by space is in the entities set
+                    String[] parts = field.split(" ");
+                    for (String part : parts) {
+                        if (entities.contains(part)) {
+                            shouldRemove = false;
+                            break;
+                        }
+                    }
+                }
 
-        if (c == null) throw new Error("Functionality with name: " + functionalityName + " not found");
-
-        return c;
-    }
-
-    public boolean functionalityExists(String functionalityName) {
-        return getFunctionalities().containsKey(functionalityName.replace(".", "_"));
-    }
-
-    public void addFunctionality(Functionality functionality) {
-        getFunctionalities().put(functionality.getName().replace(".", "_"), functionality);
-    }
-    */
-
-    public void setupEntities(Decomposition decomposition) throws Exception {
-        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-        // Ligar aqui o repositorio de entidades
-        //EntityRepository entityRepository = ContextManager.get().getBean(EntityRepository.class);
-
-        SimilarityScipy similarity = (SimilarityScipy) decomposition.getSimilarity();
-        StructureRepresentation structure = (StructureRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(STRUCTURE_TYPE);
-        InputStream inputStream = gridFsService.getFile(structure.getName());
-        
-        SimilarityStructureIterator iter = new SimilarityStructureIterator(inputStream);
-
-    }
-
-    /*
-    public void findClusterDependencies(Decomposition decomposition, DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
-        Set<LocalTransaction> allLocalTransactions = localTransactionsGraph.vertexSet();
-
-        for (LocalTransaction lt : allLocalTransactions) {
-            // ClusterDependencies
-            String clusterName = lt.getClusterName();
-            if (!clusterName.equals("-1")) { // not root node
-                Partition fromCluster = (Partition) decomposition.getCluster(clusterName);
-
-                List<LocalTransaction> nextLocalTransactions = successorListOf(localTransactionsGraph, lt);
-
-                for (LocalTransaction nextLt : nextLocalTransactions)
-                    fromCluster.addCouplingDependencies(nextLt.getClusterName(), nextLt.getFirstAccessedEntityIDs());
+                if (shouldRemove) {
+                    iterator.remove();
+                }
             }
         }
-    } */
+    }
+
+    public Map<String, ArrayList<String>> mapEntitiesContained(Map<String, Object> jsonData) {
+        // Extract the entities list from the map
+        ArrayList<Map<String, Object>> entities = (ArrayList<Map<String, Object>>) jsonData.get("entities");
+
+        // Create a map of entity names and their field types
+        Map<String, ArrayList<String>> entityFieldTypesMap = new HashMap<>();
+        for (Map<String, Object> entity : entities) {
+            String entityName = (String) entity.get("name");
+            ArrayList<Map<String, Object>> fields = (ArrayList<Map<String, Object>>) entity.get("fields");
+            ArrayList<String> fieldTypes = new ArrayList<>();
+            for (Map<String, Object> field : fields) {
+                Map<String, Object> type = (Map<String, Object>) field.get("type");
+                String typeName = (String) type.get("name");
+                if (type.containsKey("parameters")) {
+                    ArrayList<Map<String, Object>> parameters = (ArrayList<Map<String, Object>>) type.get("parameters");
+                    for (Map<String, Object> parameter : parameters) {
+                        String parameterName = (String) parameter.get("name") + " " + typeName;
+                        fieldTypes.add(parameterName);
+                    }
+                    continue;
+                }
+                fieldTypes.add(typeName);
+            }
+            entityFieldTypesMap.put(entityName, fieldTypes);
+        }
+        return entityFieldTypesMap;
+    }
 
     @Override
     public String getEdgeWeights(Decomposition decomposition) throws JSONException, IOException {
-        /* GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         Dendrogram dendrogram = ((SimilarityScipy) decomposition.getSimilarity()).getDendrogram();
         JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(dendrogram.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
-        ArrayList<Short> entities = new ArrayList<>(decomposition.getEntityIDToClusterName().keySet());
+        ArrayList<Short> entitiesShorts = new ArrayList<>(decomposition.getEntityIDToClusterName().keySet());
 
         JSONArray edgesJSON = new JSONArray();
+        Map<Short, String> id2entity = ((SimilarityScipy) decomposition.getSimilarity()).getIDToEntityName();
+        ArrayList<String> entitiesStrings = new ArrayList<>();
+        for(short id : entitiesShorts) {
+            entitiesStrings.add(id2entity.get(id));
+        }
         int k = 0;
-        for (int i = 0; i < entities.size(); i++) {
-            short e1ID = entities.get(i);
-            for (int j = i + 1; j < entities.size(); j++) {
-                short e2ID = entities.get(j);
+        for (int i = 0; i < entitiesStrings.size(); i++) {
+            String e1ID = entitiesStrings.get(i);
+            ArrayList<String> localEntitiesContained = getEntitiesContained().get(e1ID);
+            if (localEntitiesContained == null)
+                continue;
+            for (int j = i + 1; j < entitiesStrings.size(); j++) {
+                String e2ID = entitiesStrings.get(j);
+                if(e1ID.equals(e2ID)) {
+                    continue;
+                }
+                ArrayList<String> entitiesContainedE2ID = getEntitiesContained().get(e2ID);
+                if (entitiesContainedE2ID == null)
+                    continue;
 
                 JSONObject edgeJSON = new JSONObject();
-                if (e1ID < e2ID) {
-                    edgeJSON.put("e1ID", e1ID); edgeJSON.put("e2ID", e2ID);
+                short e1short = entitiesShorts.get(i);
+                short e2short = entitiesShorts.get(j);
+                if (e1short < e2short) {
+                    edgeJSON.put("e1ID", e1short); edgeJSON.put("e2ID", e2short);
                 }
                 else {
-                    edgeJSON.put("e1ID", e2ID); edgeJSON.put("e1ID", e2ID);
+                    edgeJSON.put("e1ID", e2short); edgeJSON.put("e1ID", e2short);
                 }
                 edgeJSON.put("dist", copheneticDistances.getDouble(k));
+
+                // Addding the entity e1 contained within e2 and e2 contained in e1
+                JSONArray enititiesJson = new JSONArray();
+                for (String eID : entitiesContainedE2ID){
+                    if(eID.equals(e1ID))
+                        enititiesJson.put(e1short);
+                }
+                for (String eID : localEntitiesContained){
+                    if(eID.equals(e2ID))
+                        enititiesJson.put(e2short);
+                }
+
+                edgeJSON.put("appearences", enititiesJson);
+
                 edgesJSON.put(edgeJSON);
                 k++;
             }
         }
-
-        // Get functionalities in common
-        HashMap<String, JSONArray> entityRelations = new HashMap<>();
-        for (Functionality functionality : getFunctionalities().values()) {
-            List<Short> functionalityEntities = new ArrayList<>(functionality.getEntities().keySet());
-            for (int i = 0; i < functionalityEntities.size(); i++)
-                for (int j = i + 1; j < functionalityEntities.size(); j++) {
-                    JSONArray relatedFunctionalities = entityRelations.get(edgeId(functionalityEntities.get(i), functionalityEntities.get(j)));
-                    if (relatedFunctionalities == null) {
-                        relatedFunctionalities = new JSONArray();
-                        relatedFunctionalities.put(functionality.getName());
-                        entityRelations.put(edgeId(functionalityEntities.get(i), functionalityEntities.get(j)), relatedFunctionalities);
-                    }
-                    else relatedFunctionalities.put(functionality.getName());
-                }
-        }
-
-        JSONArray filteredEdgesJSON = new JSONArray();
-        for (int i = 0; i < edgesJSON.length(); i++) {
-            JSONObject edgeJSON = edgesJSON.getJSONObject(i);
-            JSONArray relatedFunctionalities = entityRelations.get(edgeId(edgeJSON.getInt("e1ID"), edgeJSON.getInt("e2ID")));
-
-            if (relatedFunctionalities != null) {
-                edgeJSON.put("functionalities", relatedFunctionalities);
-                filteredEdgesJSON.put(edgeJSON);
-            }
-        }
-
-        return filteredEdgesJSON.toString(); */
-        return "ola";
+        return edgesJSON.toString();
     }
-
-    /* public String edgeId(int node1, int node2) {
-        if (node1 < node2)
-            return node1 + "&" + node2;
-        return node2 + "&" + node1;
-    } */
 
     @Override
     public String getSearchItems(Decomposition decomposition) throws JSONException {
-        /* JSONArray searchItems = new JSONArray();
+        JSONArray searchItems = new JSONArray();
 
         for (Cluster cluster : decomposition.getClusters().values()) {
             JSONObject clusterItem = new JSONObject();
@@ -237,82 +267,6 @@ public class StructureInformation extends RepresentationInformation {
             }
         }
 
-        for (Functionality functionality : getFunctionalities().values()) {
-            JSONObject functionalityItem = new JSONObject();
-            functionalityItem.put("name", functionality.getName());
-            functionalityItem.put("type", "Functionality");
-            functionalityItem.put("id", functionality.getName());
-            functionalityItem.put("entities", Integer.toString(functionality.getEntities().size()));
-            functionalityItem.put("funcType", functionality.getType().toString());
-            searchItems.put(functionalityItem);
-        }
-
-        return searchItems.toString(); */
-        return "ola2";
+        return searchItems.toString();
     }
-
-    /* public void copyFunctionalities(StructureInformation structureInformation) throws IOException {
-        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
-        for (Functionality functionality : structureInformation.getFunctionalities().values()) {
-            Functionality snapshotFunctionality = new Functionality(getDecompositionName(), functionality);
-            snapshotFunctionality.setFunctionalityRedesignNameUsedForMetrics(functionality.getFunctionalityRedesignNameUsedForMetrics());
-
-            for (String redesignName : functionality.getFunctionalityRedesigns().keySet()) {
-                FunctionalityRedesign functionalityRedesign = functionalityService.getFunctionalityRedesign(functionality, redesignName);
-                snapshotFunctionality.addFunctionalityRedesign(functionalityRedesign.getName(), snapshotFunctionality.getId() + functionalityRedesign.getName());
-                functionalityService.saveFunctionalityRedesign(snapshotFunctionality, functionalityRedesign);
-            }
-            addFunctionality(snapshotFunctionality);
-            functionalityService.saveFunctionality(snapshotFunctionality);
-        }
-    } */
-
-    @Override
-    public void renameClusterInFunctionalities(String clusterName, String newName) {
-        /* FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
-
-        // Change functionalities
-        getFunctionalities().forEach((s, functionality) -> {
-            Set<Short> entities = functionality.getEntitiesPerCluster().get(clusterName);
-            if (entities != null) {
-                functionality.getEntitiesPerCluster().remove(clusterName); functionality.getEntitiesPerCluster().put(newName, entities);
-
-                functionality.getFunctionalityRedesigns().keySet().forEach(functionalityRedesignName -> {
-                    try {
-                        FunctionalityRedesign functionalityRedesign = functionalityService.getFunctionalityRedesign(functionality, functionalityRedesignName);
-                        functionalityRedesign.getRedesign().forEach(localTransaction -> {
-                            if (localTransaction.getClusterName().equals(clusterName)) {
-                                localTransaction.setClusterName(newName);
-                                localTransaction.setName(localTransaction.getId() + ": " + newName);
-                            }
-                        });
-                        functionalityService.updateFunctionalityRedesign(functionality, functionalityRedesign);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
-            functionalityService.saveFunctionality(functionality);
-        }); */
-    }
-
-    @Override
-    public void removeFunctionalitiesWithEntityIDs(Decomposition decomposition, Set<Short> elements) {
-        /* FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
-        for(Short entityId : elements)
-            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(entityId));
-        decomposition.setOutdated(true); */
-    }
-
-    /* private List<Functionality> removeFunctionalityWithEntity(short entityID) {
-        Map<String, Functionality> newFunctionalities = new HashMap<>();
-        List<Functionality> toDelete = new ArrayList<>();
-        getFunctionalities().forEach((name, functionality) -> {
-            if (functionality.containsEntity(entityID))
-                toDelete.add(functionality);
-            else newFunctionalities.put(name, functionality);
-        });
-        setFunctionalities(newFunctionalities);
-        return toDelete;
-    } */
 }
