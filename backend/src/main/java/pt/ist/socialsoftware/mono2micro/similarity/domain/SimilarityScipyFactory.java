@@ -8,6 +8,8 @@ public class SimilarityScipyFactory {
 
     public static SimilarityScipy getSimilarityScipy(RecommendMatrixSciPy recommendation) {
         switch (recommendation.getType()) {
+            case RECOMMEND_MATRIX_SCIPY_STRUCTURE:
+                return new SimilarityScipyStructure(recommendation);
             case RECOMMEND_MATRIX_SCIPY:
                 return new SimilarityScipyAccessesAndRepository(recommendation);
             case RECOMMEND_MATRIX_CLASS_VECTORIZATION:

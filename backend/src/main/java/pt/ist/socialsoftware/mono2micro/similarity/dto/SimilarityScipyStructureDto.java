@@ -36,6 +36,7 @@ public class SimilarityScipyStructureDto extends SimilarityDto {
         this.weightsList = weightsList;
         this.profile = recommend.getProfile();
         this.traceType = recommend.getTraceType();
+        this.linkageType = recommend.getLinkageType();
     }
 
     public String getName() {

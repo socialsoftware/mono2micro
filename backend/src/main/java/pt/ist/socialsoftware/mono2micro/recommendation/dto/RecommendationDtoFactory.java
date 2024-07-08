@@ -8,6 +8,7 @@ import static pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendat
 public class RecommendationDtoFactory {
     public static RecommendationDto getRecommendationDto(Recommendation recommendation) {
         switch (recommendation.getType()) {
+            case RECOMMEND_MATRIX_SCIPY_STRUCTURE:
             case RECOMMEND_MATRIX_SCIPY:
             case RECOMMEND_MATRIX_CLASS_VECTORIZATION:
             case RECOMMEND_MATRIX_ENTITY_VECTORIZATION:
