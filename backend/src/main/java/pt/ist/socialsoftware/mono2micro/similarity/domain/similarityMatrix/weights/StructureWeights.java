@@ -162,27 +162,22 @@ public class StructureWeights extends Weights {
             int fillFromIndex,
             float[] weights
     ) {
-        float[][] tempMatrix = new float[entities.size()][entities.size()];
         int i = 0;
         for (String e1ID : entities) {
             int j = 0;
 
             for (String e2ID : entities) {
                 if (e1ID.equals(e2ID)) {
-                    tempMatrix[i][j] = 1;
                     for (int k = fillFromIndex; k < fillFromIndex + 2; k++)
                         rawMatrix[i][j][k] = 1;
                     j++;
                     continue;
                 }
 
-                float[] pesos = calculateSimilarityMatrixWeights(e1ID, e2ID, entityFields, weights);
-
-                float distance = calculateSimilarityDistance(e1ID,e2ID,entityFields,weights);
-                tempMatrix[i][j] = distance;
+                float[] distances = calculateSimilarityMatrixDistances(e1ID, e2ID, entityFields, weights);
 
                 for (int k = fillFromIndex, l = 0; k < fillFromIndex + 2; k++, l++)
-                    rawMatrix[i][j][k] = pesos[l];
+                    rawMatrix[i][j][k] = distances[l];
                 j++;
             }
             i++;
@@ -196,33 +191,7 @@ public class StructureWeights extends Weights {
             return 0;
     }
 
-    private static float calculateSimilarityDistance(
-            String e1ID,
-            String e2ID,
-            Map<String, List<FieldDto>> entityFields,
-            float[] weights
-    ){
-        float o2o = weights[0];
-        float o2m = weights[1];
-        List<FieldDto> fields = entityFields.get(e1ID);
-        float e2Weight = 0;
-        float totalWeight = 0;
-
-        for (FieldDto e1Field : fields) {
-            if(e1Field.getIsList()){
-                totalWeight += o2m;
-                if(e1Field.getName().equals(e2ID))
-                    e2Weight += o2m;
-            }else{
-                totalWeight += o2o;
-                if(e1Field.getType().equals(e2ID))
-                    e2Weight += o2o;
-            }
-        }
-        return e2Weight / totalWeight;
-    }
-
-    private static float[] calculateSimilarityMatrixWeights(
+    private static float[] calculateSimilarityMatrixDistances(
         String e1ID,
         String e2ID,
         Map<String, List<FieldDto>> entityFields,
@@ -232,43 +201,34 @@ public class StructureWeights extends Weights {
             float o2o = weights[0];
             float o2m = weights[1];
             List<FieldDto> fields = entityFields.get(e1ID);
-            float e2Weight = 0;
+            float e2Weight[] = new float[] {0,0}; // e2Weight[0] -> pesos o2o e2Weight[1] -> pesos o2m
             float totalWeight = 0;
             float res[] = new float[2];
-            int isList = 0;
 
             for (FieldDto e1Field : fields) {
                 if(e1Field.getIsList()){
                     totalWeight += o2m;
-                    if(e1Field.getName().equals(e2ID)){
-                        isList = 1;
-                        e2Weight += o2m;
+                    if(e1Field.getType().equals(e2ID)){
+                        e2Weight[1] += o2m;
                     }
                 }else{
                     totalWeight += o2o;
                     if(e1Field.getType().equals(e2ID)){
-                        isList = 0;
-                        e2Weight += o2o;
+                        e2Weight[0] += o2o;
                     }
                 }
             }
 
-            if (isList == 0)
-                res[0] = e2Weight / totalWeight;
-            else
-                res[1] = e2Weight / totalWeight;
+            if (fields.size() == 0) {
+                res[0] = 0;
+                res[1] = 0;
+            }
+            else {
+                res[0] = e2Weight[0] / totalWeight;
+                res[1] = e2Weight[1] / totalWeight;
+            }
+
+
             return res;
         }
-
-    /*Falar sobre o calculo dos weights
-    * acho que devia ser o peso do one2one quando a multiplicity é 1 e o peso do one2many quando a multiplicity é > 1
-    * não é possivel saber o numero de elementos pois isto é analise estática*/
-    /*Falar sobre a geração da matriz.
-    * Basta percorrer pelo mapa de entidades e respetivos fields ? depois calcular a distancia apenas a essas e as outras ficam a zero?
-    * porque é que nos accesses se claculam outra vez os pesos emsmo que eles vao todos a 25% ?
-    * Discutir como calcular os matrix weights*/
-    public static void calculateSimilarityMatrixWeights(Map<String, List<FieldDto>> entityFields){
-
-
-    }
 }
