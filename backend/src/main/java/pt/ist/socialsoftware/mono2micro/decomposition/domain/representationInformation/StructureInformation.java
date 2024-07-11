@@ -227,18 +227,23 @@ public class StructureInformation extends RepresentationInformation {
 
                 // Addding the entity e1 contained within e2 and e2 contained in e1
                 JSONArray enititiesJson = new JSONArray();
-                for (String eID : entitiesContainedE2ID){
-                    if(eID.equals(e1ID))
+                for (String eID : entitiesContainedE2ID) {
+                    if(eID.startsWith(e1ID.split(" ")[0])) {
                         enititiesJson.put(e1short);
+                    }
                 }
-                for (String eID : localEntitiesContained){
-                    if(eID.equals(e2ID))
+                for (String eID : localEntitiesContained) {
+                    if(eID.startsWith(e2ID.split(" ")[0])) {
                         enititiesJson.put(e2short);
+                    }
                 }
 
-                edgeJSON.put("appearences", enititiesJson);
 
-                edgesJSON.put(edgeJSON);
+                if(enititiesJson.length() > 0){
+                    edgeJSON.put("appearences", enititiesJson);
+                    edgesJSON.put(edgeJSON);
+                }
+
                 k++;
             }
         }
