@@ -42,6 +42,7 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.Representat
 
 public class StructureInformation extends RepresentationInformation {
     private Map<String, ArrayList<String>> entitiesContained = new HashMap<>();
+    private Map<String, String> entitySuperClass = new HashMap<>();
     private Integer totalEntities;
 
     public StructureInformation() {}
@@ -99,6 +100,14 @@ public class StructureInformation extends RepresentationInformation {
         this.entitiesContained = entitiesContained;
     }
 
+    public Map<String, String> getEntitySuperClass() {
+        return entitySuperClass;
+    }
+
+    public void setEntitySuperClass(Map<String, String> entitySuperClass) {
+        this.entitySuperClass = entitySuperClass;
+    }
+
     public Integer getTotalEntities() {
         return totalEntities;
     }
@@ -116,7 +125,6 @@ public class StructureInformation extends RepresentationInformation {
 
         Map<String, ArrayList<String>> entitiesContainedMap = mapEntitiesContained(jsonData);
 
-
         /*Filter out all the primitive types*/
         SimilarityScipyStructure s = (SimilarityScipyStructure) decomposition.getSimilarity();
         StructureRepresentation structure = (StructureRepresentation) decomposition.getSimilarity().getStrategy().getCodebase().getRepresentationByFileType(STRUCTURE);
@@ -124,6 +132,23 @@ public class StructureInformation extends RepresentationInformation {
         filterEntities(entitiesContainedMap, entities);
 
         setEntitiesContained(entitiesContainedMap);
+
+        // Populate the entitySuperClass map
+        populateEntitySuperClass(jsonData);
+    }
+
+    private void populateEntitySuperClass(Map<String, Object> jsonData) {
+        // Extract the entities list from the map
+        ArrayList<Map<String, Object>> entities = (ArrayList<Map<String, Object>>) jsonData.get("entities");
+
+        for (Map<String, Object> entity : entities) {
+            String entityName = (String) entity.get("name");
+            Map<String, Object> inheritance = (Map<String, Object>) entity.get("superclass");
+            if (inheritance != null && inheritance.containsKey("name")) {
+                String superClass = (String) inheritance.get("name");
+                entitySuperClass.put(entityName, superClass);
+            }
+        }
     }
 
     public static void filterEntities(Map<String, ArrayList<String>> entitiesContainedMap, Set<String> entities) {
@@ -226,21 +251,30 @@ public class StructureInformation extends RepresentationInformation {
                 edgeJSON.put("dist", copheneticDistances.getDouble(k));
 
                 // Addding the entity e1 contained within e2 and e2 contained in e1
-                JSONArray enititiesJson = new JSONArray();
+                JSONArray entitiesJson = new JSONArray();
                 for (String eID : entitiesContainedE2ID) {
-                    if(eID.startsWith(e1ID.split(" ")[0])) {
-                        enititiesJson.put(e1short);
+                    if (eID.equals(e1ID) || eID.matches("^" + e1ID + "\\b.*")) {
+                        entitiesJson.put(e1short);
                     }
                 }
                 for (String eID : localEntitiesContained) {
-                    if(eID.startsWith(e2ID.split(" ")[0])) {
-                        enititiesJson.put(e2short);
+                    if (eID.equals(e2ID) || eID.matches("^" + e2ID + "\\b.*")) {
+                        entitiesJson.put(e2short);
                     }
                 }
 
-
-                if(enititiesJson.length() > 0){
-                    edgeJSON.put("appearences", enititiesJson);
+                JSONArray superclass = new JSONArray();
+                if(entitiesJson.length() > 0 ||
+                        (entitySuperClass.get(e1ID) != null && entitySuperClass.get(e1ID).equals(e2ID)) ||
+                        (entitySuperClass.get(e2ID) != null && entitySuperClass.get(e2ID).equals(e1ID))){
+                    if(entitySuperClass.get(e1ID) != null && entitySuperClass.get(e1ID).equals(e2ID)) {
+                        superclass.put(e2short); // e2 is superclass of e1
+                        edgeJSON.put("superclass", superclass);
+                    } else if (entitySuperClass.get(e2ID) != null && entitySuperClass.get(e2ID).equals(e1ID)) {
+                        superclass.put(e1short); // e1 is superclass of e2
+                        edgeJSON.put("superclass", superclass);
+                    }else {edgeJSON.put("superclass", superclass);}
+                    edgeJSON.put("appearences", entitiesJson);
                     edgesJSON.put(edgeJSON);
                 }
 

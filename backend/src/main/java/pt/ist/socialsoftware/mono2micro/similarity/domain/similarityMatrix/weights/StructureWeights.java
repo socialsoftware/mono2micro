@@ -23,12 +23,14 @@ public class StructureWeights extends Weights {
     public static final String STRUCTURE_WEIGHTS = "STRUCTURE_WEIGHTS";
     private float oneToOneWeight;
     private float oneToManyWeight;
+    private float heritageWeight;
 
     public StructureWeights() {}
 
-    public StructureWeights(float oneToOneWeight, float oneToManyWeight) {
+    public StructureWeights(float oneToOneWeight, float oneToManyWeight, float heritageWeight) {
         this.oneToOneWeight = oneToOneWeight;
         this.oneToManyWeight = oneToManyWeight;
+        this.heritageWeight = heritageWeight;
     }
 
     @Override
@@ -38,17 +40,17 @@ public class StructureWeights extends Weights {
 
     @Override
     public int getNumberOfWeights() {
-        return 2;
+        return 3;
     }
 
     @Override
     public float[] getWeights() {
-        return new float[]{oneToOneWeight, oneToManyWeight};
+        return new float[]{oneToOneWeight, oneToManyWeight, heritageWeight};
     }
 
     @Override
     public List<String> getWeightsNames() {
-        return new ArrayList<>(Arrays.asList("oneToOneWeight", "oneToManyWeight"));
+        return new ArrayList<>(Arrays.asList("oneToOneWeight", "oneToManyWeight", "heritageWeight"));
     }
 
     @Override
@@ -59,6 +61,9 @@ public class StructureWeights extends Weights {
                 .append(",")
                 .append("o2m")
                 .append(Math.round(getWeights()[1]))
+                .append(",")
+                .append("her")
+                .append(Math.round(getWeights()[2]))
                 .append(")");
         return result.toString();
     }
@@ -67,6 +72,7 @@ public class StructureWeights extends Weights {
     public void setWeightsFromArray(float[] weightsArray) {
         this.oneToOneWeight = weightsArray[0];
         this.oneToManyWeight = weightsArray[1];
+        this.heritageWeight = weightsArray[2];
     }
 
     public float getOneToManyWeight() {
@@ -81,6 +87,8 @@ public class StructureWeights extends Weights {
     public void setOneToOneWeight(float oneToOneWeight) {
         this.oneToOneWeight = oneToOneWeight;
     }
+    public float getHeritageWeight() {return heritageWeight;}
+    public void setHeritageWeight(float heritageWeight) {this.heritageWeight = heritageWeight;}
 
     @Override
     public boolean equals(Object object) {
@@ -88,7 +96,8 @@ public class StructureWeights extends Weights {
             return false;
         StructureWeights structureWeights = (StructureWeights) object;
         return this.oneToOneWeight == structureWeights.getOneToOneWeight() &&
-                this.oneToManyWeight == structureWeights.getOneToManyWeight();
+                this.oneToManyWeight == structureWeights.getOneToManyWeight() &&
+                this.heritageWeight == structureWeights.getHeritageWeight();
     }
 
     @Override
@@ -114,10 +123,12 @@ public class StructureWeights extends Weights {
     ) throws JSONException, IOException {
         Set<String> entities = new TreeSet<>();
         Map<String, List<FieldDto>> entityFields = new HashMap<>(); // Map<entityID, List<Fields>>
+        Map<String, List<String>> entitySubClasses = new HashMap<>(); //Map<Entity, List<Subclasses>>
+        Map<String, String> entitySuperClass = new HashMap<>(); //Map<Entity, EntitySuperClass>
         SimilarityStructureIterator iterador = new SimilarityStructureIterator(structureFile);
-        fillDataStructures(entities, entityFields, iterador, profileEntities);
+        fillDataStructures(entities, entityFields, entitySubClasses, entitySuperClass,iterador, profileEntities);
         filterEntities(entityFields, entities);
-        fillRawMatrix(rawMatrix, entities, entityFields, fillFromIndex, weights);
+        fillRawMatrix(rawMatrix, entities, entityFields, entitySubClasses, entitySuperClass, fillFromIndex, weights);
     }
 
     /*Filter out the primitive types and leave only the entities*/
@@ -138,6 +149,8 @@ public class StructureWeights extends Weights {
     public static void fillDataStructures(
             Set<String> entities,
             Map<String, List<FieldDto>> entityFields,
+            Map<String, List<String>> entitySubClasses,
+            Map<String, String> entitySuperClass,
             SimilarityStructureIterator iter,
             Set<String> profileEntities
     )
@@ -150,6 +163,11 @@ public class StructureWeights extends Weights {
 
             List<FieldDto> fieldDtos = iter.getAllFields();
             entityFields.put(entityName, fieldDtos);
+
+            List<String> subClasses = iter.getSubClasses();
+            entitySubClasses.put(entityName, subClasses);
+            String superClass = iter.getSuperClass();
+            entitySuperClass.put(entityName, superClass);
         }
 
         entities.addAll(entityFields.keySet());
@@ -159,6 +177,8 @@ public class StructureWeights extends Weights {
             float[][][] rawMatrix,
             Set<String> entities,
             Map<String, List<FieldDto>> entityFields,
+            Map<String, List<String>> entitySubClasses,
+            Map<String, String> entitySuperClass,
             int fillFromIndex,
             float[] weights
     ) {
@@ -168,15 +188,15 @@ public class StructureWeights extends Weights {
 
             for (String e2ID : entities) {
                 if (e1ID.equals(e2ID)) {
-                    for (int k = fillFromIndex; k < fillFromIndex + 2; k++)
+                    for (int k = fillFromIndex; k < fillFromIndex + 3; k++)
                         rawMatrix[i][j][k] = 1;
                     j++;
                     continue;
                 }
 
-                float[] distances = calculateSimilarityMatrixDistances(e1ID, e2ID, entityFields, weights);
+                float[] distances = calculateSimilarityMatrixDistances(e1ID, e2ID, entityFields, entitySubClasses, entitySuperClass, weights);
 
-                for (int k = fillFromIndex, l = 0; k < fillFromIndex + 2; k++, l++)
+                for (int k = fillFromIndex, l = 0; k < fillFromIndex + 3; k++, l++)
                     rawMatrix[i][j][k] = distances[l];
                 j++;
             }
@@ -195,16 +215,20 @@ public class StructureWeights extends Weights {
         String e1ID,
         String e2ID,
         Map<String, List<FieldDto>> entityFields,
+        Map<String, List<String>> entitySubClasses,
+        Map<String, String> entitySuperClass,
         float[] weights
     ) {
 
             float o2o = weights[0];
             float o2m = weights[1];
+            float her = weights[2];
             List<FieldDto> fields = entityFields.get(e1ID);
             float e2Weight[] = new float[] {0,0}; // e2Weight[0] -> pesos o2o e2Weight[1] -> pesos o2m
             float totalWeight = 0;
-            float res[] = new float[2];
+            float res[] = new float[3];
 
+            // Daqui para baixo tenho que adicionar suporte para os novos pesos
             for (FieldDto e1Field : fields) {
                 if(e1Field.getIsList()){
                     totalWeight += o2m;
@@ -227,8 +251,24 @@ public class StructureWeights extends Weights {
                 res[0] = e2Weight[0] / totalWeight;
                 res[1] = e2Weight[1] / totalWeight;
             }
+        boolean e1ExtendsE2 = e1ID.equals(entitySuperClass.get(e2ID));
+        boolean e2ExtendsE1 = e2ID.equals(entitySuperClass.get(e1ID));
+        int n = 1; // Number of subclasses (1 by default to avoid division by zero)
 
+        if (e1ExtendsE2 || e2ExtendsE1) {
+            if (e1ExtendsE2) {
+                n = entitySubClasses.get(e1ID).size();
+                res[0] = (e2Weight[0] + her) / (totalWeight + (her/n));
+                res[1] = (e2Weight[1] + her) / (totalWeight + (her/n));
+            } else {
+                n = entitySubClasses.get(e2ID).size();
+                res[0] = (e2Weight[0] + her) / (totalWeight + (her/n));
+                res[1] = (e2Weight[1] + her) / (totalWeight + (her/n));
+            }
+        }
 
-            return res;
+        res[2] = her / (totalWeight + (her/n));
+
+        return res;
         }
 }

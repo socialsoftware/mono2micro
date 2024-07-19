@@ -47,19 +47,6 @@ public class SimilarityStructureIterator {
         return fieldsDtos;
     }
 
-    /* Tratar de casos das listas de listas*/
-    /*public void addFields(JSONObject fieldJSON, List<FieldDto> fieldsDtos) throws JSONException {
-        if (fieldJSON.getJSONObject("type").has("parameters")) {
-            String parameterName = fieldJSON.getJSONObject("type")
-                    .getJSONArray("parameters")
-                    .getJSONObject(0)
-                    .getString("name");
-            fieldsDtos.add(new FieldDto(fieldJSON.getString("name"), parameterName, true));
-        } else {
-            fieldsDtos.add(new FieldDto(fieldJSON.getString("name"), fieldJSON.getJSONObject("type").getString("name"), false));
-        }
-    }*/
-
     public void addFields(JSONObject fieldJSON, List<FieldDto> fieldsDtos) throws JSONException {
         String fieldName = fieldJSON.getString("name");
         JSONObject typeJSON = fieldJSON.getJSONObject("type");
@@ -84,6 +71,37 @@ public class SimilarityStructureIterator {
             }
         }
         return typeJSON.getString("name");
+    }
+
+    public List<String> getSubClasses() throws JSONException {
+        List<String> subclasses = new ArrayList<>();
+        String requestedEntityName = requestedEntity.getString("name");
+
+        JSONArray entitiesArray = codebaseAsJSON.getJSONArray("entities");
+        for (int i = 0; i < entitiesArray.length(); i++) {
+            JSONObject entityObject = entitiesArray.getJSONObject(i);
+            if (entityObject.has("superclass") && !entityObject.isNull("superclass")) {
+                Object superclassObject = entityObject.get("superclass");
+                if (superclassObject instanceof JSONObject) {
+                    JSONObject superclassJSONObject = (JSONObject) superclassObject;
+                    if (superclassJSONObject.getString("name").equals(requestedEntityName)) {
+                        subclasses.add(entityObject.getString("name"));
+                    }
+                }
+            }
+        }
+        return subclasses;
+    }
+
+    public String getSuperClass() throws JSONException {
+        if (requestedEntity.has("superclass") && !requestedEntity.isNull("superclass")) {
+            Object superclassObject = requestedEntity.get("superclass");
+            if (superclassObject instanceof JSONObject) {
+                JSONObject superclassJSONObject = (JSONObject) superclassObject;
+                return superclassJSONObject.getString("name");
+            }
+        }
+        return null; // No superclass found or superclass is null
     }
 
 

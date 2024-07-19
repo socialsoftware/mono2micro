@@ -4,7 +4,7 @@ import Divider from "@mui/material/Divider";
 import React, {useEffect, useState} from "react";
 import {EDGE_LENGTH, types} from "../utils/GraphUtils";
 
-export const StructureViewModal = ({entitiesContained, clusters, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
+export const StructureViewModal = ({entitiesContained, clusters, showModal, setShowModal, clickedComponent, setClickedComponent, entitySuperClass}) => {
     const [title, setTitle] = useState("Options");
     const [informationText, setInformationText] = useState(undefined);
 
@@ -178,13 +178,19 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
         const fromNodeLabel = clickedComponent.fromNode.label;
         const toNodeLabel = clickedComponent.toNode.label;
 
+        const entity1Superclass = entitySuperClass[clickedComponent.fromNode.label] || [];
+        const entity2Superclass = entitySuperClass[clickedComponent.toNode.label] || [];
+
+        const entity1SuperclassIsEntity2 = entity1Superclass.includes(toNodeLabel);
+        const entity2SuperclassIsEntity1 = entity2Superclass.includes(fromNodeLabel);
+
         const entity1ReferencesEntity2 = entity1Entities.includes(toNodeLabel) ||
             entity1Entities.some(entity => entity.startsWith(`${toNodeLabel} `));
 
         const entity2ReferencesEntity1 = entity2Entities.includes(fromNodeLabel) ||
             entity2Entities.some(entity => entity.startsWith(`${fromNodeLabel} `));
 
-        setTitle("Edge between " + fromNodeLabel + " and " + toNodeLabel);
+        setTitle("Edge between  " + fromNodeLabel + " and " + toNodeLabel);
         setInformationText(
             <>
                 {!entity1ReferencesEntity2 && !entity2ReferencesEntity1 && <h4>No references found.</h4>}
@@ -208,6 +214,16 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                         </ListGroup>
                     </>
                 }
+                {entity1SuperclassIsEntity2 &&
+                    <>
+                        <h4>{toNodeLabel} extends {fromNodeLabel}</h4>
+                    </>
+                }
+                {entity2SuperclassIsEntity1 &&
+                <>
+                    <h4>{fromNodeLabel} extends {toNodeLabel}</h4>
+                </>
+            }
             </>
         );
     }

@@ -6,17 +6,20 @@ export {STRUCTURE_WEIGHTS};
 export default class StructureWeights extends Weights {
     oneToOneWeight?: number;
     oneToManyWeight?: number;
+    heritageWeight?: number;
 
     public constructor(weights: any) {
         super(weights);
-        this.numberOfWeights = 2;
+        this.numberOfWeights = 3;
         this.type = STRUCTURE_WEIGHTS;
         this.weightsLabel = {
             oneToOneWeight: "One to One Weight",
-            oneToManyWeight: "One to Many Weight"
+            oneToManyWeight: "One to Many Weight",
+            heritageWeight: "Heritage Weight"
         }
 
         this.oneToOneWeight = weights.oneToOneWeight;
         this.oneToManyWeight = weights.oneToManyWeight;
+        this.heritageWeight = weights.heritageWeight;
     }
 }

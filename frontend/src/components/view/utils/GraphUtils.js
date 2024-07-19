@@ -191,6 +191,11 @@ export function generateEdge(edgeWeights, property, node1, node2, graphEdges, re
                     allFunctionalitiesInCommon.push(...edge[property]);
                     fullLength += edge.dist;
                     counter++;
+                    if ('superclass' in edge && edge.superclass.length > 0) {
+                        allFunctionalitiesInCommon.push(...edge.superclass);
+                        fullLength += edge.dist;
+                        counter++;
+                    }
                 }
             });
         });
@@ -221,6 +226,11 @@ export function generateEdge(edgeWeights, property, node1, node2, graphEdges, re
                 allFunctionalitiesInCommon.push(...edge[property]);
                 fullLength += edge.dist;
                 counter++;
+                if ('superclass' in edge && edge.superclass.length > 0) {
+                    allFunctionalitiesInCommon.push(...edge.superclass);
+                    fullLength += edge.dist;
+                    counter++;
+                }
             }
         });
 

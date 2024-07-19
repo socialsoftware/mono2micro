@@ -54,7 +54,7 @@ export abstract class WeightsFactory {
         else if (strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY))
             return [new FunctionalityVectorizationAccessesWeights({readMetricWeight: 50, writeMetricWeight: 50})];
         else if (strategyTypes.includes(StrategyType.STRUCTURE_STRATEGY))
-            return [new StructureWeights({oneToOneWeight: 50, oneToManyWeight: 50})];
+            return [new StructureWeights({oneToOneWeight: 33, oneToManyWeight: 33, heritageWeight: 34})];
         else
         throw new Error('No known type of Representation Info in Weights Factory.');
     }

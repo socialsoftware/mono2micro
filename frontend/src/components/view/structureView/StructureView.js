@@ -49,6 +49,8 @@ export const StructureView = () => {
 
     const [entitiesContained, setEntitiesContained] = useState(undefined);
 
+    const [entitySuperClass, setEntitySuperClass] = useState(undefined);
+
     useEffect(() => {
         setNow(10);
 
@@ -58,6 +60,7 @@ export const StructureView = () => {
             setClusters(Object.values(response.clusters));
             let representationInfo = response.representationInformations.find(rep => rep.type === RepresentationType.STRUCTURE_TYPE);
             setEntitiesContained(representationInfo.entitiesContained);
+            setEntitySuperClass(representationInfo.entitySuperClass);
         });
         const response2 = service.getEdgeWeights(decompositionName, RepresentationType.STRUCTURE_TYPE).then(response => { setNow(n => n + 30); setEdgeWeights(response.data);});
         Promise.all([response1, response2]).then(() => setDisplayStructure("block"));
@@ -174,6 +177,7 @@ export const StructureView = () => {
                 setShowModal={setShowModal}
                 clickedComponent={clickedComponent}
                 setClickedComponent={setClickedComponent}
+                entitySuperClass={entitySuperClass}
             />
             <div style={{display: displayStructure}}>
                 <ClusterView
