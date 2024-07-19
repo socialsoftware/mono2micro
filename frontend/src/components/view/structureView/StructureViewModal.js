@@ -65,12 +65,13 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
         const cluster1Entities = cluster1.elements.map(element => element.name);
         const cluster2Entities = cluster2.elements.map(element => element.name);
 
+        // Direct references
         const cluster1ReferencesCluster2 = cluster1Entities.flatMap(cluster1Entity =>
             entitiesContained[cluster1Entity]?.filter(reference =>
                 cluster2Entities.includes(reference) || cluster2Entities.some(entity => reference.startsWith(`${entity} `))
             ).map(reference => ({
                 cluster1Entity,
-                reference: reference.startsWith(`${cluster2Entities.find(entity => reference.startsWith(`${entity} `))} `) ? reference : reference
+                reference: cluster2Entities.find(entity => reference.startsWith(`${entity} `)) || reference
             })) || []
         );
 
@@ -79,11 +80,26 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                 cluster1Entities.includes(reference) || cluster1Entities.some(entity => reference.startsWith(`${entity} `))
             ).map(reference => ({
                 cluster2Entity,
-                reference: reference.startsWith(`${cluster1Entities.find(entity => reference.startsWith(`${entity} `))} `) ? reference : reference
+                reference: cluster1Entities.find(entity => reference.startsWith(`${entity} `)) || reference
             })) || []
         );
 
-        setTitle(`References between ${cluster1.name} and ${cluster2.name}`);
+        // Superclass references
+        const cluster1ExtendsCluster2 = cluster1Entities.flatMap(cluster1Entity =>
+            cluster2Entities.filter(cluster2Entity => entitySuperClass[cluster1Entity] === cluster2Entity)
+        ).map(cluster2Entity => ({
+            cluster1Entity: cluster1Entities.find(entity => entitySuperClass[entity] === cluster2Entity),
+            superclass: cluster2Entity
+        }));
+
+        const cluster2ExtendsCluster1 = cluster2Entities.flatMap(cluster2Entity =>
+            cluster1Entities.filter(cluster1Entity => entitySuperClass[cluster2Entity] === cluster1Entity)
+        ).map(cluster1Entity => ({
+            cluster2Entity: cluster2Entities.find(entity => entitySuperClass[entity] === cluster1Entity),
+            superclass: cluster1Entity
+        }));
+
+        setTitle(` References and Extensions between ${cluster1.name} and ${cluster2.name}`);
         setInformationText(
             <>
                 {cluster1ReferencesCluster2.length === 0 && cluster2ReferencesCluster1.length === 0 && <h4>No references found.</h4>}
@@ -111,9 +127,37 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                         </ListGroup>
                     </>
                 }
+
+                {cluster1ExtendsCluster2.length === 0 && cluster2ExtendsCluster1.length === 0 && <h4>No extensions found.</h4>}
+                {cluster1ExtendsCluster2.length !== 0 &&
+                    <>
+                        <h4>{cluster1.name} extends {cluster2.name}:</h4>
+                        <ListGroup>
+                            {cluster1ExtendsCluster2.map(({ cluster1Entity, superclass }) => (
+                                <ListGroupItem key={`${cluster1Entity}-${superclass}`}>
+                                    {cluster1Entity} extends {superclass}
+                                </ListGroupItem>
+                            ))}
+                        </ListGroup>
+                    </>
+                }
+                {cluster2ExtendsCluster1.length !== 0 &&
+                    <>
+                        <h4>{cluster2.name} extends {cluster1.name}:</h4>
+                        <ListGroup>
+                            {cluster2ExtendsCluster1.map(({ cluster2Entity, superclass }) => (
+                                <ListGroupItem key={`${cluster2Entity}-${superclass}`}>
+                                    {cluster2Entity} extends {superclass}
+                                </ListGroupItem>
+                            ))}
+                        </ListGroup>
+                    </>
+                }
             </>
         );
     }
+
+
 
 
     function handleClusterAndEntity() {
@@ -123,6 +167,7 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
         const cluster = clusters.find(cluster => cluster.name === clusterLabel);
         const entityReferences = entitiesContained[entityLabel] || [];
 
+        // Direct references from cluster to entity
         const clusterReferencesEntity = cluster.elements.flatMap(element =>
             entitiesContained[element.name]?.filter(reference =>
                 reference === entityLabel || reference.startsWith(`${entityLabel} `)
@@ -132,13 +177,25 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
             })) || []
         );
 
+        // Direct references from entity to cluster
         const entityReferencesCluster = entityReferences.filter(reference =>
             cluster.elements.some(element => reference === element.name || reference.startsWith(`${element.name} `))
         );
 
-        setTitle(`References between ${cluster.name} and ${entityLabel}`);
+        // Superclass references from cluster to entity
+        const clusterExtendsEntity = cluster.elements.flatMap(element =>
+            entitySuperClass[element.name] === entityLabel ? [{ element: element.name, superclass: entityLabel }] : []
+        );
+
+        // Superclass references from entity to cluster
+        const entityExtendsCluster = cluster.elements.flatMap(element =>
+            entitySuperClass[entityLabel] === element.name ? [{ entity: entityLabel, superclass: element.name }] : []
+        );
+
+        setTitle(`References and Extensions between ${cluster.name} and ${entityLabel}`);
         setInformationText(
             <>
+                {/* Direct references */}
                 {clusterReferencesEntity.length === 0 && entityReferencesCluster.length === 0 && <h4>No references found.</h4>}
                 {clusterReferencesEntity.length !== 0 &&
                     <>
@@ -167,9 +224,37 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                         </ListGroup>
                     </>
                 }
+
+                {/* Superclass references */}
+                {clusterExtendsEntity.length === 0 && entityExtendsCluster.length === 0 && <h4>No extensions found.</h4>}
+                {clusterExtendsEntity.length !== 0 &&
+                    <>
+                        <h4>{cluster.name} extends {entityLabel}:</h4>
+                        <ListGroup>
+                            {clusterExtendsEntity.map(({ element, superclass }) => (
+                                <ListGroupItem key={`${element}-${superclass}`}>
+                                    {element} extends {superclass}
+                                </ListGroupItem>
+                            ))}
+                        </ListGroup>
+                    </>
+                }
+                {entityExtendsCluster.length !== 0 &&
+                    <>
+                        <h4>{entityLabel} extends {cluster.name}:</h4>
+                        <ListGroup>
+                            {entityExtendsCluster.map(({ entity, superclass }) => (
+                                <ListGroupItem key={`${entity}-${superclass}`}>
+                                    {entity} extends {superclass}
+                                </ListGroupItem>
+                            ))}
+                        </ListGroup>
+                    </>
+                }
             </>
         );
     }
+
 
     function handleEntitiesBetweenEntities() {
         const entity1Entities = entitiesContained[clickedComponent.fromNode.label] || [];
