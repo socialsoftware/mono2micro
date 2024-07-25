@@ -94,22 +94,22 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
             })) || []
         );
 
-        // Superclass references
-        const cluster1ExtendsCluster2 = cluster1Entities.flatMap(cluster1Entity =>
-            cluster2Entities.filter(cluster2Entity => entitySuperClass[cluster1Entity] === cluster2Entity)
-        ).map(cluster2Entity => ({
-            cluster1Entity: cluster1Entities.find(entity => entitySuperClass[entity] === cluster2Entity),
-            superclass: cluster2Entity
-        }));
+        // Superclass references with uniqueness check
+        const cluster1ExtendsCluster2 = new Set(
+            cluster1Entities.flatMap(cluster1Entity =>
+                cluster2Entities.filter(cluster2Entity => entitySuperClass[cluster1Entity] === cluster2Entity)
+                    .map(cluster2Entity => `${cluster1Entity}-${cluster2Entity}`)
+            )
+        );
 
-        const cluster2ExtendsCluster1 = cluster2Entities.flatMap(cluster2Entity =>
-            cluster1Entities.filter(cluster1Entity => entitySuperClass[cluster2Entity] === cluster1Entity)
-        ).map(cluster1Entity => ({
-            cluster2Entity: cluster2Entities.find(entity => entitySuperClass[entity] === cluster1Entity),
-            superclass: cluster1Entity
-        }));
+        const cluster2ExtendsCluster1 = new Set(
+            cluster2Entities.flatMap(cluster2Entity =>
+                cluster1Entities.filter(cluster1Entity => entitySuperClass[cluster2Entity] === cluster1Entity)
+                    .map(cluster1Entity => `${cluster2Entity}-${cluster1Entity}`)
+            )
+        );
 
-        setTitle(` References and Extensions between ${cluster1.name} and ${cluster2.name}`);
+        setTitle(`References and Extensions between ${cluster1.name} and ${cluster2.name}`);
         setInformationText(
             <>
                 {cluster1ReferencesCluster2.length === 0 && cluster2ReferencesCluster1.length === 0 && <h4>No references found.</h4>}
@@ -138,34 +138,41 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                     </>
                 }
 
-                {cluster1ExtendsCluster2.length === 0 && cluster2ExtendsCluster1.length === 0 && <h4>No extensions found.</h4>}
-                {cluster1ExtendsCluster2.length !== 0 &&
+                {cluster1ExtendsCluster2.size === 0 && cluster2ExtendsCluster1.size === 0 && <h4>No extensions found.</h4>}
+                {cluster1ExtendsCluster2.size !== 0 &&
                     <>
                         <h4>{cluster1.name} extends {cluster2.name}:</h4>
                         <ListGroup>
-                            {cluster1ExtendsCluster2.map(({ cluster1Entity, superclass }) => (
-                                <ListGroupItem key={`${cluster1Entity}-${superclass}`}>
-                                    {cluster1Entity} extends {superclass}
-                                </ListGroupItem>
-                            ))}
+                            {[...cluster1ExtendsCluster2].map(entry => {
+                                const [cluster1Entity, cluster2Entity] = entry.split("-");
+                                return (
+                                    <ListGroupItem key={entry}>
+                                        {cluster1Entity} extends {cluster2Entity}
+                                    </ListGroupItem>
+                                );
+                            })}
                         </ListGroup>
                     </>
                 }
-                {cluster2ExtendsCluster1.length !== 0 &&
+                {cluster2ExtendsCluster1.size !== 0 &&
                     <>
                         <h4>{cluster2.name} extends {cluster1.name}:</h4>
                         <ListGroup>
-                            {cluster2ExtendsCluster1.map(({ cluster2Entity, superclass }) => (
-                                <ListGroupItem key={`${cluster2Entity}-${superclass}`}>
-                                    {cluster2Entity} extends {superclass}
-                                </ListGroupItem>
-                            ))}
+                            {[...cluster2ExtendsCluster1].map(entry => {
+                                const [cluster2Entity, cluster1Entity] = entry.split("-");
+                                return (
+                                    <ListGroupItem key={entry}>
+                                        {cluster2Entity} extends {cluster1Entity}
+                                    </ListGroupItem>
+                                );
+                            })}
                         </ListGroup>
                     </>
                 }
             </>
         );
     }
+
 
     function handleClusterAndEntity() {
         const entityLabel = clickedComponent.fromNode ? clickedComponent.fromNode.label : clickedComponent.toNode.label;
