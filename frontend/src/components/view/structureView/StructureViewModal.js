@@ -40,8 +40,11 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
     }
 
     function handleEntitiesContainedWithin() {
-        setTitle("Entities Contained Within " + clickedComponent.label);
-        const entitiesWithin = entitiesContained[clickedComponent.label] || [];
+        const entityLabel = clickedComponent.label;
+        setTitle("Entities Referenced By " + entityLabel);
+
+        const entitiesWithin = entitiesContained[entityLabel] || [];
+        const superclass = entitySuperClass[entityLabel];
 
         setInformationText(
             <>
@@ -53,10 +56,17 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                         <ListGroupItem>No entities within</ListGroupItem>
                     )}
                 </ListGroup>
+                {superclass &&
+                    <>
+                        <h4>Superclass:</h4>
+                        <ListGroup>
+                            <ListGroupItem>{superclass}</ListGroupItem>
+                        </ListGroup>
+                    </>
+                }
             </>
         );
     }
-
 
     function handleClusterAndCluster() {
         const cluster1 = clusters.find(cluster => cluster.name === clickedComponent.from);
@@ -156,9 +166,6 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
             </>
         );
     }
-
-
-
 
     function handleClusterAndEntity() {
         const entityLabel = clickedComponent.fromNode ? clickedComponent.fromNode.label : clickedComponent.toNode.label;
@@ -301,12 +308,12 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                 }
                 {entity1SuperclassIsEntity2 &&
                     <>
-                        <h4>{toNodeLabel} extends {fromNodeLabel}</h4>
+                        <h4>{fromNodeLabel} extends {toNodeLabel}</h4>
                     </>
                 }
                 {entity2SuperclassIsEntity1 &&
                 <>
-                    <h4>{fromNodeLabel} extends {toNodeLabel}</h4>
+                    <h4>{toNodeLabel} extends {fromNodeLabel}</h4>
                 </>
             }
             </>
@@ -369,7 +376,7 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                                     </div>
                                     <div className="d-flex flex-row">
                                         <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleEntitiesContainedWithin}>
-                                            Entities Contained Within
+                                            Entities Referenced By
                                         </Button>
                                     </div>
                                     <Divider className="mt-2"></Divider>
@@ -382,7 +389,7 @@ export const StructureViewModal = ({entitiesContained, clusters, showModal, setS
                                     </div>
                                     <div className="d-flex flex-row">
                                         <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleClusterAndCluster}>
-                                            Entities Contained Within
+                                            Entities Referenced By
                                         </Button>
                                     </div>
                                     <Divider className="mt-2"></Divider>
