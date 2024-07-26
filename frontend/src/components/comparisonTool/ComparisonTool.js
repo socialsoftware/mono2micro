@@ -186,6 +186,9 @@ export const ComparisonTool = () => {
         : null;
     const purity = purityResult ? purityResult.purity : null;
 
+    const clusterPurityMap = purityResult ? purityResult.clusterPurityMap : {};
+    const clusterMapping = purityResult ? purityResult.clusterMapping : {};
+
     return (
         <div className={"ms-2 me-2"}>
             {renderBreadCrumbs()}
@@ -286,6 +289,10 @@ export const ComparisonTool = () => {
             }
             {analysisTypes.includes("PURITY") &&
                 <PurityResults
+                    clusterPurityMap={clusterPurityMap}
+                    clusterMapping={clusterMapping}
+                    decomposition1={decomposition1}
+                    decomposition2={decomposition2}
                     purity={purity}
                 />
             }

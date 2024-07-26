@@ -2,22 +2,16 @@ package pt.ist.socialsoftware.mono2micro.comparisonTool.domain;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.MOJO_RESOURCES_PATH;
 
 public class Purity extends Analysis {
     public static final String PURITY = "PURITY";
     private float purity;
-
+    private Map<String, Float> clusterPurityMap;
+    private Map<String, String> clusterMapping;
 
     @Override
     public String getType() {
@@ -30,27 +24,44 @@ public class Purity extends Analysis {
 
     public float getPurity() { return purity; }
 
-    public void setPurity(float purity) { this.purity = purity; }
+    public Map<String, Float> getClusterPurityMap() { return clusterPurityMap; }
+
+    public Map<String, String> getClusterMapping() { return clusterMapping; }
 
     @Override
     public void analyse(Decomposition decomposition1, Decomposition decomposition2) throws IOException {
-        Map<String, Set<Short>> decomposition1ClusterEntities = decomposition1.getClusters().values().stream()
+        Map<String, Set<Short>> expertDecompositionClusterEntities = decomposition1.getClusters().values().stream()
                 .collect(Collectors.toMap(Cluster::getName, Cluster::getElementsIDs));
 
-        Map<String, Set<Short>> decomposition2ClusterEntities = decomposition2.getClusters().values().stream()
+        Map<String, Set<Short>> proposedDecompositionClusterEntities = decomposition2.getClusters().values().stream()
                 .collect(Collectors.toMap(Cluster::getName, Cluster::getElementsIDs));
 
         int totalEntities = 0;
         float totalPurity = 0;
+        clusterPurityMap = new HashMap<>();
+        clusterMapping = new HashMap<>();
 
-        for (Set<Short> proposedEntities : decomposition2ClusterEntities.values()) {
+        for (Map.Entry<String, Set<Short>> proposedEntry : proposedDecompositionClusterEntities.entrySet()) {
+            String proposedClusterName = proposedEntry.getKey();
+            Set<Short> proposedEntities = proposedEntry.getValue();
             int maxOverlap = 0;
+            String bestMatchingExpertCluster = null;
 
-            for (Set<Short> expertEntities : decomposition1ClusterEntities.values()) {
+            for (Map.Entry<String, Set<Short>> expertEntry : expertDecompositionClusterEntities.entrySet()) {
+                Set<Short> expertEntities = expertEntry.getValue();
                 Set<Short> commonEntities = new HashSet<>(proposedEntities);
                 commonEntities.retainAll(expertEntities);
-                maxOverlap = Math.max(maxOverlap, commonEntities.size());
+                int overlapSize = commonEntities.size();
+
+                if (overlapSize > maxOverlap) {
+                    maxOverlap = overlapSize;
+                    bestMatchingExpertCluster = expertEntry.getKey();
+                }
             }
+
+            float clusterPurity = proposedEntities.size() == 0 ? 0 : (float) maxOverlap / proposedEntities.size();
+            clusterPurityMap.put(proposedClusterName, clusterPurity);
+            clusterMapping.put(proposedClusterName, bestMatchingExpertCluster);
 
             totalPurity += maxOverlap;
             totalEntities += proposedEntities.size();
@@ -58,6 +69,4 @@ public class Purity extends Analysis {
 
         this.purity = totalEntities == 0 ? 0 : totalPurity / totalEntities;
     }
-
-
 }
