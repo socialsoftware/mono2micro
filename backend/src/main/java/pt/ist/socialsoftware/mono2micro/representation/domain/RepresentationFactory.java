@@ -8,7 +8,6 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDR
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.StructureRepresentation.STRUCTURE;
 
-
 public class RepresentationFactory {
     public static Representation getRepresentation(String representationType) {
         switch (representationType) {

@@ -1,0 +1,1143 @@
+ContextMap {
+	contains Cluster0
+	contains Cluster2
+	contains Cluster1
+	contains Cluster3
+
+	Cluster3 -> Cluster2
+
+	Cluster0 -> Cluster1
+
+	Cluster0 -> Cluster3
+
+	Cluster3 -> Cluster0
+
+	Cluster3 -> Cluster1
+
+	Cluster2 -> Cluster1
+
+	Cluster1 -> Cluster0
+
+	Cluster1 -> Cluster2
+
+	Cluster1 -> Cluster3
+}
+
+BoundedContext Cluster0 {
+	Application Cluster0_Application {
+		/* Operation names were generated to show which entities are accessed when an operation is called. */
+		Service Cluster0_Service {
+			void acMultipleChoiceAnswer_acCodeFillInAnswer_acAnswerDetails_acCodeOrderAnswer_acCodeOrderAnswerSlot;
+			void acAnswerDetails_acCodeFillInAnswer_acCodeOrderAnswer_acMultipleChoiceAnswer;
+			void acCodeFillInAnswer_acMultipleChoiceAnswer_acCodeOrderAnswer_acQuizAnswerItem_acAnswerDetails;
+			void acQuizAnswerItem;
+			void acMultipleChoiceAnswer_acAnswerDetails_acCodeFillInAnswer_acCodeOrderAnswer;
+			void acCodeFillInAnswer_acCodeOrderAnswer_acMultipleChoiceAnswer_acAnswerDetails;
+		}
+		Coordination ImportAll_Coordination {
+			Cluster1::Cluster1_Service::acUser_acDemoAdmin_acQuestion_acCourseExecution_acAuthExternalUser_acTeacher_acAuthUser_acAuthTecnicoUser_acStudent_acAuthDemoUser_acCourse;
+			Cluster3::Cluster3_Service::acCodeOrderQuestion_acImage_acCodeFillInQuestion_acCodeFillInOption_acMultipleChoiceQuestion_acCodeOrderSlot_acCodeFillInSpot_acOption_acQuestionDetails;
+			Cluster1::Cluster1_Service::acCourse_acTopic_acCourseExecution_acQuiz_acStudent_acAuthUser_acDiscussion_acQuizAnswer_acUser_acQuestion_acQuizQuestion_acReply_acQuestionAnswer;
+			Cluster0::Cluster0_Service::acMultipleChoiceAnswer_acCodeFillInAnswer_acAnswerDetails_acCodeOrderAnswer_acCodeOrderAnswerSlot;
+			Cluster1::Cluster1_Service::acQuestionAnswer;
+		}
+	}
+	Aggregate Cluster0 {
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.22% (6/37)
+		 * - Percentage of local accesses: 20.0% (1/5) */
+		Entity CodeFillInAnswer {
+			- Set<CodeFillInOption_Reference> codeFillInOptions
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.22% (6/37)
+		 * - Percentage of local accesses: 20.0% (1/5) */
+		Entity AnswerDetails {
+			Integer id
+			- QuestionAnswer_Reference questionAnswer
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.22% (6/37)
+		 * - Percentage of local accesses: 20.0% (1/5) */
+		Entity MultipleChoiceAnswer {
+			- Option_Reference option
+		}
+		/* 
+		 * This entity was created to reference the 'QuestionAnswer' entity of the 'Cluster1' aggregate. */
+		Entity QuestionAnswer_Reference
+		/* 
+		 * This entity was created to reference the 'CodeOrderSlot' entity of the 'Cluster3' aggregate. */
+		Entity CodeOrderSlot_Reference
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 35.14% (13/37)
+		 * - Percentage of local accesses: 0.0% (0/5) */
+		Entity QuizAnswerItem {
+			LocalDateTime answerDate
+			String answers
+			Integer quizAnswerId
+			Integer quizId
+			Integer id
+		}
+		/* 
+		 * This entity was created to reference the 'Option' entity of the 'Cluster3' aggregate. */
+		Entity Option_Reference
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.22% (6/37)
+		 * - Percentage of local accesses: 20.0% (1/5) */
+		Entity CodeOrderAnswer {
+			- Set<CodeOrderAnswerSlot> orderedSlots
+		}
+		/* 
+		 * This entity was created to reference the 'CodeFillInOption' entity of the 'Cluster3' aggregate. */
+		Entity CodeFillInOption_Reference
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.0% (0/37)
+		 * - Percentage of local accesses: 20.0% (1/5) */
+		Entity CodeOrderAnswerSlot {
+			Integer id
+			Integer assignedOrder
+			- CodeOrderSlot_Reference codeOrderSlot
+			- CodeOrderAnswer codeOrderAnswer
+		}
+	}
+}
+
+BoundedContext Cluster2 {
+	Application Cluster2_Application {
+		/* Operation names were generated to show which entities are accessed when an operation is called. */
+		Service Cluster2_Service {
+			void acQuestionAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem_acCodeFillInAnswerItem;
+			void acCodeFillInAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem_acQuestionAnswerItem;
+			void acQuestionAnswerItem_acCodeFillInAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem;
+			void acQuestionAnswerItem;
+			void acQuestionAnswerItem_acCodeFillInAnswerItem_acMultipleChoiceAnswerItem_acCodeOrderAnswerItem;
+		}
+		Coordination AnonymizeUser_Coordination {
+			Cluster2::Cluster2_Service::acQuestionAnswerItem;
+			Cluster1::Cluster1_Service::acUser_acAuthUser;
+		}
+
+		Coordination AnonymizeCourseExecutionUsers_Coordination {
+			Cluster2::Cluster2_Service::acQuestionAnswerItem;
+			Cluster1::Cluster1_Service::acCourseExecution_acUser_acAuthUser;
+		}
+	}
+	Aggregate Cluster2 {
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 23.33% (7/30)
+		 * - Percentage of local accesses: 0.0% (0/2) */
+		Entity MultipleChoiceAnswerItem {
+			Integer optionId
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 30.0% (9/30)
+		 * - Percentage of local accesses: 100.0% (2/2) */
+		Entity QuestionAnswerItem {
+			Integer id
+			Integer quizQuestionId
+			Integer timeToSubmission
+			String username
+			LocalDateTime answerDate
+			Integer timeTaken
+			Integer quizId
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 23.33% (7/30)
+		 * - Percentage of local accesses: 0.0% (0/2) */
+		Entity CodeFillInAnswerItem {
+			List<Integer> optionIds
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 23.33% (7/30)
+		 * - Percentage of local accesses: 0.0% (0/2) */
+		Entity CodeOrderAnswerItem {
+			List<CodeOrderSlotAnswerItem> orderedSlots
+		}
+	}
+}
+
+BoundedContext Cluster1 {
+	Application Cluster1_Application {
+		Service GetCourseTopics_Service {
+			acCourse_acTopic_OP;
+		}
+		Service ExternalUserAuth_Service {
+			acCourseExecution_acUser_acAuthUser_OP;
+		}
+		Service UpdateWeeklyScores_Service {
+			acQuiz_acQuizAnswer_acQuestionAnswer_acQuestion_acDashboard_acCourseExecution_acWeeklyScore_acUser_acStudent_acQuizQuestion_acQuizAnswer_OP;
+		}
+		Service UpdateDashboardDifficultQuestions_Service {
+			acCourseExecution_acQuestion_acDifficultQuestion_acDashboard_OP;
+		}
+		Service GetCourseExecutionById_Service {
+			acCourseExecution_OP;
+		}
+		Service RemoveTournament_Service {
+			acQuiz_acCourseExecution_acQuiz_acTournament_acTopic_acStudent_OP;
+		}
+		Service DeleteDifficultQuestions_Service {
+			acCourseExecution_acUser_acQuestion_acStudent_acAuthUser_acDifficultQuestion_acDashboard_OP;
+		}
+		Service GetCourseStudents_Service {
+			acCourseExecution_acUser_acStudent_acAuthUser_acDashboard_OP;
+		}
+		Service DeleteQuiz_Service {
+			acQuiz_acCourseExecution_acQuiz_acCourseExecution_acTournament_acQuizQuestion_OP;
+		}
+		Service GetCourseExecutionQuestionSubmissions_Service {
+			acQuestionSubmission_OP;
+		}
+		Service GetAvailableAssessments_Service {
+			acAssessment_acCourseExecution_OP;
+		}
+		Service GetOpenedTournamentsForCourseExecution_Service {
+			acTournament_OP;
+		}
+		Service FenixAuth_Service {
+			acCourseExecution_acAuthDemoUser_acUser_acTeacher_acStudent_acAuthUser_acAuthTecnicoUser_acAuthExternalUser_OP;
+		}
+		Service UpdateCourseExecutionDifficultQuestions_Service {
+			acQuiz_acQuizAnswer_acAssessment_acQuestionAnswer_acQuestion_acDifficultQuestion_acCourseExecution_acCourse_acTopicConjunction_acQuizAnswer_OP;
+		}
+		Service GetClosedTournamentsForCourseExecution_Service {
+			acTournament_OP;
+		}
+		Service GetQuestion_Service {
+			acQuestion_OP;
+		}
+		Service DeleteExternalInactiveUsers_Service {
+			acCourseExecution_acCourse_acUser_acTeacher_acStudent_acAuthUser_acReply_OP;
+		}
+		Service GetAllStudentsQuestionSubmissionsInfo_Service {
+			acCourseExecution_acQuestionSubmission_acUser_acStudent_acAuthUser_OP;
+		}
+		Service UpdateQuestionTopics_Service {
+			acCourse_acQuestion_acTopic_OP;
+		}
+		Service CancelTournament_Service {
+			acQuiz_acCourseExecution_acQuizAnswer_acQuestionAnswer_acUser_acQuestionAnswer_acTournament_acTopic_acStudent_acAuthUser_acQuizAnswer_OP;
+		}
+		Service AssessmentSetStatus_Service {
+			acAssessment_OP;
+		}
+		Service GetExecutionCourseTopicConjunctions_Service {
+			acAssessment_acCourseExecution_acCourse_acQuestion_acTopicConjunction_OP;
+		}
+		Service UpdateTopic_Service {
+			acTopic_OP;
+		}
+		Service UpdateAssessment_Service {
+			acAssessment_acQuestion_acTopicConjunction_acTopic_acTopicConjunction_acTopic_OP;
+		}
+		Service CreateExternalCourseExecution_Service {
+			acCourseExecution_acCourse_acCourseExecution_acCourse_acUser_acTeacher_acStudent_acAuthUser_OP;
+		}
+		Service RemoveTopic_Service {
+			acCourse_acQuestion_acTournament_acTopicConjunction_acTournament_acTopic_acTopicConjunction_acTopic_OP;
+		}
+		Service GetTournamentsForCourseExecution_Service {
+			acTournament_OP;
+		}
+		Service LeaveTournament_Service {
+			acQuiz_acUser_acTournament_acStudent_acAuthUser_acQuizAnswer_OP;
+		}
+		Service RegisterExternalUsersCsvFile_Service {
+			acCourseExecution_acAuthDemoUser_acCourseExecution_acUser_acTeacher_acStudent_acAuthUser_acAuthTecnicoUser_acAuthExternalUser_OP;
+		}
+		Service GetExecutionCourseAssessments_Service {
+			acAssessment_acCourseExecution_OP;
+		}
+		Service GetAssessmentQuestions_Service {
+			acAssessment_acQuestion_acTopicConjunction_acTopic_OP;
+		}
+		Service CreateTopic_Service {
+			acCourse_acTopic_OP;
+		}
+		Service GetTournament_Service {
+			acTournament_OP;
+		}
+		Service DemoTeacherAuth_Service {
+			acAuthDemoUser_acCourseExecution_acCourse_acCourseExecution_acCourse_acUser_acTeacher_acAuthUser_acAuthTecnicoUser_acAuthExternalUser_OP;
+		}
+		Service GetSolvedQuizzes_Service {
+			acQuiz_acCourseExecution_acUser_acStudent_acAuthUser_acQuizAnswer_OP;
+		}
+		Service ToggleTeacherNotificationRead_Service {
+			acQuestionSubmission_OP;
+		}
+		Service DemoAdminAuth_Service {
+			acAuthDemoUser_acCourseExecution_acCourse_acCourseExecution_acCourse_acUser_acAuthUser_acAuthTecnicoUser_acAuthExternalUser_acDemoAdmin_OP;
+		}
+		Service GetQuiz_Service {
+			acQuiz_OP;
+		}
+		Service GetCourseQuestions_Service {
+			acQuestion_OP;
+		}
+		Service GetAvailableTopicsByCourseExecution_Service {
+			acCourseExecution_acAssessment_acTopicConjunction_acTopic_OP;
+		}
+		Service CreateReview_Service {
+			acCourseExecution_acQuestionSubmission_acUser_acQuestion_acUser_acQuestion_acAuthUser_acReview_OP;
+		}
+		Service GetTopicConjunctionQuestions_Service {
+			acCourseExecution_acCourse_acQuestion_acTopicConjunction_acTopic_OP;
+		}
+		Service UpdateQuestionSubmissionTopics_Service {
+			acQuestionSubmission_acCourse_acQuestion_acTopic_OP;
+		}
+		Service ToggleStudentNotificationRead_Service {
+			acQuestionSubmission_OP;
+		}
+		Service GetCourseExecutions_Service {
+			acCourseExecution_acUser_acAuthUser_OP;
+		}
+		Service GetQuizCommunicationFraudScores_Service {
+			acQuiz_OP;
+		}
+		Service RemoveSubmittedQuestion_Service {
+			acQuiz_acQuestionSubmission_acQuestion_acCourseExecution_acCourse_acTopic_acStudent_acReview_acStudent_acQuizQuestion_OP;
+		}
+		Service QuestionSetStatus_Service {
+			acQuestion_OP;
+		}
+		Service ExportAll_Service {
+			acQuiz_acQuestion_acCourseExecution_acCourse_acUser_acTopic_acAuthUser_acQuizQuestion_acAuthExternalUser_acQuizAnswer_OP;
+		}
+		Service GetTopicQuestions_Service {
+			acTopic_OP;
+		}
+		Service GetQuestionSubmissionReviews_Service {
+			acReview_OP;
+		}
+		Service ExportQuestions_Service {
+			acCourse_OP;
+		}
+		Service GetDashboard_Service {
+			acCourseExecution_acDashboard_acCourseExecution_acUser_acStudent_acAuthUser_acDashboard_OP;
+		}
+		Service RemoveAssessment_Service {
+			acAssessment_acCourseExecution_acAssessment_acCourseExecution_acTopicConjunction_OP;
+		}
+		Service GetStats_Service {
+			acCourseExecution_acQuiz_acCourse_acQuestionAnswer_acUser_acQuestion_acStudent_acDiscussion_acQuizQuestion_acDashboard_acQuizAnswer_OP;
+		}
+		Service CreateAssessment_Service {
+			acCourseExecution_acAssessment_acCourseExecution_acQuestion_acTopicConjunction_acTopic_OP;
+		}
+		Service GetClarificationsByQuestionId_Service {
+			acDiscussion_acReply_OP;
+		}
+		Service DemoStudentAuth_Service {
+			acAuthDemoUser_acCourseExecution_acCourse_acCourseExecution_acCourse_acUser_acStudent_acAuthUser_acAuthTecnicoUser_acAuthExternalUser_OP;
+		}
+		Service CreateTournament_Service {
+			acQuiz_acQuizAnswer_acQuestionAnswer_acCourseExecution_acCourse_acUser_acTournament_acTopic_acStudent_acAuthUser_acQuizAnswer_OP;
+		}
+		/* Operation names were generated to show which entities are accessed when an operation is called. */
+		Service Cluster1_Service {
+			void acQuestion_acQuiz_acReply_acUser_acQuestionAnswer_acQuizQuestion_acCourseExecution_acDiscussion_acQuestionSubmission_acStudent;
+			void acQuizAnswer_acStudent_acQuestionAnswer_acQuiz_acCourseExecution_acDashboard;
+			void acCourse_acQuestion;
+			void acQuiz_acQuizAnswer_acQuiz_acQuestionAnswer_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser_acQuizQuestion_acQuizAnswer;
+			void acDashboard_acQuizAnswer_acStudent_acQuestionAnswer_acQuiz_acCourseExecution;
+			void acQuizAnswer_acQuestionAnswer_acQuiz_acQuestion_acQuizQuestion;
+			void acQuestion_acCourse;
+			void acQuizAnswer_acQuiz_acCourseExecution_acUser_acQuestion_acTeacher_acStudent_acAuthUser;
+			void acQuestionAnswer_acQuiz_acCourseExecution_acDashboard_acQuizAnswer_acStudent;
+			void acQuiz_acUser_acQuestion_acCourseExecution_acStudent_acAuthUser_acDiscussion_acReply;
+			void acAuthUser_acQuizQuestion_acQuizAnswer_acTeacher_acQuestion_acStudent_acUser_acCourseExecution_acQuestionAnswer_acQuiz;
+			void acDiscussion_acReply_acFailedAnswer_acQuestionAnswer_acDashboard_acQuestion_acQuizQuestion_acQuiz_acQuizAnswer;
+			void acCourseExecution_acQuiz_acUser_acTeacher_acQuestionAnswer_acQuizAnswer_acQuestion_acStudent_acAuthUser_acQuizQuestion;
+			void acDashboard_acQuizAnswer_acStudent_acQuestionAnswer_acQuiz_acCourseExecution_acQuestion_acQuizQuestion;
+			void acQuizAnswer_acUser_acAuthUser_acQuiz_acTopic_acQuestionAnswer_acQuizQuestion_acCourseExecution_acReply_acDiscussion_acTournament_acCourse_acQuestion_acStudent;
+			void acDashboard_acStudent_acQuizQuestion_acQuiz_acQuizAnswer_acQuestion_acFailedAnswer_acQuestionAnswer_acCourseExecution_acUser;
+			void acUser_acDemoAdmin_acQuestion_acCourseExecution_acAuthExternalUser_acTeacher_acAuthUser_acAuthTecnicoUser_acStudent_acAuthDemoUser_acCourse;
+			void acQuizQuestion_acQuiz_acDiscussion_acReply_acQuestionAnswer_acQuestion;
+			void acDiscussion_acReply_acQuizQuestion_acCourseExecution_acQuiz_acQuestion;
+			void acCourseExecution_acUser_acStudent_acAuthUser_acDiscussion_acReply_acQuiz_acQuestion;
+			void acStudent_acQuestion_acQuizAnswer_acQuizQuestion_acQuiz_acQuestionAnswer_acCourseExecution_acCourse_acUser;
+			void acDiscussion_acReply_acQuiz_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser;
+			void acQuiz_acCourseExecution_acUser_acStudent_acAuthUser_acQuizAnswer;
+			void acUser_acStudent_acQuestion_acCourseExecution_acAuthUser_acReply_acQuiz_acQuizQuestion_acQuizAnswer_acDiscussion;
+			void acQuestion;
+			void acQuiz_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser_acReply_acDiscussion;
+			void acReply_acQuizQuestion_acQuiz_acCourseExecution_acQuestion_acDiscussion;
+			void acQuiz_acUser_acStudent_acAuthUser_acQuizAnswer;
+			void acUser_acAuthUser;
+			void acTeacher_acQuiz_acQuizAnswer_acCourseExecution_acUser_acStudent_acQuestion_acQuizQuestion_acQuestionAnswer_acAuthUser;
+			void acReply_acQuizQuestion_acQuiz_acQuizAnswer_acQuestionAnswer_acQuestion_acStudent_acDiscussion;
+			void acQuiz_acCourseExecution_acUser_acTeacher_acStudent_acAuthUser_acQuizAnswer;
+			void acQuizQuestion_acQuizAnswer_acQuiz_acDiscussion_acQuestion_acQuestionAnswer_acCourseExecution_acStudent_acReply_acAuthUser_acUser;
+			void acQuestion_acQuiz_acDiscussion_acReply_acCourseExecution_acQuestionSubmission_acStudent_acUser;
+			void acCourseExecution_acQuestionAnswer_acStudent_acQuizQuestion_acAuthUser_acQuiz_acTeacher_acQuizAnswer_acQuestion_acUser;
+			void acQuiz_acCourseExecution_acQuestion_acDiscussion_acReply_acQuizQuestion;
+			void acCourse_acTopic_acQuestion_acQuiz_acDiscussion_acReply;
+			void acCourse_acTopic_acCourseExecution_acQuiz_acStudent_acAuthUser_acDiscussion_acQuizAnswer_acUser_acQuestion_acQuizQuestion_acReply_acQuestionAnswer;
+			void acReply_acQuiz_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser_acDiscussion;
+			void acQuiz_acDiscussion_acReply_acQuestion;
+			void acQuiz_acStudent_acCourseExecution_acUser_acCourse_acQuestion_acQuizAnswer_acQuestionAnswer_acQuizQuestion;
+			void acQuizAnswer_acQuestionAnswer_acQuestion_acQuizQuestion_acQuiz;
+			void acQuestionAnswer_acQuestion_acQuizQuestion_acQuiz_acQuizAnswer;
+			void acCourseExecution_acUser_acAuthUser;
+			void acQuizQuestion_acQuiz_acCourseExecution_acQuestion_acDiscussion_acReply;
+			void acQuestionAnswer_acCourseExecution_acQuizQuestion_acCourse_acUser_acQuiz_acAssessment_acStudent_acQuizAnswer_acQuestion_acAuthUser;
+			void acQuestionAnswer;
+			void acQuestion_acQuiz_acReply_acQuizQuestion_acQuestionAnswer_acUser_acQuizAnswer_acDiscussion_acAuthUser_acStudent_acCourseExecution;
+			void acQuiz_acQuizAnswer_acQuestionAnswer_acQuestion_acQuizQuestion;
+			void acCourse_acQuestion_acCourseExecution;
+			void acDiscussion_acReply_acQuestion_acCourse_acQuiz;
+			void acQuiz_acUser_acTopicConjunction_acQuizAnswer_acQuestionAnswer_acCourseExecution_acAssessment_acTournament_acQuizQuestion_acStudent_acCourse_acQuestion_acAuthUser_acTopic;
+		}
+		Service RemoveQuestion_Service {
+			acQuiz_acQuestionSubmission_acCourse_acQuestion_acTopic_acQuizQuestion_OP;
+		}
+		Service AddReply_Service {
+			acCourseExecution_acUser_acStudent_acAuthUser_acDiscussion_acReply_acDiscussion_OP;
+		}
+		Service RemoveCourseExecution_Service {
+			acCourseExecution_acCourse_acCourseExecution_acUser_OP;
+		}
+		Service RemoveFailedAnswer_Service {
+			acDashboard_acFailedAnswer_acDashboard_OP;
+		}
+		Service RegisterExternalUser_Service {
+			acCourseExecution_acAuthDemoUser_acCourseExecution_acUser_acTeacher_acStudent_acAuthUser_acAuthTecnicoUser_acAuthExternalUser_OP;
+		}
+		Service GetAvailableQuestions_Service {
+			acQuestion_OP;
+		}
+		Service GetStudentQuestionSubmissions_Service {
+			acQuestionSubmission_acUser_acAuthUser_OP;
+		}
+		Service ActivateCourseExecution_Service {
+			acCourseExecution_acCourse_acCourseExecution_acCourse_acUser_acTeacher_acStudent_acAuthUser_OP;
+		}
+		Service JoinTournament_Service {
+			acCourseExecution_acUser_acTournament_acStudent_acAuthUser_OP;
+		}
+		Service ConfirmRegistration_Service {
+			acUser_acAuthUser_acAuthExternalUser_OP;
+		}
+		Coordination GetQuestionForQuizAnswer_Coordination {
+			Cluster1::Cluster1_Service::acQuizAnswer_acQuiz_acCourseExecution_acUser_acQuestion_acTeacher_acStudent_acAuthUser;
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+		}
+
+		Coordination UpdateFailedAnswers_Coordination {
+			Cluster1::Cluster1_Service::acDashboard_acStudent_acQuizQuestion_acQuiz_acQuizAnswer_acQuestion_acFailedAnswer_acQuestionAnswer_acCourseExecution_acUser;
+			Cluster0::Cluster0_Service::acMultipleChoiceAnswer_acAnswerDetails_acCodeFillInAnswer_acCodeOrderAnswer;
+			Cluster3::Cluster3_Service::acCodeFillInQuestion_acCodeFillInOption_acOption_acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion;
+			Cluster1::Cluster1_Service::acDiscussion_acReply_acFailedAnswer_acQuestionAnswer_acDashboard_acQuestion_acQuizQuestion_acQuiz_acQuizAnswer;
+		}
+
+		Coordination ChangeDiscussionStatus_Coordination {
+			Cluster1::Cluster1_Service::acDiscussion_acReply_acQuiz_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser;
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+		}
+
+		Coordination GetDiscussionsByUserId_Coordination {
+			Cluster1::Cluster1_Service::acQuiz_acUser_acQuestion_acCourseExecution_acStudent_acAuthUser_acDiscussion_acReply;
+			Cluster3::Cluster3_Service::acCodeFillInQuestion_acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion;
+		}
+
+		Coordination GetCourseQuestionsByQuery_Coordination {
+			Cluster1::Cluster1_Service::acDiscussion_acReply_acQuestion_acCourse_acQuiz;
+			Cluster3::Cluster3_Service::acCodeOrderQuestion_acCodeFillInOption_acCodeOrderSlot_acCodeFillInQuestion_acQuestionDetails_acImage_acCodeFillInSpot_acMultipleChoiceQuestion_acOption;
+		}
+
+		Coordination GetStatementQuestion_Coordination {
+			Cluster1::Cluster1_Service::acQuestion;
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+		}
+
+		Coordination CreateQuestion_Coordination {
+			Cluster1::Cluster1_Service::acCourse_acQuestion;
+			Cluster3::Cluster3_Service::acCodeFillInQuestion_acCodeFillInOption_acOption_acQuestionDetails_acCodeOrderQuestion_acImage_acCodeOrderSlot_acMultipleChoiceQuestion_acCodeFillInSpot;
+			Cluster1::Cluster1_Service::acQuiz_acDiscussion_acReply_acQuestion;
+		}
+
+		Coordination ChangeReplyAvailability_Coordination {
+			Cluster1::Cluster1_Service::acQuiz_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser_acReply_acDiscussion;
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+		}
+
+		Coordination UpdateQuiz_Coordination {
+			Cluster1::Cluster1_Service::acQuiz_acCourseExecution_acQuestion_acDiscussion_acReply_acQuizQuestion;
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+		}
+
+		Coordination CreateDiscussion_Coordination {
+			Cluster1::Cluster1_Service::acQuestion_acQuiz_acReply_acQuizQuestion_acQuestionAnswer_acUser_acQuizAnswer_acDiscussion_acAuthUser_acStudent_acCourseExecution;
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+		}
+
+		Coordination SubmitAnswer_Coordination {
+			Cluster1::Cluster1_Service::acQuiz_acCourseExecution_acUser_acTeacher_acStudent_acAuthUser_acQuizAnswer;
+			Cluster2::Cluster2_Service::acQuestionAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem_acCodeFillInAnswerItem;
+		}
+
+		Coordination PopulateWithQuizAnswers_Coordination {
+			Cluster1::Cluster1_Service::acQuizQuestion_acQuizAnswer_acQuiz_acDiscussion_acQuestion_acQuestionAnswer_acCourseExecution_acStudent_acReply_acAuthUser_acUser;
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+		}
+
+		Coordination FindNonGeneratedQuizzes_Coordination {
+			Cluster1::Cluster1_Service::acReply_acQuizQuestion_acQuiz_acCourseExecution_acQuestion_acDiscussion;
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+		}
+	}
+	Aggregate Cluster1 {
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.3% (1/328)
+		 * - Percentage of local accesses: 0.2% (1/490) */
+		Entity DemoAdmin
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 3.66% (12/328)
+		 * - Percentage of local accesses: 2.86% (14/490) */
+		Entity Discussion {
+			LocalDateTime date
+			String message
+			boolean closed
+			Integer id
+			- Student student
+			- QuestionAnswer questionAnswer
+			- Question question
+			- CourseExecution courseExecution
+			- List<Reply> replies
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.61% (2/328)
+		 * - Percentage of local accesses: 3.47% (17/490) */
+		Entity Tournament {
+			LocalDateTime startTime
+			String password
+			Integer id
+			boolean privateTournament
+			LocalDateTime endTime
+			int MAX_NUMBER_OF_QUESTIONS
+			Integer numberOfQuestions
+			boolean isCanceled
+			- Quiz quiz
+			- Set<Student> participants
+			- Set<Topic> topics
+			- Student creator
+			- CourseExecution courseExecution
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 12.2% (40/328)
+		 * - Percentage of local accesses: 6.12% (30/490) */
+		Entity Quiz {
+			QuizType ^type
+			boolean qrCodeOnly
+			boolean oneWay
+			LocalDateTime creationDate
+			Integer id
+			LocalDateTime resultsDate
+			LocalDateTime conclusionDate
+			Integer ^key
+			LocalDateTime availableDate
+			String title
+			boolean scramble
+			Integer series
+			String version
+			Integer code
+			- Tournament tournament
+			- CourseExecution courseExecution
+			- List<QuizQuestion> quizQuestions
+			- Set<QuizAnswer> quizAnswers
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 1.52% (5/328)
+		 * - Percentage of local accesses: 1.84% (9/490) */
+		Entity Teacher
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 3.66% (12/328)
+		 * - Percentage of local accesses: 2.65% (13/490) */
+		Entity Reply {
+			LocalDateTime date
+			int id
+			String message
+			boolean isPublic
+			- User user
+			- Discussion discussion
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.0% (0/328)
+		 * - Percentage of local accesses: 0.82% (4/490) */
+		Entity FailedAnswer {
+			boolean answered
+			LocalDateTime collected
+			Integer id
+			- QuestionAnswer questionAnswer
+			- Dashboard dashboard
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 9.76% (32/328)
+		 * - Percentage of local accesses: 3.67% (18/490) */
+		Entity QuizAnswer {
+			Integer currentSequenceQuestion
+			LocalDateTime answerDate
+			List<Integer> questionIds
+			Integer id
+			boolean usedInStatistics
+			LocalDateTime creationDate
+			boolean completed
+			Boolean fraud
+			- Quiz quiz
+			- List<QuestionAnswer> questionAnswers
+			- Student student
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.3% (1/328)
+		 * - Percentage of local accesses: 1.22% (6/490) */
+		Entity AuthDemoUser
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.0% (0/328)
+		 * - Percentage of local accesses: 0.82% (4/490) */
+		Entity DifficultQuestion {
+			int percentage
+			Integer id
+			- CourseExecution courseExecution
+			- Question question
+		}
+		/* 
+		 * This entity was created to reference the 'Image' entity of the 'Cluster3' aggregate. */
+		Entity Image_Reference
+		/* 
+		 * This entity was created to reference the 'AnswerDetails' entity of the 'Cluster0' aggregate. */
+		Entity AnswerDetails_Reference
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.3% (1/328)
+		 * - Percentage of local accesses: 1.22% (6/490) */
+		Entity AuthTecnicoUser {
+			String enrolledCoursesAcronyms
+		}
+		/* 
+		 * This entity was created to reference the 'QuestionDetails' entity of the 'Cluster3' aggregate. */
+		Entity QuestionDetails_Reference
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.61% (2/328)
+		 * - Percentage of local accesses: 2.65% (13/490) */
+		Entity Assessment {
+			Integer sequence
+			Status status
+			Integer id
+			String title
+			- List<TopicConjunction> topicConjunctions
+			- CourseExecution courseExecution
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.61% (2/328)
+		 * - Percentage of local accesses: 2.65% (13/490) */
+		Entity QuestionSubmission {
+			Integer id
+			Status status
+			boolean teacherRead
+			boolean studentRead
+			- Student submitter
+			- Question question
+			- Set<Review> reviews
+			- CourseExecution courseExecution
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 6.4% (21/328)
+		 * - Percentage of local accesses: 8.16% (40/490) */
+		Entity AuthUser {
+			Integer id
+			String ^email
+			String username
+			String password
+			LocalDateTime lastAccess
+			List<Integer> courseExecutionsIds
+			- User user
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 8.54% (28/328)
+		 * - Percentage of local accesses: 2.45% (12/490) */
+		Entity QuizQuestion {
+			Integer sequence
+			Integer id
+			- Quiz quiz
+			- Question question
+			- Set<QuestionAnswer> questionAnswers
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 1.52% (5/328)
+		 * - Percentage of local accesses: 2.45% (12/490) */
+		Entity Dashboard {
+			Set<RemovedDifficultQuestion> removedDifficultQuestions
+			LocalDateTime lastCheckFailedAnswers
+			int numberOfCorrectStudentAnswers
+			int numberOfInClassAnswers
+			int numberOfTeacherQuizzes
+			int numberOfCorrectInClassAnswers
+			int numberOfStudentAnswers
+			int numberOfInClassQuizzes
+			int numberOfTeacherAnswers
+			int numberOfStudentQuizzes
+			Integer id
+			int numberOfCorrectTeacherAnswers
+			LocalDateTime lastCheckWeeklyScores
+			- CourseExecution courseExecution
+			- Student student
+			- Set<WeeklyScore> weeklyScores
+			- Set<FailedAnswer> failedAnswers
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 9.76% (32/328)
+		 * - Percentage of local accesses: 6.94% (34/490) */
+		Entity Student {
+			- Set<Discussion> discussions
+			- Set<Dashboard> dashboards
+			- Set<QuestionSubmission> questionSubmissions
+			- Set<QuizAnswer> quizAnswers
+			- Set<Tournament> tournaments
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 9.15% (30/328)
+		 * - Percentage of local accesses: 13.06% (64/490) */
+		Entity CourseExecution {
+			Type ^type
+			LocalDateTime endDate
+			String acronym
+			String academicTerm
+			Integer id
+			Status status
+			- Set<User> users
+			- Set<Assessment> assessments
+			- Set<Quiz> quizzes
+			- Set<QuestionSubmission> questionSubmissions
+			- Course course
+			- Set<Discussion> discussions
+			- Set<DifficultQuestion> difficultQuestions
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 7.62% (25/328)
+		 * - Percentage of local accesses: 8.98% (44/490) */
+		Entity User {
+			Role role
+			Integer ^key
+			LocalDateTime creationDate
+			Integer id
+			String name
+			Boolean admin
+			- Set<Reply> replies
+			- AuthUser authUser
+			- Set<CourseExecution> courseExecutions
+			- Set<Review> reviews
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.3% (1/328)
+		 * - Percentage of local accesses: 1.84% (9/490) */
+		Entity AuthExternalUser {
+			String confirmationToken
+			LocalDateTime tokenGenerationDate
+			Boolean active
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.3% (1/328)
+		 * - Percentage of local accesses: 2.45% (12/490) */
+		Entity TopicConjunction {
+			Integer id
+			- Assessment assessment
+			- Set<Topic> topics
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.0% (0/328)
+		 * - Percentage of local accesses: 0.2% (1/490) */
+		Entity WeeklyScore {
+			LocalDate week
+			int percentageCorrect
+			int quizzesAnswered
+			boolean closed
+			int questionsUniquelyAnswered
+			int improvedCorrectAnswers
+			Integer id
+			int questionsAnswered
+			- Dashboard dashboard
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 0.0% (0/328)
+		 * - Percentage of local accesses: 0.61% (3/490) */
+		Entity Review {
+			LocalDateTime creationDate
+			String comment
+			Integer id
+			Type ^type
+			- QuestionSubmission questionSubmission
+			- User user
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 8.23% (27/328)
+		 * - Percentage of local accesses: 2.65% (13/490) */
+		Entity QuestionAnswer {
+			Integer sequence
+			Integer id
+			Integer timeTaken
+			- AnswerDetails_Reference answerDetails
+			- Discussion discussion
+			- QuizQuestion quizQuestion
+			- QuizAnswer quizAnswer
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 10.06% (33/328)
+		 * - Percentage of local accesses: 8.37% (41/490) */
+		Entity Question {
+			Integer id
+			Status status
+			Integer numberOfCorrect
+			String title
+			LocalDateTime creationDate
+			Integer ^key
+			String content
+			Integer numberOfAnswers
+			- QuestionDetails_Reference questionDetails
+			- Course course
+			- Set<Discussion> discussions
+			- Image_Reference image
+			- Set<Topic> topics
+			- Set<QuizQuestion> quizQuestions
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 1.22% (4/328)
+		 * - Percentage of local accesses: 5.1% (25/490) */
+		Entity Topic {
+			String name
+			Integer id
+			- Set<Tournament> tournaments
+			- List<TopicConjunction> topicConjunctions
+			- Set<Question> questions
+			- Course course
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 3.35% (11/328)
+		 * - Percentage of local accesses: 6.53% (32/490) */
+		Entity Course {
+			Integer id
+			Type ^type
+			String name
+			- Set<Question> questions
+			- Set<Topic> topics
+			- Set<CourseExecution> courseExecutions
+		}
+	}
+}
+
+BoundedContext Cluster3 {
+	Application Cluster3_Application {
+		/* Operation names were generated to show which entities are accessed when an operation is called. */
+		Service Cluster3_Service {
+			void acCodeFillInQuestion_acCodeFillInOption_acOption_acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion;
+			void acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion_acImage;
+			void acCodeFillInQuestion_acCodeFillInSpot_acImage_acQuestionDetails_acCodeOrderQuestion_acCodeFillInOption_acMultipleChoiceQuestion;
+			void acImage;
+			void acQuestionDetails_acImage_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+			void acCodeOrderQuestion_acImage_acCodeFillInQuestion_acCodeFillInOption_acMultipleChoiceQuestion_acCodeOrderSlot_acCodeFillInSpot_acOption_acQuestionDetails;
+			void acOption_acMultipleChoiceQuestion_acCodeFillInSpot_acCodeFillInQuestion_acQuestionDetails_acImage_acCodeOrderQuestion_acCodeOrderSlot_acCodeFillInOption;
+			void acMultipleChoiceQuestion_acCodeFillInQuestion_acImage_acQuestionDetails_acCodeOrderQuestion;
+			void acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion_acCodeFillInSpot_acCodeFillInOption_acImage_acQuestionDetails;
+			void acCodeFillInQuestion_acCodeFillInOption_acOption_acQuestionDetails_acCodeOrderQuestion_acImage_acCodeOrderSlot_acMultipleChoiceQuestion_acCodeFillInSpot;
+			void acImage_acMultipleChoiceQuestion_acCodeFillInQuestion_acCodeOrderSlot_acCodeOrderQuestion_acQuestionDetails_acOption_acCodeFillInOption;
+			void acCodeOrderQuestion_acCodeFillInOption_acCodeOrderSlot_acCodeFillInQuestion_acQuestionDetails_acImage_acCodeFillInSpot_acMultipleChoiceQuestion_acOption;
+			void acCodeFillInQuestion_acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion;
+			void acCodeFillInOption_acQuestionDetails_acOption;
+			void acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion_acCodeFillInSpot_acCodeFillInOption_acImage;
+			void acQuestionDetails_acCodeFillInOption_acOption_acCodeFillInQuestion_acImage_acCodeOrderSlot_acCodeOrderQuestion_acMultipleChoiceQuestion;
+			void acCodeFillInSpot_acCodeFillInQuestion_acImage_acOption_acCodeOrderQuestion_acCodeFillInOption_acMultipleChoiceQuestion_acCodeOrderSlot_acQuestionDetails;
+			void acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+			void acCodeFillInQuestion_acCodeOrderSlot_acCodeOrderQuestion_acQuestionDetails_acCodeFillInOption_acOption_acCodeFillInSpot_acMultipleChoiceQuestion;
+			void acQuestionDetails_acCodeFillInOption_acOption;
+			void acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion_acCodeFillInOption_acCodeFillInSpot_acImage_acQuestionDetails;
+		}
+		Coordination GetQuizByCode_Coordination {
+			Cluster3::Cluster3_Service::acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion_acCodeFillInOption_acCodeFillInSpot_acImage_acQuestionDetails;
+			Cluster1::Cluster1_Service::acQuiz_acQuizAnswer_acQuiz_acQuestionAnswer_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser_acQuizQuestion_acQuizAnswer;
+			Cluster2::Cluster2_Service::acQuestionAnswerItem_acCodeFillInAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem;
+			Cluster1::Cluster1_Service::acQuizAnswer_acQuestionAnswer_acQuestion_acQuizQuestion_acQuiz;
+		}
+
+		Coordination ConcludeQuiz_Coordination {
+			Cluster3::Cluster3_Service::acCodeFillInOption_acQuestionDetails_acOption;
+			Cluster1::Cluster1_Service::acQuizAnswer_acQuestionAnswer_acQuiz_acQuestion_acQuizQuestion;
+			Cluster0::Cluster0_Service::acCodeFillInAnswer_acMultipleChoiceAnswer_acCodeOrderAnswer_acQuizAnswerItem_acAnswerDetails;
+			Cluster1::Cluster1_Service::acQuestionAnswer_acQuiz_acCourseExecution_acDashboard_acQuizAnswer_acStudent;
+		}
+
+		Coordination ExportCourseExecutionInfo_Coordination {
+			Cluster3::Cluster3_Service::acImage_acMultipleChoiceQuestion_acCodeFillInQuestion_acCodeOrderSlot_acCodeOrderQuestion_acQuestionDetails_acOption_acCodeFillInOption;
+			Cluster1::Cluster1_Service::acQuiz_acCourseExecution_acUser_acStudent_acAuthUser_acQuizAnswer;
+			Cluster0::Cluster0_Service::acQuizAnswerItem;
+			Cluster2::Cluster2_Service::acQuestionAnswerItem_acCodeFillInAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem;
+			Cluster1::Cluster1_Service::acCourseExecution_acQuestionAnswer_acStudent_acQuizQuestion_acAuthUser_acQuiz_acTeacher_acQuizAnswer_acQuestion_acUser;
+			Cluster0::Cluster0_Service::acMultipleChoiceAnswer_acAnswerDetails_acCodeFillInAnswer_acCodeOrderAnswer;
+			Cluster1::Cluster1_Service::acDashboard_acQuizAnswer_acStudent_acQuestionAnswer_acQuiz_acCourseExecution;
+			Cluster0::Cluster0_Service::acQuizAnswerItem;
+			Cluster1::Cluster1_Service::acQuiz_acStudent_acCourseExecution_acUser_acCourse_acQuestion_acQuizAnswer_acQuestionAnswer_acQuizQuestion;
+		}
+
+		Coordination GetQuizByQRCode_Coordination {
+			Cluster3::Cluster3_Service::acCodeFillInQuestion_acCodeFillInSpot_acImage_acQuestionDetails_acCodeOrderQuestion_acCodeFillInOption_acMultipleChoiceQuestion;
+			Cluster1::Cluster1_Service::acQuiz_acQuizAnswer_acQuiz_acQuestionAnswer_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser_acQuizQuestion_acQuizAnswer;
+			Cluster2::Cluster2_Service::acQuestionAnswerItem_acCodeFillInAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem;
+			Cluster1::Cluster1_Service::acQuizAnswer_acQuestionAnswer_acQuestion_acQuizQuestion_acQuiz;
+		}
+
+		Coordination UpdateTournament_Coordination {
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+			Cluster1::Cluster1_Service::acQuizAnswer_acUser_acAuthUser_acQuiz_acTopic_acQuestionAnswer_acQuizQuestion_acCourseExecution_acReply_acDiscussion_acTournament_acCourse_acQuestion_acStudent;
+		}
+
+		Coordination GetQuizTimeFraudScores_Coordination {
+			Cluster3::Cluster3_Service::acQuestionDetails_acCodeFillInOption_acOption;
+			Cluster1::Cluster1_Service::acQuiz_acUser_acStudent_acAuthUser_acQuizAnswer;
+			Cluster0::Cluster0_Service::acQuizAnswerItem;
+			Cluster2::Cluster2_Service::acQuestionAnswerItem;
+			Cluster1::Cluster1_Service::acAuthUser_acQuizQuestion_acQuizAnswer_acTeacher_acQuestion_acStudent_acUser_acCourseExecution_acQuestionAnswer_acQuiz;
+			Cluster0::Cluster0_Service::acCodeFillInAnswer_acCodeOrderAnswer_acMultipleChoiceAnswer_acAnswerDetails;
+			Cluster1::Cluster1_Service::acQuizAnswer_acStudent_acQuestionAnswer_acQuiz_acCourseExecution_acDashboard;
+			Cluster0::Cluster0_Service::acQuizAnswerItem;
+		}
+
+		Coordination StartQuiz_Coordination {
+			Cluster3::Cluster3_Service::acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion_acCodeFillInSpot_acCodeFillInOption_acImage;
+			Cluster1::Cluster1_Service::acQuiz_acQuizAnswer_acQuiz_acQuestionAnswer_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser_acQuizQuestion_acQuizAnswer;
+			Cluster2::Cluster2_Service::acCodeFillInAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem_acQuestionAnswerItem;
+			Cluster1::Cluster1_Service::acQuestionAnswer_acQuestion_acQuizQuestion_acQuiz_acQuizAnswer;
+		}
+
+		Coordination RemoveNonFilledQuizAnswers_Coordination {
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+			Cluster1::Cluster1_Service::acReply_acQuizQuestion_acQuiz_acQuizAnswer_acQuestionAnswer_acQuestion_acStudent_acDiscussion;
+		}
+
+		Coordination CreateQuestionSubmission_Coordination {
+			Cluster1::Cluster1_Service::acCourse_acQuestion_acCourseExecution;
+			Cluster3::Cluster3_Service::acCodeFillInSpot_acCodeFillInQuestion_acImage_acOption_acCodeOrderQuestion_acCodeFillInOption_acMultipleChoiceQuestion_acCodeOrderSlot_acQuestionDetails;
+			Cluster1::Cluster1_Service::acQuestion_acQuiz_acDiscussion_acReply_acCourseExecution_acQuestionSubmission_acStudent_acUser;
+		}
+
+		Coordination UpdateQuestion_Coordination {
+			Cluster3::Cluster3_Service::acQuestionDetails_acImage_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+			Cluster1::Cluster1_Service::acQuizQuestion_acQuiz_acDiscussion_acReply_acQuestionAnswer_acQuestion;
+		}
+
+		Coordination UpdateQuestionSubmission_Coordination {
+			Cluster3::Cluster3_Service::acCodeFillInQuestion_acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion;
+			Cluster1::Cluster1_Service::acQuestion_acQuiz_acReply_acUser_acQuestionAnswer_acQuizQuestion_acCourseExecution_acDiscussion_acQuestionSubmission_acStudent;
+		}
+
+		Coordination CreateQuiz_Coordination {
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+			Cluster1::Cluster1_Service::acDiscussion_acReply_acQuizQuestion_acCourseExecution_acQuiz_acQuestion;
+		}
+
+		Coordination GetAvailableQuizzes_Coordination {
+			Cluster3::Cluster3_Service::acCodeFillInQuestion_acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion;
+			Cluster1::Cluster1_Service::acUser_acStudent_acQuestion_acCourseExecution_acAuthUser_acReply_acQuiz_acQuizQuestion_acQuizAnswer_acDiscussion;
+		}
+
+		Coordination GetNewQuiz_Coordination {
+			Cluster3::Cluster3_Service::acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion_acImage;
+			Cluster1::Cluster1_Service::acQuestionAnswer_acCourseExecution_acQuizQuestion_acCourse_acUser_acQuiz_acAssessment_acStudent_acQuizAnswer_acQuestion_acAuthUser;
+		}
+
+		Coordination GetQuizAnswers_Coordination {
+			Cluster3::Cluster3_Service::acCodeFillInQuestion_acCodeOrderSlot_acCodeOrderQuestion_acQuestionDetails_acCodeFillInOption_acOption_acCodeFillInSpot_acMultipleChoiceQuestion;
+			Cluster1::Cluster1_Service::acQuiz_acUser_acStudent_acAuthUser_acQuizAnswer;
+			Cluster0::Cluster0_Service::acQuizAnswerItem;
+			Cluster2::Cluster2_Service::acQuestionAnswerItem;
+			Cluster1::Cluster1_Service::acCourseExecution_acQuiz_acUser_acTeacher_acQuestionAnswer_acQuizAnswer_acQuestion_acStudent_acAuthUser_acQuizQuestion;
+			Cluster0::Cluster0_Service::acMultipleChoiceAnswer_acAnswerDetails_acCodeFillInAnswer_acCodeOrderAnswer;
+			Cluster1::Cluster1_Service::acDashboard_acQuizAnswer_acStudent_acQuestionAnswer_acQuiz_acCourseExecution_acQuestion_acQuizQuestion;
+			Cluster0::Cluster0_Service::acQuizAnswerItem;
+		}
+
+		Coordination DuplicateQuiz_Coordination {
+			Cluster3::Cluster3_Service::acMultipleChoiceQuestion_acCodeFillInQuestion_acImage_acQuestionDetails_acCodeOrderQuestion;
+			Cluster1::Cluster1_Service::acQuizQuestion_acQuiz_acCourseExecution_acQuestion_acDiscussion_acReply;
+		}
+
+		Coordination UploadImage_Coordination {
+			Cluster3::Cluster3_Service::acImage;
+			Cluster1::Cluster1_Service::acQuestion_acCourse;
+			Cluster3::Cluster3_Service::acImage;
+		}
+
+		Coordination GetCourseExecutionDiscussions_Coordination {
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+			Cluster1::Cluster1_Service::acCourseExecution_acUser_acStudent_acAuthUser_acDiscussion_acReply_acQuiz_acQuestion;
+		}
+
+		Coordination GetOpenCourseExecutionDiscussions_Coordination {
+			Cluster3::Cluster3_Service::acImage_acQuestionDetails_acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion;
+			Cluster1::Cluster1_Service::acReply_acQuiz_acQuestion_acCourseExecution_acUser_acStudent_acAuthUser_acDiscussion;
+		}
+
+		Coordination ImportQuestions_Coordination {
+			Cluster1::Cluster1_Service::acCourse_acQuestion_acCourseExecution;
+			Cluster3::Cluster3_Service::acOption_acMultipleChoiceQuestion_acCodeFillInSpot_acCodeFillInQuestion_acQuestionDetails_acImage_acCodeOrderQuestion_acCodeOrderSlot_acCodeFillInOption;
+			Cluster1::Cluster1_Service::acCourse_acTopic_acQuestion_acQuiz_acDiscussion_acReply;
+		}
+
+		Coordination ExportQuiz_Coordination {
+			Cluster3::Cluster3_Service::acQuestionDetails_acCodeFillInOption_acOption_acCodeFillInQuestion_acImage_acCodeOrderSlot_acCodeOrderQuestion_acMultipleChoiceQuestion;
+			Cluster1::Cluster1_Service::acQuiz_acUser_acStudent_acAuthUser_acQuizAnswer;
+			Cluster0::Cluster0_Service::acQuizAnswerItem;
+			Cluster2::Cluster2_Service::acQuestionAnswerItem_acCodeFillInAnswerItem_acMultipleChoiceAnswerItem_acCodeOrderAnswerItem;
+			Cluster1::Cluster1_Service::acTeacher_acQuiz_acQuizAnswer_acCourseExecution_acUser_acStudent_acQuestion_acQuizQuestion_acQuestionAnswer_acAuthUser;
+			Cluster0::Cluster0_Service::acAnswerDetails_acCodeFillInAnswer_acCodeOrderAnswer_acMultipleChoiceAnswer;
+			Cluster1::Cluster1_Service::acQuizAnswer_acStudent_acQuestionAnswer_acQuiz_acCourseExecution_acDashboard;
+			Cluster0::Cluster0_Service::acQuizAnswerItem;
+			Cluster1::Cluster1_Service::acStudent_acQuestion_acQuizAnswer_acQuizQuestion_acQuiz_acQuestionAnswer_acCourseExecution_acCourse_acUser;
+		}
+
+		Coordination SolveQuiz_Coordination {
+			Cluster3::Cluster3_Service::acCodeOrderQuestion_acMultipleChoiceQuestion_acCodeFillInQuestion_acCodeFillInSpot_acCodeFillInOption_acImage_acQuestionDetails;
+			Cluster1::Cluster1_Service::acQuiz_acUser_acTopicConjunction_acQuizAnswer_acQuestionAnswer_acCourseExecution_acAssessment_acTournament_acQuizQuestion_acStudent_acCourse_acQuestion_acAuthUser_acTopic;
+			Cluster2::Cluster2_Service::acQuestionAnswerItem_acCodeFillInAnswerItem_acCodeOrderAnswerItem_acMultipleChoiceAnswerItem;
+			Cluster1::Cluster1_Service::acQuiz_acQuizAnswer_acQuestionAnswer_acQuestion_acQuizQuestion;
+		}
+	}
+	Aggregate Cluster3 {
+		/* 
+		 * This entity was created to reference the 'Question' entity of the 'Cluster1' aggregate. */
+		Entity Question_Reference
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 5.06% (4/79)
+		 * - Percentage of local accesses: 8.59% (11/128) */
+		Entity CodeFillInOption {
+			Integer sequence
+			boolean correct
+			Integer id
+			String content
+			- CodeFillInSpot codeFillInSpot
+			- Set<CodeFillInAnswer_Reference> questionAnswers
+		}
+		/* 
+		 * This entity was created to reference the 'MultipleChoiceAnswer' entity of the 'Cluster0' aggregate. */
+		Entity MultipleChoiceAnswer_Reference
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.46% (13/79)
+		 * - Percentage of local accesses: 14.84% (19/128) */
+		Entity MultipleChoiceQuestion {
+			- List<Option> options
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.46% (13/79)
+		 * - Percentage of local accesses: 15.63% (20/128) */
+		Entity Image {
+			Integer width
+			Integer id
+			String ^url
+			- Question_Reference question
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 3.8% (3/79)
+		 * - Percentage of local accesses: 3.91% (5/128) */
+		Entity CodeOrderSlot {
+			Integer order
+			String content
+			Integer id
+			Integer sequence
+			- Set<CodeOrderAnswerSlot_Reference> orderedSlots
+			- CodeOrderQuestion questionDetails
+		}
+		/* 
+		 * This entity was created to reference the 'CodeOrderAnswerSlot' entity of the 'Cluster0' aggregate. */
+		Entity CodeOrderAnswerSlot_Reference
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 3.8% (3/79)
+		 * - Percentage of local accesses: 5.47% (7/128) */
+		Entity CodeFillInSpot {
+			Integer id
+			Integer sequence
+			- CodeFillInQuestion questionDetails
+			- List<CodeFillInOption> options
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 5.06% (4/79)
+		 * - Percentage of local accesses: 5.47% (7/128) */
+		Entity Option {
+			String content
+			Integer sequence
+			Integer id
+			boolean correct
+			- Set<MultipleChoiceAnswer_Reference> questionAnswers
+			- MultipleChoiceQuestion questionDetails
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.46% (13/79)
+		 * - Percentage of local accesses: 16.41% (21/128) */
+		Entity QuestionDetails {
+			Integer id
+			- Question_Reference question
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.46% (13/79)
+		 * - Percentage of local accesses: 14.84% (19/128) */
+		Entity CodeFillInQuestion {
+			Languages language
+			String code
+			- List<CodeFillInSpot> codeFillInSpots
+		}
+		/* 
+		 * Metrics:
+		 * - Percentage of external accesses: 16.46% (13/79)
+		 * - Percentage of local accesses: 14.84% (19/128) */
+		Entity CodeOrderQuestion {
+			Languages language
+			- List<CodeOrderSlot> codeOrderSlots
+		}
+		/* 
+		 * This entity was created to reference the 'CodeFillInAnswer' entity of the 'Cluster0' aggregate. */
+		Entity CodeFillInAnswer_Reference
+	}
+}
+

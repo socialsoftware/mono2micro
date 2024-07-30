@@ -15,7 +15,7 @@ export default class StructureWeights extends Weights {
         this.weightsLabel = {
             oneToOneWeight: "One to One Weight",
             oneToManyWeight: "One to Many Weight",
-            heritageWeight: "Heritage Weight"
+            heritageWeight: "Inheritance Weight"
         }
 
         this.oneToOneWeight = weights.oneToOneWeight;

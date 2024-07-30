@@ -15,6 +15,8 @@ export abstract class WeightsFactory {
                 return new AccessesWeights(weights);
             case REPOSITORY_WEIGHTS:
                 return new RepositoryWeights(weights);
+            case STRUCTURE_WEIGHTS:
+                return new StructureWeights(weights);
             case CLASS_VECTORIZATION_WEIGHTS:
                 return new ClassVectorizationWeights(weights);
             case ENTITY_VECTORIZATION_WEIGHTS:
@@ -23,8 +25,6 @@ export abstract class WeightsFactory {
                 return new FunctionalityVectorizationCallGraphWeights(weights);
             case FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS:
                 return new FunctionalityVectorizationAccessesWeights(weights);
-            case STRUCTURE_WEIGHTS:
-                return new StructureWeights(weights);
             default:
                 throw new Error('Type ' + weights.type + ' unknown.');
         }

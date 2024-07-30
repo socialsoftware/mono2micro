@@ -43,6 +43,7 @@ public class SciPyClustering extends Clustering {
         return new ArrayList<>(Arrays.asList(
                 ACCESSES_STRATEGY,
                 REPOSITORY_STRATEGY,
+                STRUCTURE_STRATEGY,
                 CLASS_VECTORIZATION_STRATEGY,
                 ENTITY_VECTORIZATION_STRATEGY,
                 FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY,

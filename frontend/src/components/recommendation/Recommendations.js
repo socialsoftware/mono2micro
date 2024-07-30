@@ -72,12 +72,12 @@ export const Recommendations = () => {
 
     function downloadDecompositionData(response) {
         const url = window.URL.createObjectURL(
-            new Blob([response.data], {type: "application/json"})
+            new Blob([response.data], {type: "application/zip"})
         );
 
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'm2m_decomposition_data.json');
+        link.setAttribute('download', 'm2m_decomposition_data.zip');
         document.body.appendChild(link);
         link.click();
 
