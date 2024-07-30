@@ -228,7 +228,6 @@ public class StructureWeights extends Weights {
             float totalWeight = 0;
             float res[] = new float[3];
 
-            // Daqui para baixo tenho que adicionar suporte para os novos pesos
             for (FieldDto e1Field : fields) {
                 if(e1Field.getIsList()){
                     totalWeight += o2m;
