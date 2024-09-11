@@ -4,6 +4,7 @@ import SimilarityScipyEntityVectorization, {SIMILARITY_SCIPY_ENTITY_VECTORIZATIO
 import SimilarityScipyClassVectorization, {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "./SimilarityScipyClassVectorization";
 import SimilarityScipyFunctionalityVectorizationByCallGraph, {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "./SimilarityScipyFunctionalityVectorizationByCallGraph";
 import SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses, {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES} from "./SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses";
+import SimilarityScipyStructure, { SIMILARITY_SCIPY_STRUCTURE } from "./SimilarityScipyStructure";
 
 export abstract class SimilarityFactory {
     static getSimilarity(similarity: any) : Similarity {
@@ -18,6 +19,8 @@ export abstract class SimilarityFactory {
                 return new SimilarityScipyFunctionalityVectorizationByCallGraph(similarity);
             case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES:
                 return new SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses(similarity);
+            case SIMILARITY_SCIPY_STRUCTURE:
+                return new SimilarityScipyStructure(similarity);
             default:
                 throw new Error('Type ' + similarity.type + ' unknown.');
         }

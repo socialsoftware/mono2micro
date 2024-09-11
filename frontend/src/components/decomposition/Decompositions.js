@@ -10,6 +10,7 @@ import {SIMILARITY_SCIPY_ENTITY_VECTORIZATION} from "../../models/similarity/Sim
 import {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "../../models/similarity/SimilarityScipyClassVectorization";
 import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "../../models/similarity/SimilarityScipyFunctionalityVectorizationByCallGraph";
 import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES} from "../../models/similarity/SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses";
+import {SIMILARITY_SCIPY_STRUCTURE} from "../../models/similarity/SimilarityScipyStructure";
 
 export const Decompositions = () => {
     let { codebaseName, strategyName, similarityName } = useParams();
@@ -137,6 +138,12 @@ export const Decompositions = () => {
             {similarity.type === SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES &&
                 <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
             }
+
+            {similarity.type === SIMILARITY_SCIPY_STRUCTURE &&
+                <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
+            }
+
+
 
             {decompositions.length !== 0 &&
                 <h4 style={{color: "#666666", marginTop: "16px"}}>

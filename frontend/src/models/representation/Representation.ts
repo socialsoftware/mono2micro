@@ -28,6 +28,6 @@ export enum RepresentationFile {
 export enum RepresentationType {
     ACCESSES_TYPE = 'Accesses Based',
     REPOSITORY_TYPE = 'Repository Based',
-    STRUCTURE_TYPE = 'Structure Based',
-    CODE_EMBEDDINGS_TYPE = 'Code Embeddings Based'
+    CODE_EMBEDDINGS_TYPE = 'Code Embeddings Based',
+    STRUCTURE_TYPE = 'Structure Based'
 }

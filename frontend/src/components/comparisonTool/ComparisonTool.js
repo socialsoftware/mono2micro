@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {DefaultComparisonTool} from "./implementations/DefaultComparisonTool";
 import {MoJoResults} from "./implementations/MoJoResults";
+import {PurityResults} from './implementations/PurityResults';
 import {Paper, styled} from "@mui/material";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
@@ -179,6 +180,15 @@ export const ComparisonTool = () => {
         nonExpertDecompositionsForDecomposition2.push(dropdownItem);
     });
 
+    // Extract purity data if available
+    const purityResult = comparisonData.analysisList
+        ? comparisonData.analysisList.find(result => result.type === "PURITY")
+        : null;
+    const purity = purityResult ? purityResult.purity : null;
+
+    const clusterPurityMap = purityResult ? purityResult.clusterPurityMap : {};
+    const clusterMapping = purityResult ? purityResult.clusterMapping : {};
+
     return (
         <div className={"ms-2 me-2"}>
             {renderBreadCrumbs()}
@@ -275,6 +285,15 @@ export const ComparisonTool = () => {
                 <MoJoResults
                     codebaseName={codebase.name}
                     comparisonData={comparisonData}
+                />
+            }
+            {analysisTypes.includes("PURITY") &&
+                <PurityResults
+                    clusterPurityMap={clusterPurityMap}
+                    clusterMapping={clusterMapping}
+                    decomposition1={decomposition1}
+                    decomposition2={decomposition2}
+                    purity={purity}
                 />
             }
 

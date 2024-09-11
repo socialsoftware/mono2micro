@@ -5,6 +5,7 @@ import RecommendMatrixSciPy from "./RecommendMatrixSciPy";
 export abstract class RecommendationFactory {
     static getRecommendation(recommendation: any) : Recommendation {
         switch (recommendation.type) {
+            case RecommendationType.RECOMMEND_MATRIX_SCIPY_STRUCTURE:
             case RecommendationType.RECOMMEND_MATRIX_SCIPY:
             case RecommendationType.RECOMMEND_MATRIX_CLASS_VECTORIZATION:
             case RecommendationType.RECOMMEND_MATRIX_ENTITY_VECTORIZATION:

@@ -17,6 +17,7 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.*;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityScipyAccessesAndRepositoryDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityScipyStructureDto;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.WeightsFactory;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
@@ -216,7 +217,7 @@ public class RecommendMatrixSciPy extends Recommendation {
                 weights.setWeightsFromArray(w);
             }
 
-            SimilarityDto similarityInformation = new SimilarityScipyAccessesAndRepositoryDto(this, localWeightsList);
+            SimilarityDto similarityInformation = getSimilarityInformationDto(this.getType(), localWeightsList);
 
             // Get or create the decomposition's strategy
             SimilarityScipy similarity = (SimilarityScipy) similarities.stream().filter(possibleSimilarity ->
@@ -236,4 +237,16 @@ public class RecommendMatrixSciPy extends Recommendation {
             decompositionService.setupDecomposition(decomposition);
         }
     }
+
+    public SimilarityDto getSimilarityInformationDto(String type, List<Weights> localWeightsList){
+        switch (type) {
+            case RECOMMEND_MATRIX_SCIPY_STRUCTURE:
+                return new SimilarityScipyStructureDto(this, localWeightsList);
+            case RECOMMEND_MATRIX_SCIPY:
+                return new SimilarityScipyAccessesAndRepositoryDto(this, localWeightsList);
+            default:
+                throw new RuntimeException("The type \"" + this.getType() + "\" is not a valid recommendation type.");
+        }
+    }
 }
+

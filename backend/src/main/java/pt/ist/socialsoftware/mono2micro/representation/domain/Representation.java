@@ -31,7 +31,7 @@ public abstract class Representation {
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES))),
             new AbstractMap.SimpleImmutableEntry<>(REPOSITORY_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES, AUTHOR, COMMIT))),
             new AbstractMap.SimpleImmutableEntry<>(CODE_EMBEDDINGS_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
-            new AbstractMap.SimpleImmutableEntry<>(STRUCTURE_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES, STRUCTURE)))
+            new AbstractMap.SimpleImmutableEntry<>(STRUCTURE_TYPE, new ArrayList<>(Arrays.asList(ENTITY_TO_ID, ID_TO_ENTITY, ACCESSES, STRUCTURE)))
     ).collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue));
 
     @Id

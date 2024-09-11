@@ -13,13 +13,15 @@ import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatri
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationCallGraphWeights.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationSequenceOfAccessesWeights.FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.RepositoryWeights.REPOSITORY_WEIGHTS;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.StructureWeights.STRUCTURE_WEIGHTS;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AccessesWeights.class, name = ACCESSES_WEIGHTS),
         @JsonSubTypes.Type(value = RepositoryWeights.class, name = REPOSITORY_WEIGHTS),
         @JsonSubTypes.Type(value = FunctionalityVectorizationCallGraphWeights.class, name = FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS),
-        @JsonSubTypes.Type(value = FunctionalityVectorizationSequenceOfAccessesWeights.class, name = FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS)
+        @JsonSubTypes.Type(value = FunctionalityVectorizationSequenceOfAccessesWeights.class, name = FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS),
+        @JsonSubTypes.Type(value = StructureWeights.class, name = STRUCTURE_WEIGHTS)
 })
 public abstract class Weights {
     public abstract String getType();

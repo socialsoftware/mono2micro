@@ -141,6 +141,14 @@ export const Recommendations = () => {
                             recommendationType={RecommendationType.RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES}
                         /> :
                     strategy.algorithmType === "SciPy Clustering" &&
+                        strategy.strategyTypes.includes(StrategyType.STRUCTURE_STRATEGY) ?
+                        <RecommendMatrixSciPy
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                            recommendationType={RecommendationType.RECOMMEND_MATRIX_SCIPY_STRUCTURE}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
                         <RecommendMatrixSciPy
                             codebaseName={codebaseName}
                             strategy={strategy}

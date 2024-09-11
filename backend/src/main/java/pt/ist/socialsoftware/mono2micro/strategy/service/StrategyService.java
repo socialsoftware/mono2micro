@@ -39,7 +39,6 @@ public class StrategyService {
                     strategy.getStrategyTypes().size() == strategyTypes.size() &&
                     strategy.getStrategyTypes().containsAll(strategyTypes)) // strategy already exists
                 return;
-
         Strategy strategy = new Strategy(codebase, algorithmType, strategyTypes);
         strategy.setCodebase(codebase);
         codebase.addStrategy(strategy);

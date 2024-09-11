@@ -1,12 +1,12 @@
 import AccessesWeights, {ACCESSES_WEIGHTS} from "./AccessesWeights";
 import Weights from "./Weights";
 import RepositoryWeights, {REPOSITORY_WEIGHTS} from "./RepositoryWeights";
-import StructureWeights, {STRUCTURE_WEIGHTS} from "./StructureWeights";
 import ClassVectorizationWeights, {CLASS_VECTORIZATION_WEIGHTS} from "./ClassVectorizationWeights";
 import EntityVectorizationWeights, {ENTITY_VECTORIZATION_WEIGHTS} from "./EntityVectorizationWeights";
 import FunctionalityVectorizationCallGraphWeights, {FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS} from "./FunctionalityVectorizationCallGraphWeights";
 import FunctionalityVectorizationAccessesWeights, {FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS} from "./FunctionalityVectorizationAccessesWeights";
 import {StrategyType} from "../strategy/StrategyTypes";
+import StructureWeights, {STRUCTURE_WEIGHTS} from "./StructureWeights";
 
 export abstract class WeightsFactory {
     static getWeights(weights: any) : Weights {
@@ -45,8 +45,6 @@ export abstract class WeightsFactory {
             return [new AccessesWeights({accessMetricWeight: 25, writeMetricWeight: 25, readMetricWeight: 25, sequenceMetricWeight: 25})];
         else if (strategyTypes.includes(StrategyType.REPOSITORY_STRATEGY))
             return [new RepositoryWeights({authorMetricWeight: 50, commitMetricWeight: 50})];
-        else if (strategyTypes.includes(StrategyType.STRUCTURE_STRATEGY))
-            return [];
         else if (strategyTypes.includes(StrategyType.CLASS_VECTORIZATION_STRATEGY))
             return [];
         else if (strategyTypes.includes(StrategyType.ENTITY_VECTORIZATION_STRATEGY))
@@ -55,6 +53,9 @@ export abstract class WeightsFactory {
             return [new FunctionalityVectorizationCallGraphWeights({controllersWeight: 25, servicesWeight: 25, intermediateMethodsWeight: 25, entitiesWeight: 25})];
         else if (strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY))
             return [new FunctionalityVectorizationAccessesWeights({readMetricWeight: 50, writeMetricWeight: 50})];
+        else if (strategyTypes.includes(StrategyType.STRUCTURE_STRATEGY))
+            return [new StructureWeights({oneToOneWeight: 33, oneToManyWeight: 33, heritageWeight: 34})];
+        else
         throw new Error('No known type of Representation Info in Weights Factory.');
     }
 }
