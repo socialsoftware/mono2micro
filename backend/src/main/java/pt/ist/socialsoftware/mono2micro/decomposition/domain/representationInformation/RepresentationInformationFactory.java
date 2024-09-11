@@ -29,8 +29,6 @@ public class RepresentationInformationFactory {
                 return new AccessesInformation();
             case REPOSITORY_TYPE:
                 return new RepositoryInformation();
-            case STRUCTURE_TYPE:
-                return new StructureInformation();
             case CODE_EMBEDDINGS_TYPE:
                 return null;
             case STRUCTURE_TYPE:
