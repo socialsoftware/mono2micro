@@ -1,6 +1,6 @@
 import {Grid, Typography} from "@mui/material";
 import React, {useContext, useEffect, useState} from "react";
-import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
+import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
 import AppContext from "../../AppContext";
 import {APIService} from "../../../services/APIService";
