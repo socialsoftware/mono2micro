@@ -47,8 +47,7 @@ public class Strategy {
             new AbstractMap.SimpleImmutableEntry<>(CLASS_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
             new AbstractMap.SimpleImmutableEntry<>(ENTITY_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
             new AbstractMap.SimpleImmutableEntry<>(FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
-            new AbstractMap.SimpleImmutableEntry<>(FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
-            new AbstractMap.SimpleImmutableEntry<>(STRUCTURE_STRATEGY, new ArrayList<>(Arrays.asList(ENTITY_TO_ID, ACCESSES, STRUCTURE)))
+            new AbstractMap.SimpleImmutableEntry<>(FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS)))
     ).collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue));
 
     public static final Map<String, List<String>> strategiesToRepresentationTypes = Stream.of(
@@ -58,8 +57,7 @@ public class Strategy {
             new AbstractMap.SimpleImmutableEntry<>(CLASS_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(ENTITY_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
-            new AbstractMap.SimpleImmutableEntry<>(FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
-            new AbstractMap.SimpleImmutableEntry<>(STRUCTURE_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, STRUCTURE_TYPE)))
+            new AbstractMap.SimpleImmutableEntry<>(FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE)))
     ).collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue));
     @Id
     private String name;
