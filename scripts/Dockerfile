@@ -1,15 +1,22 @@
-FROM python:3.7.4
+FROM python:3.9-slim
 
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get install -y openjdk-11-jdk ca-certificates-java && \
+    apt-get install -y \
+    build-essential \
+    libfreetype6-dev \
+    libpng-dev \
+    libopenblas-dev \
+    liblapack-dev \
+    git \
+    default-jdk \
+    ca-certificates-java && \
     apt-get clean && \
     update-ca-certificates -f
 
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64/
-
-RUN export JAVA_HOME
+RUN export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::") && \
+    echo "JAVA_HOME=${JAVA_HOME}" >> /etc/environment
 
 COPY requirements.txt requirements.txt
 
