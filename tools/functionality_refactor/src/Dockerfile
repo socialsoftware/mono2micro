@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y ca-certificates
 COPY . /app
 
 WORKDIR /app
+RUN sed -i 's/\r$//' /app/scripts/compile.sh
 
 RUN make build
 
