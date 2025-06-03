@@ -26,6 +26,14 @@ services:
       dockerfile: ./backend/Dockerfile
     image: mono2micro-backend
     container_name: backend
+    depends_on:
+      - mongo
+      - scripts
+      - functionality_refactor
+    links:
+      - mongo
+      - scripts
+      - functionality_refactor
     hostname: 'localhost'
     ports:
       - 8080:8080
@@ -42,6 +50,10 @@ services:
       context: ./scripts
     image: mono2micro-scripts
     container_name: scripts
+    depends_on:
+      - mongo
+    links:
+      - mongo
     hostname: 'localhost'
     ports:
       - 5002:5002
@@ -60,6 +72,10 @@ services:
       context: ./tools/functionality_refactor/src
     image: functionality_refactor
     container_name: functionality_refactor
+    depends_on:
+      - mongo
+    links:
+      - mongo
     command: /app/web_service
     hostname: 'localhost'
     ports:
