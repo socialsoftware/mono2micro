@@ -1,0 +1,4 @@
+name: codeql/spring-data-jpa
+version: 0.0.0
+dependencies:
+  codeql/java-all: "*"

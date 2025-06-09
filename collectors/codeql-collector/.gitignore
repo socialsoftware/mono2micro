@@ -1,0 +1,4 @@
+/.idea
+/target
+codeql-runner.iml
+CodeQLRunner.class
