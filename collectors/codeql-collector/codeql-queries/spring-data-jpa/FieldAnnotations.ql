@@ -1,17 +1,17 @@
-import java
-import annotations
+import frameworks.SpringDataJPA
 
 predicate elementCollectionJoinTable(Field f, string joinTableName) {
-    exists(ElementCollection elmtCollection  |
+    exists(ElementCollectionAnnotation elmtCollection  |
         f.getAnAnnotation() = elmtCollection and
         (
-          exists(CollectionTable collectionTableAnn, string tableName |
-              f.getAnAnnotation() = collectionTableAnn and
-              tableName = collectionTableAnn.getValue("name").toString() and
-              joinTableName = tableName
+          (
+            exists(CollectionTableAnnotation collectionTableAnn |
+                f.getAnAnnotation() = collectionTableAnn and
+                joinTableName = collectionTableAnn.getValue("name").toString()
+            )
           ) or
           (
-            not exists(CollectionTable collectionTableAnn |
+            not exists(CollectionTableAnnotation collectionTableAnn |
               f.getAnAnnotation() = collectionTableAnn
             ) and
             joinTableName = f.getDeclaringType().getName() + "_" + f.getName()
@@ -21,7 +21,7 @@ predicate elementCollectionJoinTable(Field f, string joinTableName) {
 }
 
 predicate oneToOneJoinTableInfo(Field f, string joinTableName, Type relatedType) {
-  exists(OneToOne oneToOne, JoinTable joinTable |
+  exists(OneToOneAnnotation oneToOne, JoinTableAnnotation joinTable |
     f.getAnAnnotation() = oneToOne and
     f.getAnAnnotation() = joinTable and
     joinTableName = joinTable.getValue("name").toString() and
@@ -30,7 +30,7 @@ predicate oneToOneJoinTableInfo(Field f, string joinTableName, Type relatedType)
 }
 
 predicate manyToOneJoinTableInfo(Field f, string joinTableName, Type relatedType) {
-  exists(ManyToOne manyToOne, JoinTable joinTable |
+  exists(ManyToOneAnnotation manyToOne, JoinTableAnnotation joinTable |
     f.getAnAnnotation() = manyToOne and
     f.getAnAnnotation() = joinTable and
     joinTableName = joinTable.getValue("name").toString() and
@@ -39,18 +39,18 @@ predicate manyToOneJoinTableInfo(Field f, string joinTableName, Type relatedType
 }
 
 predicate manyToManyJoinTableInfo(Field f, string joinTableName, Type relatedType) {
-  exists(ManyToMany manyToMany |
+  exists(ManyToManyAnnotation manyToMany |
     f.getAnAnnotation() = manyToMany and
     relatedType = f.getType() and
     (
       (
-        exists(JoinTable joinTable |
+        exists(JoinTableAnnotation joinTable |
           f.getAnAnnotation() = joinTable and
           joinTableName = joinTable.getValue("name").toString()
         )
       ) or
       (
-        not exists(JoinTable joinTable |
+        not exists(JoinTableAnnotation joinTable |
           f.getAnAnnotation() = joinTable
         ) and joinTableName = "null"
       )
@@ -59,18 +59,18 @@ predicate manyToManyJoinTableInfo(Field f, string joinTableName, Type relatedTyp
 }
 
 predicate oneToManyJoinTableInfo(Field f, string joinTableName, Type relatedType) {
-  exists(OneToMany oneToMany |
+  exists(OneToManyAnnotation oneToMany |
     f.getAnAnnotation() = oneToMany and
     relatedType = f.getType() and
     (
       (
-        exists(JoinTable joinTable |
+        exists(JoinTableAnnotation joinTable |
           f.getAnAnnotation() = joinTable and
           joinTableName = joinTable.getValue("name").toString()
         )
       ) or
       (
-        not exists(JoinTable joinTable |
+        not exists(JoinTableAnnotation joinTable |
           f.getAnAnnotation() = joinTable
         ) and joinTableName = "null"
       )

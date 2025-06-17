@@ -1,0 +1,4 @@
+name: codeql-collector/queries
+version: 0.0.1
+dependencies:
+  codeql-collector/{LANGUAGE_NAME}-library: "*"
