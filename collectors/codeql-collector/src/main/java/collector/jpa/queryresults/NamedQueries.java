@@ -1,4 +1,4 @@
-package collector.results;
+package collector.jpa.queryresults;
 
 public class NamedQueries {
 

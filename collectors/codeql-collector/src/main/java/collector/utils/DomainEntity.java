@@ -1,5 +1,7 @@
 package collector.utils;
 
+import collector.queryresults.EntitySuperclass;
+
 public class DomainEntity {
 
     private int id;
@@ -12,13 +14,11 @@ public class DomainEntity {
     public DomainEntity() {
     }
 
-    public DomainEntity(int id, String name, boolean isMappedSuperclass, String superclass, String tableName, String location) {
+    public DomainEntity(int id, EntitySuperclass es) {
         this.id = id;
-        this.isMappedSuperclass = isMappedSuperclass;
-        this.name = name;
-        this.superclass = superclass;
-        this.tableName = tableName;
-        this.location = location;
+        this.name = es.getEntityName();
+        this.superclass = es.getSuperclass();
+        this.location = es.getEntityLocation();
     }
 
     public int getId() {

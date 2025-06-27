@@ -3,7 +3,7 @@ package collector.jpa;
 import collector.utils.Access;
 import collector.utils.Classes;
 import collector.utils.DomainEntity;
-import collector.utils.Method;
+import collector.utils.Function;
 import collector.utils.Query;
 import collector.utils.QueryAccess;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -16,21 +16,30 @@ import java.util.Set;
 
 public class ReposityMethodUtils {
 
-    public Access getSpringDataRepositoryAccess(Method method, DomainEntity entity) {
+    private DomainEntity getEntityByName(Map<String, DomainEntity> locationToEntityMap, String entityName) {
+        for(Map.Entry<String, DomainEntity> entry : locationToEntityMap.entrySet()) {
+            if (entry.getValue().getName().equals(entityName)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    public Access getSpringDataRepositoryAccess(Function function, String methodName, DomainEntity entity) {
         String mode;
         // Read Access
-        if (method.getMethodName().startsWith("find") ||
-                method.getMethodName().startsWith("get") ||
-                method.getMethodName().startsWith("exists") ||
-                method.getMethodName().startsWith("read") ||
-                method.getMethodName().startsWith("count")) {
+        if (methodName.startsWith("find") ||
+                methodName.startsWith("get") ||
+                methodName.startsWith("exists") ||
+                methodName.startsWith("read") ||
+                methodName.startsWith("count")) {
             mode = "R";
         }
         // Write Access
         else {
             mode = "W";
         }
-        return new Access(entity, method, mode);
+        return new Access(entity, function, mode);
     }
 
     public Query getNamedQuery(List<Query> namedQueriesList, String query) {
@@ -40,7 +49,7 @@ public class ReposityMethodUtils {
         return null;
     }
 
-    public List<Access> parseNativeQuery(String sql, Map<String, Classes> tableClassesMap, Map<String, DomainEntity> nameToEntityMap, Method method) {
+    public List<Access> parseNativeQuery(String sql, Map<String, Classes> tableClassesMap, Map<String, DomainEntity> locationToEntityMap, Function method) {
         // Remove quotes at the start and the end
         if (sql.startsWith("\"") && sql.endsWith("\"")) {
             sql = sql.substring(1, sql.length() - 1);
@@ -64,7 +73,9 @@ public class ReposityMethodUtils {
                     String mode = qa.getMode();
                     if (mode == null)
                         mode = "R";
-                    accessesToReturn.add(new Access(nameToEntityMap.get(typeName), method, mode));
+                    DomainEntity de = getEntityByName(locationToEntityMap, typeName);
+                    if (de == null) continue;
+                    accessesToReturn.add(new Access(de, method, mode));
                 }
             }
         } catch (Exception e) {
@@ -74,7 +85,7 @@ public class ReposityMethodUtils {
         return accessesToReturn;
     }
 
-    public List<Access> parseHqlQuery(String hql, DomainEntity entity, Method method) {
+    public List<Access> parseHqlQuery(String hql, DomainEntity entity, Function method) {
         List<Access> accessesList = new ArrayList<>();
         try {
             Set<QueryAccess> accesses = new MyHqlParser(hql, entity.getName()).parse();

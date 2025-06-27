@@ -1,13 +1,7 @@
 import frameworks.SpringDataJPA
 
-from NamedQueryAnnotation nq, NamedNativeQueryAnnotation nnq
-where 
-    (
-        ann = nq and
-        native = "false"
-    ) or
-    (
-        ann = nnq and
-        native = "true"
-    )
-select ann, ann.getValue("name"), ann.getValue("query"), native
+from Annotation ann, string native
+where
+  (ann instanceof NamedQueryAnnotation and native = "no") or
+  (ann instanceof NamedNativeQueryAnnotation and native = "yes")
+select ann.getValue("name").toString(), ann.getValue("query").toString(), native

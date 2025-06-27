@@ -1,5 +1,9 @@
 package collector.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,42 +24,30 @@ public class TypeUtils {
         return new ArrayList<>(List.of(type));
     }
 
-    public static List<String> getTypesFromSignature(String signature) {
-        List<String> types = new ArrayList<>();
-
-        // Find the parameter part inside the parentheses
-        int start = signature.indexOf('(');
-        int end = signature.indexOf(')');
-        if (start == -1 || end == -1 || end < start) {
-            return types; // invalid format
+    public static void setFieldType(ObjectMapper mapper, ObjectNode fieldTypeNode, String fieldType) {
+        // Remove empty type brackets
+        if (fieldType.contains("<>")) {
+            fieldType = fieldType.replace("<>", "");
         }
+        // If it's a collection add types with parameters
+        if (fieldType.contains("<") && fieldType.contains(">")) {
+            // Get Parameterized type
+            fieldTypeNode.put("name", fieldType.substring(0, fieldType.indexOf('<')).trim());
 
-        String params = signature.substring(start + 1, end).trim();
-        if (params.isEmpty()) {
-            return types; // no parameters
+            ArrayNode paramArrayNode = mapper.createArrayNode();
+
+            getTypes(fieldType)
+                    .forEach(
+                            param -> {
+                                ObjectNode paramTypeNode = mapper.createObjectNode();
+                                paramTypeNode.put("name", param);
+                                paramArrayNode.add(paramTypeNode);
+                            });
+
+            fieldTypeNode.put("parameters", paramArrayNode);
+        } else {
+            fieldTypeNode.put("name", fieldType);
         }
-
-        // Split parameters by comma
-        String[] paramArray = params.split(",");
-
-        for (String param : paramArray) {
-            param = param.trim();
-
-            // Handle array types (e.g., byte[])
-            if (param.endsWith("[]")) {
-                String baseType = param.substring(0, param.length() - 2);
-                String simpleName = baseType.contains(".") ?
-                        baseType.substring(baseType.lastIndexOf('.') + 1) : baseType;
-                types.add(simpleName + "[]");
-            } else {
-                // Normal case: strip package name
-                String simpleName = param.contains(".") ?
-                        param.substring(param.lastIndexOf('.') + 1) : param;
-                types.add(simpleName);
-            }
-        }
-
-        return types;
     }
 
 }

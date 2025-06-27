@@ -5,6 +5,8 @@ import python
  */
 class DomainSuperclass extends string {
   DomainSuperclass() { this = "models.Model" }
+
+  string getName() { result = this }
 }
 
 /**
@@ -36,16 +38,45 @@ class DomainField extends AssignStmt {
     )
   }
 
-  string getName() {
+  string getFieldName() {
     result = this.getATarget().toString()
   }
 
-  string getType() {
-    exists(Attribute a |
-      this.getValue().(Expr).getASubExpression() = a |
+    string getFieldType() {
+    // Handles ForeignKey, ManyToManyField, etc. with related model
+    result = getEnhancedFieldType()
+  }
+
+  /**
+   * Get field names for normal types and relationship fields
+   */
+  string getEnhancedFieldType() {
+    // ForeignKey, ManyToManyField or OneToOneField
+    result = this.getValue().(Call).getFunc().(Attribute).getName() + "<" + getArgName() + ">"
+    or
+    result = getSimpleModelName()
+  }
+
+  string getSimpleModelName() {
+    exists(Call c, Attribute a |
+      c = this.getValue().(Call) and
+      a = c.getFunc().(Attribute) and
+      (
+        a.getName() != "ForeignKey" and
+        a.getName() != "ManyToManyField" and
+        a.getName() != "OneToOneField"
+      ) |
       result = a.getName()
     )
   }
+  
+  string getArgName() {
+    exists(Call c |
+      c = this.getValue().(Call) |
+      result = c.getPositionalArg(0).toString()
+    )
+  }
+
 }
 
 /**
@@ -58,6 +89,10 @@ class CallableFunction extends Function {
 
   string getFullName() {
     result = this.getScope().getName() + "." + this.getName()
+  }
+
+  Location getId() {
+    result = this.getLocation()
   }
 
 }

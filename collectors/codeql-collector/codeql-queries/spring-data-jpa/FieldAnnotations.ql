@@ -78,12 +78,13 @@ predicate oneToManyJoinTableInfo(Field f, string joinTableName, Type relatedType
   )
 }
 
-from Field f, string tableName, Type relatedType
+from Field f, string tableName, Type relatedType, DomainEntity de
 where (
     elementCollectionJoinTable(f, tableName) and relatedType = f.getDeclaringType()
     or oneToOneJoinTableInfo(f, tableName, relatedType)
     or manyToManyJoinTableInfo(f, tableName, relatedType)
     or manyToOneJoinTableInfo(f, tableName, relatedType)
     or oneToManyJoinTableInfo(f, tableName, relatedType)
-)
-select f.getDeclaringType(), relatedType, tableName
+  ) and
+  de = f.getDeclaringType()
+select de.getLocation(), f.getDeclaringType(), relatedType, tableName

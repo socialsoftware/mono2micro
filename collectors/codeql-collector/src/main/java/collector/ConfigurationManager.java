@@ -2,55 +2,37 @@ package collector;
 
 public class ConfigurationManager {
 
-    private String choice;
-    private boolean runQueries;
-    private String projectName;
-    private String codeQLDbPath;
+    private Configuration config;
 
     public ConfigurationManager(String[] args) {
         // Check args size
         if (args.length < 4) {
             System.err.println("Different number of args than expected");
             System.exit(1);
+        } else if (!args[1].equals("0") && !args[1].equals("1")) {
+            System.err.println("RUN_QUERIES flag option must be either 1 or 0");
+            System.exit(1);
         }
+
+        config = new Configuration(args[1].equals("1"), args[2], args[3]);
 
         // ORM option
         switch (args[0]) {
-            case "0" -> this.choice = Constants.SPRING_DATA_JPA;
-            case "1" -> this.choice = Constants.FENIX_FRAMEWORK;
-            case "2" -> this.choice = Constants.DJANGO;
+            case "0" -> config.setProperties(ProjectProperties.SPRING_DATA_JPA);
+            case "1" -> config.setProperties(ProjectProperties.FENIX_FRAMEWORK);
+            case "2" -> config.setProperties(ProjectProperties.DJANGO);
             default -> {
                 System.err.println("ORM option " + args[0] + " is not valid");
                 System.exit(1);
             }
         }
-
-        this.runQueries = args[1].equals("1");
-        this.projectName = args[2];
-        this.codeQLDbPath = args[3];
     }
 
-    public String getChoice() {
-        return this.choice;
+    public Configuration getConfig() {
+        return config;
     }
 
-    public String getCodeQLDbPath() {
-        return this.codeQLDbPath;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public boolean isRunQueries() {
-        return runQueries;
-    }
-
-    public void setRunQueries(boolean runQueries) {
-        this.runQueries = runQueries;
+    public void setConfig(Configuration config) {
+        this.config = config;
     }
 }

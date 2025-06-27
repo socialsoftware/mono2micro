@@ -3,15 +3,15 @@ package collector.utils;
 public class Access {
 
     private DomainEntity entity; // Entity accessed
-    private Method targetMethod; // Where the access was made
+    private Function targetFunction; // Where the access was made
     private String mode; // Write or Read
 
     public Access() {
     }
 
-    public Access(DomainEntity entity, Method targetMethod, String mode) {
+    public Access(DomainEntity entity, Function targetFunction, String mode) {
         this.entity = entity;
-        this.targetMethod = targetMethod;
+        this.targetFunction = targetFunction;
         this.mode = mode;
     }
 
@@ -23,12 +23,12 @@ public class Access {
         this.entity = entity;
     }
 
-    public Method getTargetMethod() {
-        return targetMethod;
+    public Function getTargetFunction() {
+        return targetFunction;
     }
 
-    public void setTargetMethod(Method targetMethod) {
-        this.targetMethod = targetMethod;
+    public void setTargetFunction(Function targetFunction) {
+        this.targetFunction = targetFunction;
     }
 
     public String getMode() {

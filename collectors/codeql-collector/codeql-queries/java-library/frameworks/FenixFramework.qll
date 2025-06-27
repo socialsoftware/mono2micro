@@ -34,13 +34,17 @@ class DomainEntity extends Class {
  */
 class DomainField extends Method {
   DomainField() { 
-      this = any(Method f |
-          f.getName().matches("get%")
-      ) 
+    this = any(Method f |
+        f.getName().matches("get%")
+    ) 
   }
 
-  string getType() {
-      result = this.getReturnType().getName()
+  string getFieldName() {
+    result = this.getName().charAt(3).toLowerCase() + this.getName().suffix(4)
+  }
+
+  string getFieldType() {
+    result = this.getReturnType().getName()
   }
 
 }
@@ -64,6 +68,10 @@ class CallableFunction extends Callable {
 
   string getFullName() {
     result = this.getDeclaringType().getName() + "." + this.getName()
+  }
+
+  string getId() {
+    result = this.getDeclaringType().getPackage().getName() + "." + this.getSignature()
   }
 
 }

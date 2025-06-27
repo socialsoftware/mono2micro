@@ -1,20 +1,22 @@
-package collector.results;
+package collector.jpa.queryresults;
 
 public class RepoAccesses {
 
-    private String targetClass;
-    private String targetMethod;
-    private String entity;
+    private String functionId;
+    private String className;
+    private String methodName;
+    private String entityLocation;
     private boolean isDeclared;
     private String annotation;
     private boolean isNative;
     private String queryName;
     private String callLocation;
 
-    public RepoAccesses(String targetClass, String targetMethod, String entity, boolean isDeclared, String annotation, boolean isNative, String queryName, String callLocation) {
-        this.targetClass = targetClass;
-        this.targetMethod = targetMethod;
-        this.entity = entity;
+    public RepoAccesses(String functionId, String className, String methodName, String entityLocation, boolean isDeclared, String annotation, boolean isNative, String queryName, String callLocation) {
+        this.functionId = functionId;
+        this.className = className;
+        this.methodName = methodName;
+        this.entityLocation = entityLocation;
         this.isDeclared = isDeclared;
         this.annotation = annotation;
         this.isNative = isNative;
@@ -22,28 +24,36 @@ public class RepoAccesses {
         this.callLocation = callLocation;
     }
 
-    public String getTargetClass() {
-        return targetClass;
+    public String getFunctionId() {
+        return functionId;
     }
 
-    public void setTargetClass(String targetClass) {
-        this.targetClass = targetClass;
+    public void setFunctionId(String functionId) {
+        this.functionId = functionId;
     }
 
-    public String getTargetMethod() {
-        return targetMethod;
+    public String getClassName() {
+        return className;
     }
 
-    public void setTargetMethod(String targetMethod) {
-        this.targetMethod = targetMethod;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public String getEntity() {
-        return entity;
+    public String getMethodName() {
+        return methodName;
     }
 
-    public void setEntity(String entity) {
-        this.entity = entity;
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public String getEntityLocation() {
+        return entityLocation;
+    }
+
+    public void setEntityLocation(String entityLocation) {
+        this.entityLocation = entityLocation;
     }
 
     public boolean isDeclared() {
@@ -85,9 +95,4 @@ public class RepoAccesses {
     public void setCallLocation(String callLocation) {
         this.callLocation = callLocation;
     }
-
-    public String getFullName() {
-        return this.targetClass + "." + this.targetMethod;
-    }
-
 }

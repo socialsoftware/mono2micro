@@ -6,16 +6,7 @@ import semmle.code.java.frameworks.javaee.Persistence
  */
 class DomainEntity extends Class {
   DomainEntity() {
-    ( // Annotated by @MappedSuperclass
-      exists(MappedSuperclassAnnotation mapperSuperclass |
-        this.getAnAnnotation() = mapperSuperclass
-      )
-    ) or
-    ( // Annotated by @Entity
-      exists(EntityAnnotation entity |
-        this.getAnAnnotation() = entity
-      )
-    )
+    isEntity(this) or isMappedSuperclass(this)
   }
 
   predicate hasField(DomainField df) {
@@ -28,11 +19,32 @@ class DomainEntity extends Class {
 
 }
 
+predicate isEntity(Class de) {
+  exists(EntityAnnotation entity |
+    de.getAnAnnotation() = entity
+  )
+}
+
+predicate isMappedSuperclass(Class de) {
+  exists(MappedSuperclassAnnotation mapperSuperclass |
+    de.getAnAnnotation() = mapperSuperclass
+  )
+}
+
 /**
  * Domain entity's field definition
  */
 class DomainField extends Field {
   DomainField() { this = any(Field f) }
+
+  string getFieldName() {
+    result = this.getName()
+  }
+
+  Type getFieldType() {
+    result = this.getType()
+  }
+
 }
 
 /**
@@ -54,6 +66,10 @@ class CallableFunction extends Callable {
 
   string getFullName() {
     result = this.getDeclaringType().getName() + "." + this.getName()
+  }
+
+  string getId() {
+    result = this.getDeclaringType().getPackage().getName() + "." + this.getSignature()
   }
 
 }

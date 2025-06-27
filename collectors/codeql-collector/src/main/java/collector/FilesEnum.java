@@ -10,16 +10,19 @@ public enum FilesEnum {
     IDTOENTITY("IDToEntity.json"),
     STRUCTURE("structure.json"),
     ACCESSES("accesses.json"),
-    // Input files
-    ENTITY_FIELDS("entityFields.json"),
-    ENTITY_SUPERCLASS("entitySuperclass.json"),
-    PREV_CALLEE("prevCallee.json"),
-    REPO_ACCESSES("repoAccesses.json"),
-    NAMED_QUERIES("namedQueries.json"),
-    FIELD_ANNOTATIONS("fieldAnnotations.json"),
-    METHOD_ACCESSES("methodAccesses.json"),
-    ENDPOINTS("endpoints.json"),
-    CALLS("calls.json");
+    // Common queries
+    ENTITY_FIELDS("EntityFields.json"),
+    ENTITY_SUPERCLASS("EntitySuperclass.json"),
+    FUNCTION_ACCESSES("FunctionAccesses.json"),
+    ENDPOINTS("Endpoints.json"),
+    CALLS("Calls.json"),
+    // Framework specific queries
+    ENTITY_ATTRIBUTES("EntityAttributes.json"),
+    CALL_QUALIFIER("CallQualifier.json"),
+    FIELD_ANNOTATIONS("FieldAnnotations.json"),
+    NAMED_QUERIES("NamedQueries.json"),
+    REPO_ACCESSES("RepoAccesses.json"),
+    FUNCTION_ATTRIBUTES("FunctionAttributes.json");
 
     public final String file;
 

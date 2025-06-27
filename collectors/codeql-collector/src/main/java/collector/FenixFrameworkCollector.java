@@ -1,46 +1,102 @@
 package collector;
 
-import collector.fenix.FenixFileParser;
-import collector.utils.Method;
+import collector.fenix.queryresults.FenixFunction;
+import collector.utils.DomainEntity;
+import collector.utils.Function;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static collector.Constants.JSON_PATH;
+import static collector.FilesEnum.CALL_QUALIFIER;
+import static collector.FilesEnum.FUNCTION_ATTRIBUTES;
 import static collector.utils.TypeUtils.getTypes;
-import static collector.utils.TypeUtils.getTypesFromSignature;
 
 public class FenixFrameworkCollector extends AbstractStructuralCollector {
+    // Map functionId to its function attributes
+    private Map<String, FenixFunction> fenixFunctionMap;
 
-    public FenixFrameworkCollector(String codeQLDbPath, String projectName, boolean runQueries) {
-        super(codeQLDbPath, projectName, runQueries, new FenixFileParser());
-        SPECIFIC_FRAMEWORK_PATH = Constants.FENIX_FRAMEWORK;
+    public FenixFrameworkCollector(Configuration config) {
+        super(config);
+        this.fenixFunctionMap = new HashMap<>();
     }
 
     @Override
-    protected void checkForAccesses(String controllerMethodName, Method m) {
-        if (m.getClassName().endsWith("_Base")) {
-            registerBaseClass(controllerMethodName, m);
-        } else if (m.getClassName().equals("FenixFramework") && m.getMethodName().equals("getDomainObject")) {
-            registerDomainObject(controllerMethodName, m);
+    public void generateAccessesFile() {
+        // Populate function attributes map
+        buildFunctionAttributes();
+
+        // Call on super to generate accesses
+        super.generateAccessesFile();
+    }
+
+    private void buildFunctionAttributes() {
+        try {
+            fileParser.readFunctionAttributes(
+                mapper.readTree(new File(JSON_PATH + FUNCTION_ATTRIBUTES.file)))
+                .forEach(fa ->
+                    fenixFunctionMap
+                        .computeIfAbsent(fa.getFunctionId(), k -> new FenixFunction(
+                            new Function(fa.getFunctionId()),
+                            fa.getMethodDeclaringType(),
+                            fa.getMethodName(),
+                            fa.getReturningType(),
+                            new ArrayList<>()
+                        ))
+                        .getParams()
+                        .add(fa.getParamType())
+                );
+        } catch (IOException e) {
+            System.err.println("Error reading function attributes: " + e.getMessage());
         }
     }
 
     @Override
-    protected void buildMethodAccesses() {
-        // Does nothing for the Fenix framework
+    protected void checkForAccesses(String controllerMethodName, Function f) {
+        // Get fenixFunction from map
+        FenixFunction method = fenixFunctionMap.get(f.getFunctionId());
+
+        if (method == null) {
+            return;
+        }
+
+        // Check accesses
+        if (method.getMethodName().endsWith("_Base")) {
+            registerBaseClass(controllerMethodName, method);
+        } else if (method.getMethodClass().equals("FenixFramework") && method.getMethodClass().equals("getDomainObject")) {
+            registerDomainObject(controllerMethodName, method);
+        }
     }
 
-    private void registerDomainObject(String controllerMethodName, Method method) {
-        String type = calleeQualifierTypeMap.getOrDefault(method.getCallLocation(), "");
-        if (nameToEntityMap.containsKey(type))
-            addEntitySequenceAccess(controllerMethodName, nameToEntityMap.get(type).getId(), "R");
+    private String getQualifierEntityLocationByCallLocation(String callLocation) {
+        try {
+            return fileParser.getQualifierEntityLocationByCallLocation(
+                mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER.file)),
+                callLocation);
+        } catch (IOException e) {
+            System.err.println("Error getting Domain location from call qualifier: " + e.getMessage());
+            return "";
+        }
     }
 
-    private void registerBaseClass(String controllerMethodName, Method method) {
+    private void registerDomainObject(String controllerMethodName, FenixFunction method) {
+        // Get Domain location from call qualifier
+        String qualifierDomainLocation = getQualifierEntityLocationByCallLocation(method.getFunction().getCallLocation());
+        // Check for access
+        if (locationToEntityMap.containsKey(qualifierDomainLocation))
+            addEntitySequenceAccess(controllerMethodName, locationToEntityMap.get(qualifierDomainLocation).getId(), "R");
+    }
+
+    private void registerBaseClass(String controllerMethodName, FenixFunction method) {
         String mode = "";
         String returnType = "";
         List<String> argTypes = new ArrayList<>();
         // Analyze each method
-        if (method.getClassName().endsWith("_Base")) {
+        if (method.getMethodClass().endsWith("_Base")) {
             if (method.getMethodName().startsWith("get")) {
                 mode = "R";
                 returnType = getTypes(method.getReturnType()).get(0);
@@ -48,39 +104,49 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
                     method.getMethodName().startsWith("add") ||
                     method.getMethodName().startsWith("remove")) {
                 mode = "W";
-                argTypes.addAll(getTypesFromSignature(method.getSignature()));
+                argTypes.addAll(method.getParams());
             } else {
                 return;
             }
         }
 
-        String methodClassName = method.getClassName();
+        String methodClassName = method.getMethodClass();
         String baseClassName = methodClassName.substring(0, methodClassName.length() - 5); //remove _Base
 
-        String resolvedType = calleeQualifierTypeMap.getOrDefault(method.getCallLocation(), "");
+        String qualifierDomainLocation = getQualifierEntityLocationByCallLocation(method.getFunction().getCallLocation());
 
         if (mode.equals("R")) {
-            // Class Read
-            if (nameToEntityMap.containsKey(resolvedType))
-                addEntitySequenceAccess(controllerMethodName, nameToEntityMap.get(resolvedType).getId(), mode);
-            else if (nameToEntityMap.containsKey(baseClassName))
-                addEntitySequenceAccess(controllerMethodName, nameToEntityMap.get(baseClassName).getId(), mode);
+            // Get entities by name
+            DomainEntity baseClassEntity = getEntityByName(baseClassName);
+            DomainEntity returnTypeEntity = getEntityByName(returnType);
+            // Check and register accesses
+            if (locationToEntityMap.containsKey(qualifierDomainLocation)) {
+                addEntitySequenceAccess(controllerMethodName, locationToEntityMap.get(qualifierDomainLocation).getId(), mode);
+            } else if (baseClassEntity != null) {
+                addEntitySequenceAccess(controllerMethodName, baseClassEntity.getId(), mode);
+            }
 
             // Return Type Read
-            if (nameToEntityMap.containsKey(returnType))
-                addEntitySequenceAccess(controllerMethodName, nameToEntityMap.get(returnType).getId(), mode);
+            if (returnTypeEntity != null) {
+                addEntitySequenceAccess(controllerMethodName, returnTypeEntity.getId(), mode);
+            }
         }
         else if (mode.equals("W")) {
-            // Class Read
-            if (nameToEntityMap.containsKey(resolvedType))
-                addEntitySequenceAccess(controllerMethodName, nameToEntityMap.get(resolvedType).getId(), mode);
-            else if (nameToEntityMap.containsKey(baseClassName))
-                addEntitySequenceAccess(controllerMethodName, nameToEntityMap.get(baseClassName).getId(), mode);
+            // Get entities by name
+            DomainEntity baseClassEntity = getEntityByName(baseClassName);
+            // Check and register accesses
+            if (locationToEntityMap.containsKey(qualifierDomainLocation)) {
+                addEntitySequenceAccess(controllerMethodName, locationToEntityMap.get(qualifierDomainLocation).getId(), mode);
+            } else if (baseClassEntity != null) {
+                addEntitySequenceAccess(controllerMethodName, baseClassEntity.getId(), mode);
+            }
 
             // Argument Types Read
             for (String type : argTypes) {
-                if (nameToEntityMap.containsKey(type))
-                    addEntitySequenceAccess(controllerMethodName, nameToEntityMap.get(type).getId(), mode);
+                DomainEntity typeEntity = getEntityByName(type);
+                if (typeEntity != null) {
+                    addEntitySequenceAccess(controllerMethodName, typeEntity.getId(), mode);
+                }
             }
         }
 

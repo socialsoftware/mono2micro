@@ -1,11 +1,11 @@
 import frameworks.FenixFramework
 
-from CallableFunction caller, CallableFunction callee, FunctionInvoc call
-where callerCallsCallee(caller, callee, call)
+from CallableFunction caller, CallableFunction callee, FunctionInvoc call, DomainEntity de
+where 
+  callerCallsCallee(caller, callee, call) and
+  call.getQualifier().getType() = de
 select 
-  caller.getDeclaringType(),
-  caller,
-  callee.getDeclaringType(),
-  callee,
-  call.getQualifier().getType(),
-  call.getLocation()
+  caller.getId(),
+  callee.getId(),
+  call.getLocation(),
+  de.getLocation()

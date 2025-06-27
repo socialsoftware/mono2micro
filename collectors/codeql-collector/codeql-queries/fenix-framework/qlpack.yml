@@ -1,5 +1,4 @@
 name: codeql-collector/fenix-framework
 version: 0.0.1
 dependencies:
-  codeql/java-all: "*"
-  codeql-collector/library: "*"
+  codeql-collector/java-library: "*"

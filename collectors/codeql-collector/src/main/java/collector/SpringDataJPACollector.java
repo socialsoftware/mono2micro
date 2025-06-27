@@ -1,12 +1,11 @@
 package collector;
 
-import collector.results.EntitySuperclass;
-import collector.results.FileParser;
-import collector.results.RepoAccesses;
+import collector.jpa.queryresults.EntityAttributes;
+import collector.jpa.queryresults.RepoAccesses;
 import collector.utils.Access;
 import collector.utils.Classes;
 import collector.utils.DomainEntity;
-import collector.utils.Method;
+import collector.utils.Function;
 import collector.utils.Query;
 
 import java.io.File;
@@ -17,11 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 import static collector.Constants.JSON_PATH;
-import static collector.FilesEnum.ENTITY_SUPERCLASS;
+import static collector.FilesEnum.CALL_QUALIFIER;
+import static collector.FilesEnum.ENTITY_ATTRIBUTES;
 import static collector.FilesEnum.FIELD_ANNOTATIONS;
-import static collector.FilesEnum.METHOD_ACCESSES;
 import static collector.FilesEnum.NAMED_QUERIES;
-import static collector.FilesEnum.PREV_CALLEE;
 import static collector.FilesEnum.REPO_ACCESSES;
 import static collector.utils.TypeUtils.getTypes;
 
@@ -31,12 +29,23 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
     // Named query list
     private List<Query> namedQueriesList;
 
-    public SpringDataJPACollector(String codeQLDbPath, String projectName, boolean runQueries) {
-        super(codeQLDbPath, projectName, runQueries, new FileParser());
+    public SpringDataJPACollector(Configuration config) {
+        super(config);
         this.tableClassesAccessedMap = new HashMap<>();
         this.namedQueriesList = new ArrayList<>();
-        this.accessMap = new HashMap<>();
-        SPECIFIC_FRAMEWORK_PATH = Constants.SPRING_DATA_JPA;
+    }
+
+    @Override
+    public void runAndDecodeQueries() throws IOException {
+        // Run common queries
+        super.runAndDecodeQueries();
+        // Check if run queries flag is on
+        if (!config.isRunQueries()) return;
+        // Run Spring Data JPA queries
+        codeQLQueryExecutor.runQueriesInWithLibrary(
+            config.getProperties().getSpecificFolderPath(),
+            config.getProperties().getLanguageLibraryPath()
+        );
     }
 
     @Override
@@ -45,14 +54,23 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
             super.generateIdEntityFiles();
 
             // Read entitySuperclasses file as a list
-            List<EntitySuperclass> entitySuperclasses = fileParser.readEntitySuperclass(
-                    mapper.readTree(new File(JSON_PATH + ENTITY_SUPERCLASS.file)));
+            List<EntityAttributes> entityAttributes = fileParser.readEntityAttributes(
+                    mapper.readTree(new File(JSON_PATH + ENTITY_ATTRIBUTES.file)));
 
             // Fill tableClassesAccessed map
-            for (EntitySuperclass es : entitySuperclasses) {
+            for (EntityAttributes ea : entityAttributes) {
                 Classes classes = new Classes();
-                classes.addClass(es.getEntity());
-                tableClassesAccessedMap.put(es.getTableName().toUpperCase(), classes);
+                classes.addClass(ea.getEntityName());
+                tableClassesAccessedMap.put(ea.getTableName().toUpperCase(), classes);
+
+                // Update domain entities
+                DomainEntity de = locationToEntityMap.get(ea.getEntityLocation());
+
+                if (de == null) continue;
+                // Update entity
+                de.setMappedSuperclass(ea.getMappedSuperclass());
+                de.setTableName(ea.getTableName());
+                locationToEntityMap.put(ea.getEntityLocation(), de);
             }
         } catch (IOException e) {
             System.err.println("Error processing JSON files: " + e.getMessage());
@@ -77,19 +95,23 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
     }
 
     @Override
-    protected void checkForAccesses(String controllerMethodName, Method m) {
+    protected void checkForAccesses(String controllerMethodName, Function m) {
         try {
-            if (accessMap.containsKey(m.getFullMethodName())) {
-                List<Access> accesses = accessMap.getOrDefault(m.getFullMethodName(), new ArrayList<>());
+            List<Access> accesses = accessMap.getOrDefault(m.getFunctionId(), new ArrayList<>());
 
-                for (Access access : accesses) {
-                    if (access.getEntity().isMappedSuperclass()) {
-                        String prevCallee = fileParser.getPrevCalleeByLocation(mapper.readTree(new File(JSON_PATH + PREV_CALLEE.file)),
-                                m.getCallLocation());
-                        addEntitySequenceAccess(controllerMethodName, nameToEntityMap.get(prevCallee).getId(), access.getMode());
-                    } else {
-                        addEntitySequenceAccess(controllerMethodName, access.getEntity().getId(), access.getMode());
-                    }
+            for (Access access : accesses) {
+                if (access.getEntity().isMappedSuperclass()) {
+                    String qualifierDomainLocation = fileParser.getQualifierEntityLocationByCallLocation(
+                        mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER.file)),
+                        m.getCallLocation());
+                    // Register access to domain entity
+                    addEntitySequenceAccess(
+                        controllerMethodName,
+                        locationToEntityMap.get(qualifierDomainLocation).getId(),
+                        access.getMode()
+                    );
+                } else {
+                    addEntitySequenceAccess(controllerMethodName, access.getEntity().getId(), access.getMode());
                 }
             }
         } catch (IOException e) {
@@ -99,25 +121,27 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
 
     private void buildRepoMethodAccesses() throws IOException {
         // Read repoAccesses as a list
-        List<RepoAccesses> repoAccesses = fileParser.readRepoAccesses(mapper.readTree(new File(JSON_PATH + REPO_ACCESSES.file)));
+        List<RepoAccesses> repoAccesses = fileParser.readRepoAccesses(
+                mapper.readTree(new File(JSON_PATH + REPO_ACCESSES.file)));
 
         for (RepoAccesses ra : repoAccesses) {
 
-            // Ignore repository methods with accesses already
-            if (accessMap.containsKey(ra.getFullName())) {
+            // Ignore repository methods with accesses already registered
+            if (accessMap.containsKey(ra.getFunctionId())) {
                 continue;
             }
 
             Access access;
-            DomainEntity entity = nameToEntityMap.get(ra.getEntity());
-            Method method = new Method(ra.getTargetClass(), ra.getTargetMethod(), ra.getCallLocation());
-            String methodName = ra.getFullName();
+            DomainEntity entity = locationToEntityMap.get(ra.getEntityLocation());
+            Function method = new Function(ra.getFunctionId(), ra.getCallLocation());
+            String methodName = ra.getMethodName();
 
             // Repository method was not declared
             if (!ra.isDeclared()) {
                 access = reposityMethodUtils.getSpringDataRepositoryAccess(
                         method,
-                        nameToEntityMap.get(ra.getEntity())
+                        ra.getMethodName(),
+                        locationToEntityMap.get(ra.getEntityLocation())
                 );
                 accessMap.computeIfAbsent(methodName, k -> new ArrayList<>()).add(access);
             } else {
@@ -132,7 +156,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
                         }
                         else {
                             if (q.isNative()) {
-                                reposityMethodUtils.parseNativeQuery(q.getValue(), tableClassesAccessedMap, nameToEntityMap, method)
+                                reposityMethodUtils.parseNativeQuery(q.getValue(), tableClassesAccessedMap, locationToEntityMap, method)
                                         .forEach(access1 -> accessMap.computeIfAbsent(methodName, k -> new ArrayList<>())
                                                 .add(access1));
                             } else {
@@ -145,7 +169,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
                     }
 
                     if (ra.isNative()) {
-                        reposityMethodUtils.parseNativeQuery(ra.getAnnotation(), tableClassesAccessedMap, nameToEntityMap, method)
+                        reposityMethodUtils.parseNativeQuery(ra.getAnnotation(), tableClassesAccessedMap, locationToEntityMap, method)
                                 .forEach(access1 -> accessMap.computeIfAbsent(methodName, k -> new ArrayList<>())
                                         .add(access1));
                     } else {
@@ -159,12 +183,13 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
                     if (q == null) {
                         access = reposityMethodUtils.getSpringDataRepositoryAccess(
                                 method,
-                                nameToEntityMap.get(ra.getEntity())
+                                ra.getMethodName(),
+                                locationToEntityMap.get(ra.getEntityLocation())
                         );
                         accessMap.computeIfAbsent(methodName, k -> new ArrayList<>()).add(access);
                     } else {
                         if (q.isNative()) {
-                            reposityMethodUtils.parseNativeQuery(q.getValue(), tableClassesAccessedMap, nameToEntityMap, method)
+                            reposityMethodUtils.parseNativeQuery(q.getValue(), tableClassesAccessedMap, locationToEntityMap, method)
                                     .forEach(access1 -> accessMap.computeIfAbsent(methodName, k -> new ArrayList<>())
                                             .add(access1));
                         } else {
@@ -189,7 +214,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
         fileParser.readFieldAnnotations(mapper.readTree(new File(JSON_PATH + FIELD_ANNOTATIONS.file)))
             .forEach(f -> {
                 Classes classes = new Classes();
-                classes.addClass(f.getDeclaringClass());
+                classes.addClass(f.getDeclaringType());
 
                 List<String> typeNames = getTypes(f.getType());
                 for (String type : typeNames) {
@@ -200,10 +225,13 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
                     tableClassesAccessedMap.put(f.getJoinTable().toUpperCase(), classes);
                 } else {
                     String typeForName = typeNames.get(typeNames.size() - 1);
-                    String typeTableName = nameToEntityMap.get(typeForName).getTableName();
-                    String declaringTypeTableName = nameToEntityMap.get(f.getDeclaringClass()).getTableName();
-                    String tableName = declaringTypeTableName + "_" + typeTableName;
-                    tableClassesAccessedMap.put(tableName.toUpperCase(), classes);
+                    String declaringTypeTableName = locationToEntityMap.get(f.getEntityLocation()).getTableName();
+                    DomainEntity typeEntity = getEntityByName(typeForName);
+                    if (typeEntity != null) {
+                        String typeTableName = typeEntity.getTableName();
+                        String tableName = declaringTypeTableName + "_" + typeTableName;
+                        tableClassesAccessedMap.put(tableName.toUpperCase(), classes);
+                    }
                 }
             });
     }

@@ -1,6 +1,10 @@
-import java
-import entity
-import annotations
+import frameworks.SpringDataJPA
+
+class Query extends Annotation {
+    Query() {
+        this.getType().hasQualifiedName("org.springframework.data.jpa.repository", "Query")
+    }
+}
 
 predicate entityRepositoryMethod(MethodCall mc, Method m, DomainEntity entity, Location loc) {
     exists(ParameterizedType jpaType, RefType refType |
@@ -16,7 +20,7 @@ predicate entityRepositoryMethod(MethodCall mc, Method m, DomainEntity entity, L
     )
 }
 
-from MethodCall mc, Method m, DomainEntity entity, string declared, string annotation, string native, string queryName, Location loc
+from MethodCall mc, Method m, DomainEntity entity, string declared, string annotation, string native, string queryName, Location loc, string methodFullName
 where
     entityRepositoryMethod(mc, m, entity, loc) and
     (
@@ -36,5 +40,15 @@ where
             native = q.getValue("nativeQuery").toString() and
             queryName = q.getValue("name").toString()
         )
-    ) 
-select mc.getMethod().getDeclaringType(), mc.getMethod(), entity, declared, annotation, native, queryName, loc
+    ) and
+    methodFullName = mc.getMethod().getDeclaringType().getPackage().getName() + "." + mc.getMethod().getSignature()
+select 
+    methodFullName, 
+    mc.getMethod().getDeclaringType(), 
+    mc.getMethod(), 
+    entity.getLocation(), 
+    declared, 
+    annotation, 
+    native, 
+    queryName, 
+    loc

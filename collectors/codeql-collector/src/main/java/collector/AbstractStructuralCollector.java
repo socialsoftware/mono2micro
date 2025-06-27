@@ -1,20 +1,19 @@
 package collector;
 
-import collector.results.EntityFields;
-import collector.results.EntitySuperclass;
-import collector.results.FileParser;
+import collector.queryresults.Endpoints;
+import collector.queryresults.EntityFields;
+import collector.queryresults.EntitySuperclass;
+import collector.queryresults.FileParser;
 import collector.utils.Access;
 import collector.utils.DomainEntity;
 import collector.jpa.ReposityMethodUtils;
-import collector.utils.Method;
+import collector.utils.Function;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,73 +22,56 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import static collector.Constants.JSON_PATH;
-import static collector.Constants.QUERY_COLLECTION_PATH;
-import static collector.FilesEnum.ACCESSES;
-import static collector.FilesEnum.CALLS;
-import static collector.FilesEnum.ENDPOINTS;
-import static collector.FilesEnum.ENTITYTOID;
-import static collector.FilesEnum.ENTITY_FIELDS;
-import static collector.FilesEnum.ENTITY_SUPERCLASS;
-import static collector.FilesEnum.IDTOENTITY;
-import static collector.FilesEnum.METHOD_ACCESSES;
-import static collector.FilesEnum.PREV_CALLEE;
-import static collector.FilesEnum.STRUCTURE;
-import static collector.utils.TypeUtils.getTypes;
+import static collector.Constants.*;
+import static collector.FilesEnum.*;
+import static collector.utils.TypeUtils.setFieldType;
 
 public abstract class AbstractStructuralCollector {
-    // Path to queries for selected framework
-    protected String SPECIFIC_FRAMEWORK_PATH = null;
     // Common Object Mapper
     protected ObjectMapper mapper;
     // Class to generate JSON files
     protected JSONFileGenerator jsonFileGenerator;
     // Class to execute the CodeQL queries
     protected CodeQLQueryExecutor codeQLQueryExecutor;
-    // Path to CodeQL database
-    protected String codeQLDbPath;
-    // Map entity name to Domain Entity representation
-    protected Map<String, DomainEntity> nameToEntityMap;
+    // Project's configuration
+    protected Configuration config;
+    // Map entity location to Domain Entity object
+    protected Map<String, DomainEntity> locationToEntityMap;
     // Repository method utils
     protected ReposityMethodUtils reposityMethodUtils;
     // CodeQL file parser
     protected FileParser fileParser;
-    // Project name
-    protected String projectName;
-    // Query option
-    protected boolean runQueries;
-    // Reachable methods for all methods
-    protected Map<String, List<Method>> reachableMap;
-    // List of controller methods
-    protected List<Method> controllerMethodList;
-    // List of accesses for each controller method
-    protected Map<String, ArrayNode> controllerMethodAccessMap;
-    // Map each call to the qualifier type
-    protected Map<String, String> calleeQualifierTypeMap;
-    // Store accesses by method
+    // Map each function to all functions called by it
+    protected Map<String, List<Function>> reachableMap;
+    // List of endpoint functions
+    protected List<Endpoints> endpointFunctionList;
+    // Map each endpoint function to its accesses as ArrayNodes
+    protected Map<String, ArrayNode> endpointFunctionAccessMap;
+    // Map each function's id to its accesses
     protected Map<String, List<Access>> accessMap;
 
-    public AbstractStructuralCollector(String codeQLDbPath, String projectName, boolean runQueries, FileParser fileParser) {
+    public AbstractStructuralCollector(Configuration config, FileParser fileParser) {
         this.jsonFileGenerator = new JSONFileGenerator();
-        this.codeQLQueryExecutor = new CodeQLQueryExecutor(codeQLDbPath);
-        this.codeQLDbPath = codeQLDbPath;
-        this.mapper = new ObjectMapper();
-        this.nameToEntityMap = new HashMap<>();
-        this.reposityMethodUtils = new ReposityMethodUtils();
+        this.config = config;
         this.fileParser = fileParser;
-        this.projectName = projectName;
-        this.runQueries = runQueries;
+        this.codeQLQueryExecutor = new CodeQLQueryExecutor(config);
+        this.mapper = new ObjectMapper();
+        this.locationToEntityMap = new HashMap<>();
+        this.reposityMethodUtils = new ReposityMethodUtils();
         this.reachableMap = new HashMap<>();
-        this.controllerMethodList = new ArrayList<>();
-        this.controllerMethodAccessMap = new HashMap<>();
-        this.calleeQualifierTypeMap = new HashMap<>();
+        this.endpointFunctionList = new ArrayList<>();
+        this.endpointFunctionAccessMap = new HashMap<>();
         this.accessMap = new HashMap<>();
+    }
+
+    public AbstractStructuralCollector(Configuration config) {
+        this(config, new FileParser());
     }
 
     public void collect() {
         try {
-            // Step 1: Run the CodeQL Queries and save output as JSONs
-            runAndDecodeCodeQLQueries(SPECIFIC_FRAMEWORK_PATH);
+            // Step 1: Run the CodeQL common queries and save output as JSONs
+            runAndDecodeQueries();
 
             // Step 2: Generate IdToEntity and EntityToID files and save mappings
             generateIdEntityFiles();
@@ -101,22 +83,22 @@ public abstract class AbstractStructuralCollector {
             generateAccessesFile();
 
             System.out.println("Code collection complete");
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    public void runAndDecodeCodeQLQueries(String queriesFolderPath) throws IOException, InterruptedException {
-        if (!this.runQueries) return;
-
-        // Create the output directory if it doesn't exist
-        Files.createDirectories(Paths.get(JSON_PATH));
-
-        // List all .ql files in the specified queries folder
-        Files.list(Paths.get(QUERY_COLLECTION_PATH + queriesFolderPath))
-                .filter(file -> file.toString().endsWith(".ql"))
-                .forEach(queryPath -> codeQLQueryExecutor.runAndDecodeCodeQLQuery(queryPath));
+    public void runAndDecodeQueries() throws IOException {
+        // Check if run queries flag is on
+        if (!config.isRunQueries()) return;
+        // Run all common queries
+        codeQLQueryExecutor.runAndDecodeCommonQueries();
+        // Run framework specific queries
+        codeQLQueryExecutor.runQueriesInWithLibrary(
+                config.getProperties().getSpecificFolderPath(),
+                config.getProperties().getLanguageLibraryPath()
+        );
     }
 
     public void generateIdEntityFiles() {
@@ -133,19 +115,18 @@ public abstract class AbstractStructuralCollector {
                     mapper.readTree(new File(JSON_PATH + ENTITY_SUPERCLASS.file)));
 
             for (EntitySuperclass es : entitySuperclasses) {
-                // Check for repeating entities
-                if (nameToEntityMap.containsKey(es.getEntity())) continue;
+                // Instantiate new Domain Entity
+                DomainEntity de = new DomainEntity(id, es);
                 // Store the domain entities in a map for later
-                nameToEntityMap.put(es.getEntity(),
-                        new DomainEntity(id, es.getEntity(), es.isMappedSuperclass(), es.getSuperclass(), es.getTableName(), es.getLocation()));
-                entityToIDNode.put(es.getEntity(), id);
-                idToEntityNode.put(String.valueOf(id), es.getEntity());
+                locationToEntityMap.put(es.getEntityLocation(), de);
+                entityToIDNode.put(es.getEntityName(), id);
+                idToEntityNode.put(String.valueOf(id), es.getEntityName());
                 id++;
             }
 
             // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, projectName + "-" + ENTITYTOID.file, entityToIDNode);
-            jsonFileGenerator.outputToJson(mapper, projectName + "-" + IDTOENTITY.file, idToEntityNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ENTITYTOID.file, entityToIDNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + IDTOENTITY.file, idToEntityNode);
             System.out.println("Entity to ID file created successfully.");
             System.out.println("ID to Entity file created successfully.");
         } catch (IOException e) {
@@ -169,30 +150,30 @@ public abstract class AbstractStructuralCollector {
             for (EntityFields ef : entityFields) {
                 // Object node for the field name
                 ObjectNode fieldNode = mapper.createObjectNode();
-                fieldNode.put("name", ef.getField());
+                fieldNode.put("name", ef.getFieldName());
                 // Object node for the field type
                 ObjectNode fieldTypeNode = mapper.createObjectNode();
-                setFieldType(fieldTypeNode, ef.getFieldType());
+                setFieldType(mapper, fieldTypeNode, ef.getFieldType());
 
                 // Add type to field node
                 fieldNode.put("type", fieldTypeNode);
 
                 // Update field in entity - might have to create one
-                ObjectNode entityNode = entityMap.getOrDefault(ef.getLocation(), mapper.createObjectNode());
+                ObjectNode entityNode = entityMap.getOrDefault(ef.getEntityLocation(), mapper.createObjectNode());
 
-                if (entityMap.containsKey(ef.getLocation())) {
+                if (entityMap.containsKey(ef.getEntityLocation())) {
                     ArrayNode fieldArray = (ArrayNode) entityNode.get("fields");
                     // Add new field to fieldArray
                     fieldArray.add(fieldNode);
                 } else {
-                    entityNode.put("name", ef.getEntity());
+                    entityNode.put("name", ef.getEntityName());
                     // New arrayNode for fields
                     ArrayNode fieldArray = mapper.createArrayNode();
                     // Add field to fieldArray
                     fieldArray.add(fieldNode);
                     entityNode.put("fields", fieldArray);
 
-                    String superclass = nameToEntityMap.get(ef.getEntity()).getSuperclass();
+                    String superclass = locationToEntityMap.get(ef.getEntityLocation()).getSuperclass();
                     if (superclass.equals("Object")) {
                         entityNode.putNull("superclass");
                     } else {
@@ -204,13 +185,13 @@ public abstract class AbstractStructuralCollector {
                 }
 
                 // Store entity in map
-                entityMap.put(ef.getLocation(), entityNode);
+                entityMap.put(ef.getEntityLocation(), entityNode);
             }
 
             // Add entities without fields
-            nameToEntityMap.entrySet()
+            locationToEntityMap.entrySet()
                 .stream()
-                .filter(entry -> !entityMap.containsKey(entry.getValue().getLocation()))
+                .filter(entry -> !entityMap.containsKey(entry.getKey()))
                 .forEach(entry -> {
                     // Create a new node for entity
                     ObjectNode entityNode = mapper.createObjectNode();
@@ -236,7 +217,7 @@ public abstract class AbstractStructuralCollector {
             // Add all entities to global object
             structureNode.put("entities", entitiesArray);
             // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, projectName + "-" + STRUCTURE.file, structureNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + STRUCTURE.file, structureNode);
             System.out.println("Structure file created successfully.");
         } catch (IOException e) {
             System.err.println("Error processing JSON files: " + e.getMessage());
@@ -249,29 +230,25 @@ public abstract class AbstractStructuralCollector {
             ObjectNode accessesNode = mapper.createObjectNode();
 
             // Build access map
-            buildMethodAccesses();
+            buildFunctionAccesses();
 
             // Get all controller methods
-            controllerMethodList = fileParser.readEndpoints(mapper.readTree(new File(JSON_PATH + ENDPOINTS.file)));
+            endpointFunctionList = fileParser.readEndpoints(
+                    mapper.readTree(new File(JSON_PATH + ENDPOINTS.file)));
 
             // Build reachable map
             fileParser.readCalls(mapper.readTree(new File(JSON_PATH + CALLS.file)))
-                .forEach(c -> {
-                    // Get list of reachable methods by caller
-                    List<Method> reachableMethods = reachableMap.getOrDefault(c.getCallerLocation(), new ArrayList<>());
-                    // Get callee
-                    Method callee = new Method(c.getCalleeClass(), c.getCalleeMethod(), c.getCalleeLocation(), c.getCallLocation(), c.getCalleeRetType(), c.getCalleeSignature());
-                    reachableMethods.add(callee);
-                    reachableMap.put(c.getCallerLocation(), reachableMethods);
-                });
-
-            buildPrevCalleeQualiferMap();
+                .forEach(c ->
+                    reachableMap
+                        .computeIfAbsent(c.getCallerId(), k -> new ArrayList<>())
+                        .add(new Function(c.getCalleeId(), c.getCallLocation()))
+                );
 
             // DFS through calls
-            performDFSFromControllers();
+            performDFSFromEndpoints();
 
             // Add all entities to entities array
-            controllerMethodAccessMap.forEach((key, value) -> {
+            endpointFunctionAccessMap.forEach((key, value) -> {
                 ObjectNode tObjectNode = mapper.createObjectNode();
                 ArrayNode idArrayNode = mapper.createArrayNode();
                 ObjectNode idInnerObjectNode = mapper.createObjectNode();
@@ -283,107 +260,81 @@ public abstract class AbstractStructuralCollector {
             });
 
             // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, projectName + "-" + ACCESSES.file, accessesNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ACCESSES.file, accessesNode);
             System.out.println("Accesses file created successfully.");
         } catch (IOException e) {
             System.err.println("Error processing JSON files: " + e.getMessage());
         }
     }
 
-    /**
-     * Perform a DFS starting at each controller method's call
-     */
-    public void performDFSFromControllers() {
-        for (Method controllerMethod : controllerMethodList) {
+    public void performDFSFromEndpoints() {
+        for (Endpoints endpoint : endpointFunctionList) {
             Set<String> visitedCallLocations = new HashSet<>();
             // Perform dfs
             dfs(
-                controllerMethod,
+                // We must visit the endpoint function as part of the DFS
+                // Endpoint functions have no call location, so we use functionID twice
+                new Function(endpoint.getFunctionId(), endpoint.getFunctionId()),
                 visitedCallLocations,
-                controllerMethod.getFullMethodName()
+                endpoint.getFunctionFullName()
             );
         }
     }
 
     private void dfs(
-            Method currentMethod,
+            Function currentFunction,
             Set<String> visitedCallLocations,
-            String controllerMethodName) {
+            String endpointName) {
 
-        // Don't visit the same method twice
-        if (visitedCallLocations.stream().anyMatch(s -> currentMethod.getCallLocation().equals(s))) {
+        // Don't visit the same function twice
+        if (visitedCallLocations.stream().anyMatch(s -> currentFunction.getCallLocation().equals(s))) {
             return;
         }
 
-        checkForAccesses(controllerMethodName, currentMethod);
+        checkForAccesses(endpointName, currentFunction);
 
-        visitedCallLocations.add(currentMethod.getCallLocation());
+        visitedCallLocations.add(currentFunction.getCallLocation());
 
         // For each callee, check for accesses and dfs through its calls
-        reachableMap.getOrDefault(currentMethod.getMethodLocation(), new ArrayList<>())
-            .forEach(m -> dfs(m, visitedCallLocations, controllerMethodName));
+        reachableMap.getOrDefault(currentFunction.getFunctionId(), new ArrayList<>())
+            .forEach(m -> dfs(m, visitedCallLocations, endpointName));
     }
 
-    protected abstract void checkForAccesses(String controllerMethodName, Method m);
+    protected abstract void checkForAccesses(String controllerMethodName, Function m);
 
-    protected void buildMethodAccesses() throws IOException {
-        // Read methodAccesses file as a list
-        fileParser.readMethodAccesses(mapper.readTree(new File(JSON_PATH + METHOD_ACCESSES.file)))
+    protected void buildFunctionAccesses() throws IOException {
+        // Read FunctionAccesses file as a list
+        fileParser.readFunctionAccesses(mapper.readTree(new File(JSON_PATH + FUNCTION_ACCESSES.file)))
             .forEach(a -> {
                 // Get domain entity for the access
-                DomainEntity domainEntity = nameToEntityMap.get(a.getEntity());
+                DomainEntity domainEntity = locationToEntityMap.get(a.getEntityLocation());
                 // Build method
-                Method method = new Method(a.getTargetClass(), a.getTargetMethod(), a.getCallLocation());
+                Function function = new Function(a.getFunctionId());
                 // Add access
-                accessMap.computeIfAbsent(a.getFullName(), k -> new ArrayList<>()).add(
-                        new Access(domainEntity, method, a.getOperation()));
-            });
-    }
-
-    protected void buildPrevCalleeQualiferMap() throws IOException {
-        // Build qualifier type map
-        fileParser.readPrevCallee(mapper.readTree(new File(JSON_PATH + PREV_CALLEE.file)))
-            .forEach(p -> {
-                calleeQualifierTypeMap.put(p.getLocation(), p.getPrevType());
+                accessMap.computeIfAbsent(a.getFunctionId(), k -> new ArrayList<>())
+                    .add(new Access(domainEntity, function, a.getOperation()));
             });
     }
 
     protected void addEntitySequenceAccess(String controllerMethod, int id, String mode) {
         // Get array with accesses for controller method
-        ArrayNode controllerMethodNode = controllerMethodAccessMap.getOrDefault(controllerMethod, mapper.createArrayNode());
+        ArrayNode controllerMethodNode = endpointFunctionAccessMap.getOrDefault(controllerMethod, mapper.createArrayNode());
         // create access array with id and mode
         ArrayNode accessArrayNode = mapper.createArrayNode();
         accessArrayNode.add(mode);
         accessArrayNode.add(id);
         controllerMethodNode.add(accessArrayNode);
         // Store access array
-        controllerMethodAccessMap.put(controllerMethod, controllerMethodNode);
+        endpointFunctionAccessMap.put(controllerMethod, controllerMethodNode);
     }
 
-    private void setFieldType(ObjectNode fieldTypeNode, String fieldType) {
-        // Remove empty type brackets
-        if (fieldType.contains("<>")) {
-            fieldType = fieldType.replace("<>", "");
+    protected DomainEntity getEntityByName(String entityName) {
+        for(Map.Entry<String, DomainEntity> entry : locationToEntityMap.entrySet()) {
+            if (entry.getValue().getName().equals(entityName)) {
+                return entry.getValue();
+            }
         }
-        // If it's a collection add types with parameters
-        if (fieldType.contains("<") && fieldType.contains(">")) {
-            // Get Parameterized type
-            fieldTypeNode.put("name", fieldType.substring(0, fieldType.indexOf('<')).trim());
-
-            ArrayNode paramArrayNode = mapper.createArrayNode();
-
-            getTypes(fieldType)
-                .forEach(
-                    param -> {
-                        ObjectNode paramTypeNode = mapper.createObjectNode();
-                        paramTypeNode.put("name", param);
-                        paramArrayNode.add(paramTypeNode);
-                    });
-
-            fieldTypeNode.put("parameters", paramArrayNode);
-        } else {
-            fieldTypeNode.put("name", fieldType);
-        }
+        return null;
     }
 
 }
