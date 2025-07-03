@@ -1,0 +1,62 @@
+{
+  "Profile_page.views.comment" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 5 ], [ "R", 4 ], [ "W", 1 ] ]
+    } ]
+  },
+  "Profile_page.views.upload" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 5 ], [ "W", 4 ] ]
+    } ]
+  },
+  "Profile_page.views.search" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 5 ], [ "R", 5 ] ]
+    } ]
+  },
+  "Profile_page.views.post" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 3 ] ]
+    } ]
+  },
+  "Profile_page.views.settings" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 5 ] ]
+    } ]
+  },
+  "Profile_page.views.Like_post" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 3 ], [ "R", 3 ], [ "W", 3 ] ]
+    } ]
+  },
+  "Profile_page.views.index" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 5 ], [ "R", 5 ], [ "R", 4 ], [ "R", 2 ], [ "R", 2 ], [ "R", 2 ], [ "R", 2 ], [ "R", 2 ], [ "R", 2 ] ]
+    } ]
+  },
+  "Profile_page.views.follow" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 5 ], [ "R", 5 ], [ "R", 2 ], [ "R", 2 ], [ "W", 2 ] ]
+    } ]
+  },
+  "Profile_page.views.signup" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "W", 5 ] ]
+    } ]
+  },
+  "Profile_page.views.profile" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 5 ], [ "R", 5 ], [ "R", 4 ], [ "R", 2 ], [ "R", 2 ], [ "R", 2 ] ]
+    } ]
+  }
+}

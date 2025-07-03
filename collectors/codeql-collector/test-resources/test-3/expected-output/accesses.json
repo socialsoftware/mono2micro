@@ -1,0 +1,26 @@
+{
+  "banking.views.transaction" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 2 ], [ "R", 2 ], [ "R", 2 ], [ "R", 2 ], [ "R", 2 ] ]
+    } ]
+  },
+  "banking.views.customers_search" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 2 ], [ "R", 2 ] ]
+    } ]
+  },
+  "banking.views.transact_customers_search" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 2 ], [ "R", 2 ], [ "R", 2 ] ]
+    } ]
+  },
+  "banking.views.customers" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 2 ] ]
+    } ]
+  }
+}

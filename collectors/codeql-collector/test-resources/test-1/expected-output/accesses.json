@@ -1,0 +1,14 @@
+{
+  "core.views.PostView" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 2 ], [ "W", 1 ] ]
+    } ]
+  },
+  "core.views.HomeView" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 2 ] ]
+    } ]
+  }
+}

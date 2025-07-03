@@ -1,0 +1,54 @@
+{
+  "entities" : [ {
+    "name" : "Transactions",
+    "fields" : [ {
+      "name" : "to_user",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "User"
+        } ]
+      }
+    }, {
+      "name" : "amount",
+      "type" : {
+        "name" : "IntegerField"
+      }
+    }, {
+      "name" : "from_user",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "User"
+        } ]
+      }
+    }, {
+      "name" : "timestamp",
+      "type" : {
+        "name" : "DateTimeField"
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "UserExtension",
+    "fields" : [ {
+      "name" : "current_balance",
+      "type" : {
+        "name" : "IntegerField"
+      }
+    }, {
+      "name" : "user",
+      "type" : {
+        "name" : "OneToOneField",
+        "parameters" : [ {
+          "name" : "User"
+        } ]
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  } ]
+}

@@ -1,0 +1,146 @@
+{
+  "entities" : [ {
+    "name" : "Post",
+    "fields" : [ {
+      "name" : "likes",
+      "type" : {
+        "name" : "IntegerField"
+      }
+    }, {
+      "name" : "Profile",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "Profile"
+        } ]
+      }
+    }, {
+      "name" : "Img",
+      "type" : {
+        "name" : "ImageField"
+      }
+    }, {
+      "name" : "caption",
+      "type" : {
+        "name" : "CharField"
+      }
+    }, {
+      "name" : "time",
+      "type" : {
+        "name" : "DateTimeField"
+      }
+    }, {
+      "name" : "post_id",
+      "type" : {
+        "name" : "UUIDField"
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "Liked_Post",
+    "fields" : [ {
+      "name" : "post_id",
+      "type" : {
+        "name" : "UUIDField"
+      }
+    }, {
+      "name" : "Username",
+      "type" : {
+        "name" : "CharField"
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "Comment",
+    "fields" : [ {
+      "name" : "author",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "Profile"
+        } ]
+      }
+    }, {
+      "name" : "content",
+      "type" : {
+        "name" : "CharField"
+      }
+    }, {
+      "name" : "post_id",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "Post"
+        } ]
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "Follow",
+    "fields" : [ {
+      "name" : "current_user",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "reqd_user"
+        } ]
+      }
+    }, {
+      "name" : "followed",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "Profile"
+        } ]
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "Profile",
+    "fields" : [ {
+      "name" : "followers",
+      "type" : {
+        "name" : "IntegerField"
+      }
+    }, {
+      "name" : "following",
+      "type" : {
+        "name" : "IntegerField"
+      }
+    }, {
+      "name" : "bio",
+      "type" : {
+        "name" : "CharField"
+      }
+    }, {
+      "name" : "user",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "reqd_user"
+        } ]
+      }
+    }, {
+      "name" : "location",
+      "type" : {
+        "name" : "CharField"
+      }
+    }, {
+      "name" : "profile_img",
+      "type" : {
+        "name" : "ImageField"
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  } ]
+}

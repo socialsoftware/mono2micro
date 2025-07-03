@@ -1,0 +1,135 @@
+{
+  "entities" : [ {
+    "name" : "Post",
+    "fields" : [ {
+      "name" : "tags",
+      "type" : {
+        "name" : "ManyToManyField",
+        "parameters" : [ {
+          "name" : "Tag"
+        } ]
+      }
+    }, {
+      "name" : "updated_on",
+      "type" : {
+        "name" : "DateTimeField"
+      }
+    }, {
+      "name" : "author",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "Attribute"
+        } ]
+      }
+    }, {
+      "name" : "created_on",
+      "type" : {
+        "name" : "DateTimeField"
+      }
+    }, {
+      "name" : "title",
+      "type" : {
+        "name" : "CharField"
+      }
+    }, {
+      "name" : "slug",
+      "type" : {
+        "name" : "SlugField"
+      }
+    }, {
+      "name" : "content",
+      "type" : {
+        "name" : "TextField"
+      }
+    }, {
+      "name" : "image",
+      "type" : {
+        "name" : "ImageField"
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "Comment",
+    "fields" : [ {
+      "name" : "created",
+      "type" : {
+        "name" : "DateTimeField"
+      }
+    }, {
+      "name" : "name",
+      "type" : {
+        "name" : "CharField"
+      }
+    }, {
+      "name" : "email",
+      "type" : {
+        "name" : "EmailField"
+      }
+    }, {
+      "name" : "content",
+      "type" : {
+        "name" : "TextField"
+      }
+    }, {
+      "name" : "post",
+      "type" : {
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "Post"
+        } ]
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "Tag",
+    "fields" : [ {
+      "name" : "name",
+      "type" : {
+        "name" : "CharField"
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "Profile",
+    "fields" : [ {
+      "name" : "about_me",
+      "type" : {
+        "name" : "TextField"
+      }
+    }, {
+      "name" : "user",
+      "type" : {
+        "name" : "OneToOneField",
+        "parameters" : [ {
+          "name" : "User"
+        } ]
+      }
+    }, {
+      "name" : "image",
+      "type" : {
+        "name" : "ImageField"
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  }, {
+    "name" : "User",
+    "fields" : [ {
+      "name" : "email",
+      "type" : {
+        "name" : "EmailField"
+      }
+    } ],
+    "superclass" : {
+      "name" : "models.Model"
+    }
+  } ]
+}
