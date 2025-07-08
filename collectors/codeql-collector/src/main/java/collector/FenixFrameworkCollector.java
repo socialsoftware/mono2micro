@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static collector.Constants.JSON_PATH;
 import static collector.FilesEnum.CALL_QUALIFIER;
@@ -17,12 +18,27 @@ import static collector.FilesEnum.FUNCTION_ATTRIBUTES;
 import static collector.utils.TypeUtils.getTypes;
 
 public class FenixFrameworkCollector extends AbstractStructuralCollector {
+    private static final Logger logger = Logger.getLogger(FenixFrameworkCollector.class.getName());
+
     // Map functionId to its function attributes
     private Map<String, FenixFunction> fenixFunctionMap;
 
     public FenixFrameworkCollector(Configuration config) {
         super(config);
         this.fenixFunctionMap = new HashMap<>();
+    }
+
+    @Override
+    public void runAndDecodeQueries() {
+        // Run common queries
+        super.runAndDecodeQueries();
+        // Check if run queries flag is on
+        if (!config.isRunQueries()) return;
+        // Run Spring Data JPA queries
+        codeQLQueryExecutor.runQueriesInWithLibrary(
+                config.getProperties().getSpecificFolderPath(),
+                config.getProperties().getLanguageLibraryPath()
+        );
     }
 
     @Override
@@ -51,7 +67,7 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
                         .add(fa.getParamType())
                 );
         } catch (IOException e) {
-            System.err.println("Error reading function attributes: " + e.getMessage());
+            logger.warning("Error reading function attributes: " + e.getMessage());
         }
     }
 
@@ -78,7 +94,7 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
                 mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER.file)),
                 callLocation);
         } catch (IOException e) {
-            System.err.println("Error getting Domain location from call qualifier: " + e.getMessage());
+            logger.warning("Error getting Domain location from call qualifier: " + e.getMessage());
             return "";
         }
     }

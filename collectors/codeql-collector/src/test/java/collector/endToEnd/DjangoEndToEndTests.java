@@ -1,5 +1,6 @@
-package collector;
+package collector.endToEnd;
 
+import collector.MainRunner;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +19,7 @@ import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DjangoTests {
+public class DjangoEndToEndTests {
 
     static Stream<String> provideTestIds() {
         return Stream.of("test-1", "test-2", "test-3");

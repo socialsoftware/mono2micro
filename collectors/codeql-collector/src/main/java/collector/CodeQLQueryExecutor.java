@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,28 +17,33 @@ import static collector.Constants.QUERY_COLLECTION_PATH;
 import static collector.Constants.TEMPLATE_QUERIES_PATH;
 
 public class CodeQLQueryExecutor {
+    private static final Logger logger = Logger.getLogger(CodeQLQueryExecutor.class.getName());
 
-    private Configuration config;
+    private final Configuration config;
 
     public CodeQLQueryExecutor(Configuration config) {
         this.config = config;
     }
 
-    public void runAndDecodeCommonQueries() throws IOException {
-        // Create the output directory if it doesn't exist
-        Files.createDirectories(Paths.get(JSON_PATH));
+    public void runAndDecodeCommonQueries() {
+        try {
+            // Create the output directory if it doesn't exist
+            Files.createDirectories(Paths.get(JSON_PATH));
 
-        String lang = config.getProperties().getLanguage();
-        String framework = config.getProperties().getFramework();
+            String lang = config.getProperties().getLanguage();
+            String framework = config.getProperties().getFramework();
 
-        // Replace LANGUAGE_NAME placeholder with actual language
-        generateCommonQueryFiles("qlpack.yml", "{LANGUAGE_NAME}", lang);
+            // Replace LANGUAGE_NAME placeholder with actual language
+            generateCommonQueryFiles("qlpack.yml", "{LANGUAGE_NAME}", lang);
 
-        // Replace FRAMEWORK_NAME placeholder with actual language
-        generateCommonQueryFiles(".ql", "{FRAMEWORK_NAME}", framework);
+            // Replace FRAMEWORK_NAME placeholder with actual language
+            generateCommonQueryFiles(".ql", "{FRAMEWORK_NAME}", framework);
 
-        // Run all queries
-        runQueriesInWithLibrary(QUERY_COLLECTION_PATH + GENERATED_QUERIES_PATH, config.getProperties().getLanguageLibraryPath());
+            // Run all queries
+            runQueriesInWithLibrary(QUERY_COLLECTION_PATH + GENERATED_QUERIES_PATH, config.getProperties().getLanguageLibraryPath());
+        } catch (IOException e) {
+            logger.warning("Failed to run and decode common queries: " + e.getMessage());
+        }
     }
 
     public void runQueriesInWithLibrary(String queriesPath, String library) {
@@ -49,7 +55,7 @@ public class CodeQLQueryExecutor {
             stream.filter(file -> file.toString().endsWith(".ql"))
                 .forEach(file -> runAndDecodeCodeQLQuery(file, library));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.warning("Failed to run queries: " + e.getMessage());
         }
     }
 
@@ -61,7 +67,7 @@ public class CodeQLQueryExecutor {
                     replaceWith
                 ));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.warning("Failed to generate common query files from templates: " + e.getMessage());
         }
     }
 
@@ -86,7 +92,7 @@ public class CodeQLQueryExecutor {
             Files.write(outputFile, updatedLines);
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to replace content in file: " + filePath, e);
+            logger.warning("Failed to generate common query files from templates: " + e.getMessage());
         }
     }
 
@@ -125,16 +131,16 @@ public class CodeQLQueryExecutor {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(queryProcess.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
+                    logger.info(line);
                 }
             }
 
             int queryExitCode = queryProcess.waitFor();
             if (queryExitCode != 0) {
-                System.err.println("CodeQL query execution failed for " + queryPath + " with exit code: " + queryExitCode);
+                logger.warning("CodeQL query execution failed for " + queryPath + " with exit code: " + queryExitCode);
                 return; // Skip decoding if query fails
             } else {
-                System.out.println("CodeQL query executed successfully for " + queryPath);
+                logger.info("CodeQL query executed successfully for " + queryPath);
             }
 
             // Decode the .bqrs file to JSON format
@@ -158,15 +164,14 @@ public class CodeQLQueryExecutor {
 
             int decodeExitCode = decodeProcess.waitFor();
             if (decodeExitCode != 0) {
-                System.err.println("CodeQL BQRS decoding failed for " + bqrsOutputFile + " with exit code: " + decodeExitCode);
+                logger.warning("CodeQL BQRS decoding failed for " + bqrsOutputFile + " with exit code: " + decodeExitCode);
             } else {
                 // Write the JSON output to the .json file
                 Files.write(jsonOutputFile, jsonOutput.toString().getBytes());
-                System.out.println("Decoded JSON written to " + jsonOutputFile);
+                logger.info("Decoded JSON written to " + jsonOutputFile);
             }
         } catch (IOException | InterruptedException e) {
-            System.err.println("Error processing query: " + queryPath);
-            e.printStackTrace();
+            logger.warning("Failed to run and decode query: " + e.getMessage());
         }
     }
 

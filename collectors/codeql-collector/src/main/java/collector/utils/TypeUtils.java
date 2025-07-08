@@ -37,14 +37,14 @@ public class TypeUtils {
             ArrayNode paramArrayNode = mapper.createArrayNode();
 
             getTypes(fieldType)
-                    .forEach(
-                            param -> {
-                                ObjectNode paramTypeNode = mapper.createObjectNode();
-                                paramTypeNode.put("name", param);
-                                paramArrayNode.add(paramTypeNode);
-                            });
+                .forEach(
+                    param -> {
+                        ObjectNode paramTypeNode = mapper.createObjectNode();
+                        paramTypeNode.put("name", param);
+                        paramArrayNode.add(paramTypeNode);
+                    });
 
-            fieldTypeNode.put("parameters", paramArrayNode);
+            fieldTypeNode.set("parameters", paramArrayNode);
         } else {
             fieldTypeNode.put("name", fieldType);
         }

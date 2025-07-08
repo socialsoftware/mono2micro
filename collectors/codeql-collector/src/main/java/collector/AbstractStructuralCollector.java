@@ -21,12 +21,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import static collector.Constants.*;
 import static collector.FilesEnum.*;
 import static collector.utils.TypeUtils.setFieldType;
 
 public abstract class AbstractStructuralCollector {
+    private static final Logger logger = Logger.getLogger(AbstractStructuralCollector.class.getName());
+
     // Common Object Mapper
     protected ObjectMapper mapper;
     // Class to generate JSON files
@@ -69,27 +72,19 @@ public abstract class AbstractStructuralCollector {
     }
 
     public void collect() {
-        try {
-            // Step 1: Run the CodeQL common queries and save output as JSONs
-            runAndDecodeQueries();
+        // Step 1: Run the CodeQL common queries and save output as JSONs
+        runAndDecodeQueries();
+        // Step 2: Generate IdToEntity and EntityToID files and save mappings
+        generateIdEntityFiles();
+        // Step 3: Generate the Structure file
+        generateStructureFile();
+        // Step 4: Generate the Accesses file
+        generateAccessesFile();
 
-            // Step 2: Generate IdToEntity and EntityToID files and save mappings
-            generateIdEntityFiles();
-
-            // Step 3: Generate the Structure file
-            generateStructureFile();
-
-            // Step 4: Generate the Accesses file
-            generateAccessesFile();
-
-            System.out.println("Code collection complete");
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
-        }
+        logger.info("Code collection complete");
     }
 
-    public void runAndDecodeQueries() throws IOException {
+    public void runAndDecodeQueries() {
         // Check if run queries flag is on
         if (!config.isRunQueries()) return;
         // Run all common queries
@@ -127,10 +122,10 @@ public abstract class AbstractStructuralCollector {
             // Write the output JSON files
             jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ENTITYTOID.file, entityToIDNode);
             jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + IDTOENTITY.file, idToEntityNode);
-            System.out.println("Entity to ID file created successfully.");
-            System.out.println("ID to Entity file created successfully.");
+            logger.info("Entity to ID file created successfully.");
+            logger.info("ID to Entity file created successfully.");
         } catch (IOException e) {
-            System.err.println("Error processing JSON files: " + e.getMessage());
+            logger.warning("Error processing JSON files for ID-Entity: " + e.getMessage());
         }
     }
 
@@ -156,7 +151,7 @@ public abstract class AbstractStructuralCollector {
                 setFieldType(mapper, fieldTypeNode, ef.getFieldType());
 
                 // Add type to field node
-                fieldNode.put("type", fieldTypeNode);
+                fieldNode.set("type", fieldTypeNode);
 
                 // Update field in entity - might have to create one
                 ObjectNode entityNode = entityMap.getOrDefault(ef.getEntityLocation(), mapper.createObjectNode());
@@ -171,7 +166,7 @@ public abstract class AbstractStructuralCollector {
                     ArrayNode fieldArray = mapper.createArrayNode();
                     // Add field to fieldArray
                     fieldArray.add(fieldNode);
-                    entityNode.put("fields", fieldArray);
+                    entityNode.set("fields", fieldArray);
 
                     String superclass = locationToEntityMap.get(ef.getEntityLocation()).getSuperclass();
                     if (superclass.equals("Object")) {
@@ -180,7 +175,7 @@ public abstract class AbstractStructuralCollector {
                         // Add superclass to entityNode
                         ObjectNode superclassNode = mapper.createObjectNode();
                         superclassNode.put("name", superclass);
-                        entityNode.put("superclass", superclassNode);
+                        entityNode.set("superclass", superclassNode);
                     }
                 }
 
@@ -198,7 +193,7 @@ public abstract class AbstractStructuralCollector {
                     entityNode.put("name", entry.getKey());
                     // Array for the fields - will be empty
                     ArrayNode fieldArray = mapper.createArrayNode();
-                    entityNode.put("fields", fieldArray);
+                    entityNode.set("fields", fieldArray);
 
                     // Get superclass
                     String superclass = entry.getValue().getSuperclass();
@@ -207,7 +202,7 @@ public abstract class AbstractStructuralCollector {
                     } else {
                         ObjectNode superclassNode = mapper.createObjectNode();
                         superclassNode.put("name", superclass);
-                        entityNode.put("superclass", superclassNode);
+                        entityNode.set("superclass", superclassNode);
                     }
                     entityMap.put(entry.getValue().getLocation(), entityNode);
                 });
@@ -215,12 +210,12 @@ public abstract class AbstractStructuralCollector {
             // Add all entities to entities array
             entityMap.forEach((key, value) -> entitiesArray.add(value));
             // Add all entities to global object
-            structureNode.put("entities", entitiesArray);
+            structureNode.set("entities", entitiesArray);
             // Write the output JSON files
             jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + STRUCTURE.file, structureNode);
-            System.out.println("Structure file created successfully.");
+            logger.info("Structure file created successfully.");
         } catch (IOException e) {
-            System.err.println("Error processing JSON files: " + e.getMessage());
+            logger.warning("Error processing JSON files for Structure: " + e.getMessage());
         }
     }
 
@@ -253,17 +248,17 @@ public abstract class AbstractStructuralCollector {
                 ArrayNode idArrayNode = mapper.createArrayNode();
                 ObjectNode idInnerObjectNode = mapper.createObjectNode();
                 idInnerObjectNode.put("id", 0);
-                idInnerObjectNode.put("a", value);
+                idInnerObjectNode.set("a", value);
                 idArrayNode.add(idInnerObjectNode);
-                tObjectNode.put("t", idArrayNode);
-                accessesNode.put(key, tObjectNode);
+                tObjectNode.set("t", idArrayNode);
+                accessesNode.set(key, tObjectNode);
             });
 
             // Write the output JSON files
             jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ACCESSES.file, accessesNode);
-            System.out.println("Accesses file created successfully.");
+            logger.info("Accesses file created successfully.");
         } catch (IOException e) {
-            System.err.println("Error processing JSON files: " + e.getMessage());
+            logger.warning("Error processing JSON files for Accesses: " + e.getMessage());
         }
     }
 

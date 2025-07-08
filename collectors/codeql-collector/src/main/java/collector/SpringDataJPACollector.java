@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static collector.Constants.JSON_PATH;
 import static collector.FilesEnum.CALL_QUALIFIER;
@@ -24,6 +25,8 @@ import static collector.FilesEnum.REPO_ACCESSES;
 import static collector.utils.TypeUtils.getTypes;
 
 public class SpringDataJPACollector extends AbstractStructuralCollector {
+    private static final Logger logger = Logger.getLogger(SpringDataJPACollector.class.getName());
+
     // Map table name to classes
     private Map<String, Classes> tableClassesAccessedMap;
     // Named query list
@@ -36,7 +39,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
     }
 
     @Override
-    public void runAndDecodeQueries() throws IOException {
+    public void runAndDecodeQueries() {
         // Run common queries
         super.runAndDecodeQueries();
         // Check if run queries flag is on
@@ -73,7 +76,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
                 locationToEntityMap.put(ea.getEntityLocation(), de);
             }
         } catch (IOException e) {
-            System.err.println("Error processing JSON files: " + e.getMessage());
+            logger.warning("Error processing JSON files: " + e.getMessage());
         }
     }
 
@@ -90,7 +93,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
             // Call on super to generate accesses
             super.generateAccessesFile();
         } catch (IOException e) {
-            System.err.println("Error processing JSON files: " + e.getMessage());
+            logger.warning("Error processing JSON files: " + e.getMessage());
         }
     }
 
@@ -115,7 +118,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error processing JSON files: " + e.getMessage());
+            logger.warning("Error processing JSON files: " + e.getMessage());
         }
     }
 
@@ -151,7 +154,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
                     if (!ra.getQueryName().equals("null") && !ra.getQueryName().equals("\"\"")) {
                         Query q = reposityMethodUtils.getNamedQuery(namedQueriesList, ra.getQueryName());
                         if (q == null) {
-                            System.err.println("Couldn't find NamedQuery " + ra.getQueryName());
+                            logger.warning("Couldn't find NamedQuery " + ra.getQueryName());
                             continue;
                         }
                         else {

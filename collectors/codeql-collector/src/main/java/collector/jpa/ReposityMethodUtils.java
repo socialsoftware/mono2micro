@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class ReposityMethodUtils {
+    private static final Logger logger = Logger.getLogger(ReposityMethodUtils.class.getName());
 
     private DomainEntity getEntityByName(Map<String, DomainEntity> locationToEntityMap, String entityName) {
         for(Map.Entry<String, DomainEntity> entry : locationToEntityMap.entrySet()) {
@@ -65,8 +67,8 @@ public class ReposityMethodUtils {
                 String tableName = qa.getName();
                 Classes classes = tableClassesMap.get(parseTableName(tableName));
                 if (classes == null) {
-                    System.err.println("Exception on query: " + sql);
-                    System.err.println("Table not found: " + tableName);
+                    logger.warning("Exception on query: " + sql);
+                    logger.warning("Table not found: " + tableName);
                     continue;
                 }
                 for (String typeName : classes.getListOfClasses()) {
@@ -79,8 +81,8 @@ public class ReposityMethodUtils {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Native Query Exception on query: " + sql);
-            System.err.println(e.getCause().getMessage());
+            logger.warning("Native Query Exception on query: " + sql);
+            logger.warning(e.getCause().getMessage());
         }
         return accessesToReturn;
     }
@@ -93,8 +95,8 @@ public class ReposityMethodUtils {
                 accessesList.add(new Access(entity, method, a.getMode()));
             }
         } catch (Exception e) {
-            System.err.println("HQL Query Exception on query: " + hql);
-            System.err.println(e.getMessage());
+            logger.warning("HQL Query Exception on query: " + hql);
+            logger.warning(e.getMessage());
         }
         return accessesList;
     }

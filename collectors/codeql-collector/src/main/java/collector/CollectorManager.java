@@ -2,7 +2,7 @@ package collector;
 
 public class CollectorManager {
 
-    private AbstractStructuralCollector collector;
+    private final AbstractStructuralCollector collector;
 
     public CollectorManager(ConfigurationManager configManager) {
         // Choose collector class based on user configurations

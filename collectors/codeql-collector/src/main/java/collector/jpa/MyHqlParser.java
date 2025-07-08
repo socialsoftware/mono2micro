@@ -118,7 +118,7 @@ public class MyHqlParser {
             if (node == null)
                 return;
             else if (node.getType() == HqlSqlTokenTypes.IDENT)
-                idName.append(node.toString()).append(".");
+                idName.append(node).append(".");
 
             parseDotAux(node.getFirstChild(), idName);
             parseDotAux(node.getNextSibling(), idName);
