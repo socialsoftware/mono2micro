@@ -3,10 +3,23 @@ import python
 /**
  * Domain entity's superclass
  */
-class DomainSuperclass extends string {
-  DomainSuperclass() { this = "models.Model" }
+class DomainSuperclass extends Expr {
+  DomainSuperclass() {
+    exists(DomainEntity de |
+      this = de.getABase()
+    )
+  }
 
-  string getName() { result = this }
+  string getName() {
+    (
+      this.toString() = "Attribute" and
+      result = "models.Model"
+    ) or
+    (
+      this.toString() != "Attribute" and
+      result = this.toString()
+    )
+  }
 }
 
 /**
@@ -22,7 +35,7 @@ class DomainEntity extends Class {
   }
 
   predicate hasSuperclass(DomainSuperclass ds) {
-    ds.matches("models.Model")
+    this.getABase() = ds
   }
 
 }

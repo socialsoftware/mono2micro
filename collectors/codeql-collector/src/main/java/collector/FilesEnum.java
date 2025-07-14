@@ -5,6 +5,8 @@ package collector;
  */
 public enum FilesEnum {
 
+    // @FIXME should be constants
+
     // Output file names
     ENTITYTOID("entityToID.json"),
     IDTOENTITY("IDToEntity.json"),
