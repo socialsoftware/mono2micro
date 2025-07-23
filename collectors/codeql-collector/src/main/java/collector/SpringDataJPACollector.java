@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static collector.Constants.CALL_QUALIFIER;
+import static collector.Constants.ENTITY_ATTRIBUTES;
+import static collector.Constants.FIELD_ANNOTATIONS;
 import static collector.Constants.JSON_PATH;
-import static collector.FilesEnum.CALL_QUALIFIER;
-import static collector.FilesEnum.ENTITY_ATTRIBUTES;
-import static collector.FilesEnum.FIELD_ANNOTATIONS;
-import static collector.FilesEnum.NAMED_QUERIES;
-import static collector.FilesEnum.REPO_ACCESSES;
+import static collector.Constants.NAMED_QUERIES;
+import static collector.Constants.REPO_ACCESSES;
 import static collector.utils.TypeUtils.getTypes;
 
 public class SpringDataJPACollector extends AbstractStructuralCollector {
@@ -39,26 +39,13 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
     }
 
     @Override
-    public void runAndDecodeQueries() {
-        // Run common queries
-        super.runAndDecodeQueries();
-        // Check if run queries flag is on
-        if (!config.isRunQueries()) return;
-        // Run Spring Data JPA queries
-        codeQLQueryExecutor.runQueriesInWithLibrary(
-            config.getProperties().getSpecificFolderPath(),
-            config.getProperties().getLanguageLibraryPath()
-        );
-    }
-
-    @Override
     public void generateIdEntityFiles() {
         try {
             super.generateIdEntityFiles();
 
             // Read entitySuperclasses file as a list
             List<EntityAttributes> entityAttributes = fileParser.readEntityAttributes(
-                    mapper.readTree(new File(JSON_PATH + ENTITY_ATTRIBUTES.file)));
+                    mapper.readTree(new File(JSON_PATH + ENTITY_ATTRIBUTES)));
 
             // Fill tableClassesAccessed map
             for (EntityAttributes ea : entityAttributes) {
@@ -105,7 +92,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
             for (Access access : accesses) {
                 if (access.getEntity().isMappedSuperclass()) {
                     String qualifierDomainLocation = fileParser.getQualifierEntityLocationByCallLocation(
-                        mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER.file)),
+                        mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER)),
                         m.getCallLocation());
                     // Register access to domain entity
                     addEntitySequenceAccess(
@@ -125,7 +112,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
     private void buildRepoMethodAccesses() throws IOException {
         // Read repoAccesses as a list
         List<RepoAccesses> repoAccesses = fileParser.readRepoAccesses(
-                mapper.readTree(new File(JSON_PATH + REPO_ACCESSES.file)));
+                mapper.readTree(new File(JSON_PATH + REPO_ACCESSES)));
 
         for (RepoAccesses ra : repoAccesses) {
 
@@ -208,13 +195,13 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
 
     private void buildNamedQueriesList() throws IOException {
         // Read namedQueries file as a list
-        fileParser.readNamedQueries(mapper.readTree(new File(JSON_PATH + NAMED_QUERIES.file)))
+        fileParser.readNamedQueries(mapper.readTree(new File(JSON_PATH + NAMED_QUERIES)))
             .forEach(q -> namedQueriesList.add(new Query(q.getQueryName(), q.getQueryValue(), q.isNative())));
     }
 
     private void buildTableClassesMap() throws IOException {
         // Read fieldAnnotations as list
-        fileParser.readFieldAnnotations(mapper.readTree(new File(JSON_PATH + FIELD_ANNOTATIONS.file)))
+        fileParser.readFieldAnnotations(mapper.readTree(new File(JSON_PATH + FIELD_ANNOTATIONS)))
             .forEach(f -> {
                 Classes classes = new Classes();
                 classes.addClass(f.getDeclaringType());

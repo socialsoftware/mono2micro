@@ -1,6 +1,7 @@
 package collector;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -153,21 +154,27 @@ public class CodeQLQueryExecutor {
             decodeProcessBuilder.redirectErrorStream(true);
             Process decodeProcess = decodeProcessBuilder.start();
 
-            // Capture and save the JSON output
-            StringBuilder jsonOutput = new StringBuilder();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(decodeProcess.getInputStream()))) {
+
+            int decodeExitCode;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(decodeProcess.getInputStream()));
+                 BufferedWriter writer = Files.newBufferedWriter(jsonOutputFile)) {
+
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    jsonOutput.append(line);
+                    writer.write(line);
+                    writer.newLine(); // Optional: preserve line breaks
                 }
+
+                decodeExitCode = decodeProcess.waitFor();
+
+            } catch (IOException | InterruptedException e) {
+                logger.severe("Exception while decoding BQRS: " + e.getMessage());
+                throw e; // Or handle more gracefully depending on context
             }
 
-            int decodeExitCode = decodeProcess.waitFor();
             if (decodeExitCode != 0) {
                 logger.warning("CodeQL BQRS decoding failed for " + bqrsOutputFile + " with exit code: " + decodeExitCode);
             } else {
-                // Write the JSON output to the .json file
-                Files.write(jsonOutputFile, jsonOutput.toString().getBytes());
                 logger.info("Decoded JSON written to " + jsonOutputFile);
             }
         } catch (IOException | InterruptedException e) {

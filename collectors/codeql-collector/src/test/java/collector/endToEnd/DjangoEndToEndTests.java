@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DjangoEndToEndTests {
 
     static Stream<String> provideTestIds() {
-        return Stream.of("test-1", "test-2", "test-3");
+        return Stream.of("django-banking-app-test", "django-blog-app-test", "django-socialmedia-app-test");
     }
 
     @ParameterizedTest

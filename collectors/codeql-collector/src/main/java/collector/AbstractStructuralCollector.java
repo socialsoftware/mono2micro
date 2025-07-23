@@ -24,7 +24,6 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import static collector.Constants.*;
-import static collector.FilesEnum.*;
 import static collector.utils.TypeUtils.setFieldType;
 
 public abstract class AbstractStructuralCollector {
@@ -107,7 +106,7 @@ public abstract class AbstractStructuralCollector {
 
             // Read entitySuperclasses file as a list
             List<EntitySuperclass> entitySuperclasses = fileParser.readEntitySuperclass(
-                    mapper.readTree(new File(JSON_PATH + ENTITY_SUPERCLASS.file)));
+                    mapper.readTree(new File(JSON_PATH + ENTITY_SUPERCLASS)));
 
             for (EntitySuperclass es : entitySuperclasses) {
                 // Instantiate new Domain Entity
@@ -120,8 +119,8 @@ public abstract class AbstractStructuralCollector {
             }
 
             // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ENTITYTOID.file, entityToIDNode);
-            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + IDTOENTITY.file, idToEntityNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ENTITYTOID, entityToIDNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + IDTOENTITY, idToEntityNode);
             logger.info("Entity to ID file created successfully.");
             logger.info("ID to Entity file created successfully.");
         } catch (IOException e) {
@@ -140,7 +139,7 @@ public abstract class AbstractStructuralCollector {
 
             // Read entityFields file as a list
             List<EntityFields> entityFields = fileParser.readEntityFields(
-                    mapper.readTree(new File(JSON_PATH + ENTITY_FIELDS.file)));
+                    mapper.readTree(new File(JSON_PATH + ENTITY_FIELDS)));
 
             for (EntityFields ef : entityFields) {
                 // Object node for the field name
@@ -212,7 +211,7 @@ public abstract class AbstractStructuralCollector {
             // Add all entities to global object
             structureNode.set("entities", entitiesArray);
             // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + STRUCTURE.file, structureNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + STRUCTURE, structureNode);
             logger.info("Structure file created successfully.");
         } catch (IOException e) {
             logger.warning("Error processing JSON files for Structure: " + e.getMessage());
@@ -229,10 +228,10 @@ public abstract class AbstractStructuralCollector {
 
             // Get all controller methods
             endpointFunctionList = fileParser.readEndpoints(
-                    mapper.readTree(new File(JSON_PATH + ENDPOINTS.file)));
+                    mapper.readTree(new File(JSON_PATH + ENDPOINTS)));
 
             // Build reachable map
-            fileParser.readCalls(mapper.readTree(new File(JSON_PATH + CALLS.file)))
+            fileParser.readCalls(mapper.readTree(new File(JSON_PATH + CALLS)))
                 .forEach(c ->
                     reachableMap
                         .computeIfAbsent(c.getCallerId(), k -> new ArrayList<>())
@@ -255,7 +254,7 @@ public abstract class AbstractStructuralCollector {
             });
 
             // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ACCESSES.file, accessesNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ACCESSES, accessesNode);
             logger.info("Accesses file created successfully.");
         } catch (IOException e) {
             logger.warning("Error processing JSON files for Accesses: " + e.getMessage());
@@ -299,7 +298,7 @@ public abstract class AbstractStructuralCollector {
 
     protected void buildFunctionAccesses() throws IOException {
         // Read FunctionAccesses file as a list
-        fileParser.readFunctionAccesses(mapper.readTree(new File(JSON_PATH + FUNCTION_ACCESSES.file)))
+        fileParser.readFunctionAccesses(mapper.readTree(new File(JSON_PATH + FUNCTION_ACCESSES)))
             .forEach(a -> {
                 // Get domain entity for the access
                 DomainEntity domainEntity = locationToEntityMap.get(a.getEntityLocation());

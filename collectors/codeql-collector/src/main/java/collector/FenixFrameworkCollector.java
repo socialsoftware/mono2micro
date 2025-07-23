@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static collector.Constants.CALL_QUALIFIER;
+import static collector.Constants.FUNCTION_ATTRIBUTES;
 import static collector.Constants.JSON_PATH;
-import static collector.FilesEnum.CALL_QUALIFIER;
-import static collector.FilesEnum.FUNCTION_ATTRIBUTES;
 import static collector.utils.TypeUtils.getTypes;
 
 public class FenixFrameworkCollector extends AbstractStructuralCollector {
@@ -29,19 +29,6 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
     }
 
     @Override
-    public void runAndDecodeQueries() {
-        // Run common queries
-        super.runAndDecodeQueries();
-        // Check if run queries flag is on
-        if (!config.isRunQueries()) return;
-        // Run Spring Data JPA queries
-        codeQLQueryExecutor.runQueriesInWithLibrary(
-                config.getProperties().getSpecificFolderPath(),
-                config.getProperties().getLanguageLibraryPath()
-        );
-    }
-
-    @Override
     public void generateAccessesFile() {
         // Populate function attributes map
         buildFunctionAttributes();
@@ -53,7 +40,7 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
     private void buildFunctionAttributes() {
         try {
             fileParser.readFunctionAttributes(
-                mapper.readTree(new File(JSON_PATH + FUNCTION_ATTRIBUTES.file)))
+                mapper.readTree(new File(JSON_PATH + FUNCTION_ATTRIBUTES)))
                 .forEach(fa ->
                     fenixFunctionMap
                         .computeIfAbsent(fa.getFunctionId(), k -> new FenixFunction(
@@ -91,7 +78,7 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
     private String getQualifierEntityLocationByCallLocation(String callLocation) {
         try {
             return fileParser.getQualifierEntityLocationByCallLocation(
-                mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER.file)),
+                mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER)),
                 callLocation);
         } catch (IOException e) {
             logger.warning("Error getting Domain location from call qualifier: " + e.getMessage());

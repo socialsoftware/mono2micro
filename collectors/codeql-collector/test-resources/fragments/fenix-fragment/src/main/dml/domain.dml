@@ -1,0 +1,21 @@
+package example;
+
+class Author {
+    String name;
+}
+
+class Book {
+    String title;
+}
+
+relation AuthorBooks {
+    Author playsRole author;
+    Book playsRole books {
+        multiplicity *;
+    }
+}
+
+relation RootAuthors {
+    .pt.ist.fenixframework.DomainRoot playsRole root;
+    Author playsRole authors { multiplicity *; }
+}

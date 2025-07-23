@@ -14,11 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static collector.Constants.JSON_PATH;
-import static collector.FilesEnum.ENDPOINTS;
-import static collector.FilesEnum.ENTITY_FIELDS;
-import static collector.FilesEnum.ENTITY_SUPERCLASS;
-import static collector.FilesEnum.FUNCTION_ACCESSES;
+import static collector.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -41,7 +37,7 @@ public abstract class AbstractFragmentTest {
     @Test
     void testEntitySuperclassResult() throws IOException {
         List<EntitySuperclass> resultList = fileParser.readEntitySuperclass(
-                mapper.readTree(new File(JSON_PATH + ENTITY_SUPERCLASS.file)));
+                mapper.readTree(new File(JSON_PATH + ENTITY_SUPERCLASS)));
         List<EntitySuperclass> expectedList = getExpectedEntitySuperclassList();
 
         assertEquals(resultList.size(), expectedList.size(), "expected and result lists differ in size");
@@ -57,7 +53,7 @@ public abstract class AbstractFragmentTest {
     @Test
     void testEntityFieldsResult() throws IOException {
         List<EntityFields> resultList = fileParser.readEntityFields(
-                mapper.readTree(new File(JSON_PATH + ENTITY_FIELDS.file)));
+                mapper.readTree(new File(JSON_PATH + ENTITY_FIELDS)));
         List<EntityFields> expectedList = getExpectedEntityFieldsList();
 
         assertEquals(resultList.size(), expectedList.size(), "expected and result lists differ in size");
@@ -74,7 +70,7 @@ public abstract class AbstractFragmentTest {
     @Test
     void testEndpointsResult() throws IOException {
         List<Endpoints> resultList = fileParser.readEndpoints(
-                mapper.readTree(new File(JSON_PATH + ENDPOINTS.file)));
+                mapper.readTree(new File(JSON_PATH + ENDPOINTS)));
         List<Endpoints> expectedList = getExpectedEndpointsList();
 
         assertEquals(resultList.size(), expectedList.size(), "expected and result lists differ in size");
@@ -89,7 +85,7 @@ public abstract class AbstractFragmentTest {
     @Test
     void testFunctionAccessesResult() throws IOException {
         List<FunctionAccesses> resultList = fileParser.readFunctionAccesses(
-                mapper.readTree(new File(JSON_PATH + FUNCTION_ACCESSES.file)));
+                mapper.readTree(new File(JSON_PATH + FUNCTION_ACCESSES)));
         List<FunctionAccesses> expectedList = getExpectedFunctionAccessesList();
 
         assertEquals(resultList.size(), expectedList.size(), "expected and result lists differ in size");

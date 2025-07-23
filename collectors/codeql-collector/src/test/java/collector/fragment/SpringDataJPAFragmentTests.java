@@ -8,7 +8,6 @@ import collector.jpa.queryresults.EntityAttributes;
 import collector.jpa.queryresults.FieldAnnotations;
 import collector.jpa.queryresults.NamedQueries;
 import collector.jpa.queryresults.RepoAccesses;
-import collector.queryresults.Calls;
 import collector.queryresults.Endpoints;
 import collector.queryresults.EntityFields;
 import collector.queryresults.EntitySuperclass;
@@ -19,12 +18,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static collector.Constants.CALL_QUALIFIER;
+import static collector.Constants.ENTITY_ATTRIBUTES;
+import static collector.Constants.FIELD_ANNOTATIONS;
 import static collector.Constants.JSON_PATH;
-import static collector.FilesEnum.CALL_QUALIFIER;
-import static collector.FilesEnum.ENTITY_ATTRIBUTES;
-import static collector.FilesEnum.FIELD_ANNOTATIONS;
-import static collector.FilesEnum.NAMED_QUERIES;
-import static collector.FilesEnum.REPO_ACCESSES;
+import static collector.Constants.NAMED_QUERIES;
+import static collector.Constants.REPO_ACCESSES;
 import static collector.TestConstants.SPRING_FRAGMENT_TEST_NAME;
 import static collector.TestConstants.SPRING_FRAGMENT_TEST_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -109,14 +108,14 @@ public class SpringDataJPAFragmentTests extends AbstractFragmentTest {
     @Test
     void testCallQualifierResult() throws IOException {
         String smt = fileParser.getQualifierEntityLocationByCallLocation(
-                mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER.file)), "");
+                mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER)), "");
         assertEquals(smt, "");
     }
 
     @Test
     void testEntityAttributesResult() throws IOException {
         List<EntityAttributes> resultList = fileParser.readEntityAttributes(
-                mapper.readTree(new File(JSON_PATH + ENTITY_ATTRIBUTES.file)));
+                mapper.readTree(new File(JSON_PATH + ENTITY_ATTRIBUTES)));
         List<EntityAttributes> expectedList = getExpectedEntityAttributesList();
 
         assertEquals(resultList.size(), expectedList.size(), "expected and result lists differ in size");
@@ -133,7 +132,7 @@ public class SpringDataJPAFragmentTests extends AbstractFragmentTest {
     @Test
     void testFieldAnnotationsResult() throws IOException {
         List<FieldAnnotations> resultList = fileParser.readFieldAnnotations(
-                mapper.readTree(new File(JSON_PATH + FIELD_ANNOTATIONS.file)));
+                mapper.readTree(new File(JSON_PATH + FIELD_ANNOTATIONS)));
         List<FieldAnnotations> expectedList = getExpectedFieldAnnotationsList();
 
         assertEquals(resultList.size(), expectedList.size(), "expected and result lists differ in size");
@@ -150,7 +149,7 @@ public class SpringDataJPAFragmentTests extends AbstractFragmentTest {
     @Test
     void testNamedQueriesResult() throws IOException {
         List<NamedQueries> resultList = fileParser.readNamedQueries(
-                mapper.readTree(new File(JSON_PATH + NAMED_QUERIES.file)));
+                mapper.readTree(new File(JSON_PATH + NAMED_QUERIES)));
         List<NamedQueries> expectedList = getExpectedNamedQueriesList();
 
         assertEquals(resultList.size(), expectedList.size(), "expected and result lists differ in size");
@@ -167,7 +166,7 @@ public class SpringDataJPAFragmentTests extends AbstractFragmentTest {
     @Test
     void testRepoAccessesResult() throws IOException {
         List<RepoAccesses> resultList = fileParser.readRepoAccesses(
-                mapper.readTree(new File(JSON_PATH + REPO_ACCESSES.file)));
+                mapper.readTree(new File(JSON_PATH + REPO_ACCESSES)));
         List<RepoAccesses> expectedList = getExpectedRepoAccessesList();
 
         assertEquals(resultList.size(), expectedList.size(), "expected and result lists differ in size");

@@ -4,3 +4,4 @@ codeql-runner.iml
 CodeQLRunner.class
 /test-resources/fragments/spring-data-jpa/spring-db/
 /test-resources/fragments/django_fragment/django-db/
+/test-resources/fragments/fenix-fragment/fenix-db/

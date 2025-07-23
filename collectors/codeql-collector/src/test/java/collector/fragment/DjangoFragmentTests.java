@@ -4,7 +4,6 @@ import collector.AbstractStructuralCollector;
 import collector.Configuration;
 import collector.DjangoCollector;
 import collector.ProjectProperties;
-import collector.queryresults.Calls;
 import collector.queryresults.Endpoints;
 import collector.queryresults.EntityFields;
 import collector.queryresults.EntitySuperclass;

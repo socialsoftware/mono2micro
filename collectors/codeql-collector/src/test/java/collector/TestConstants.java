@@ -8,4 +8,7 @@ public class TestConstants {
     public static final String DJANGO_FRAGMENT_TEST_NAME = "django-fragment-test";
     public static final String DJANGO_FRAGMENT_TEST_PATH = "./test-resources/fragments/django_fragment/django-db";
 
+    public static final String FENIX_FRAGMENT_TEST_NAME = "fenix-fragment-test";
+    public static final String FENIX_FRAGMENT_TEST_PATH = "./test-resources/fragments/fenix-fragment/fenix-db";
+
 }
