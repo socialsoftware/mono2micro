@@ -2,14 +2,6 @@
   "entities" : [ {
     "name" : "Post",
     "fields" : [ {
-      "name" : "tags",
-      "type" : {
-        "name" : "ManyToManyField",
-        "parameters" : [ {
-          "name" : "Tag"
-        } ]
-      }
-    }, {
       "name" : "updated_on",
       "type" : {
         "name" : "DateTimeField"
@@ -23,9 +15,17 @@
         } ]
       }
     }, {
-      "name" : "created_on",
+      "name" : "tags",
       "type" : {
-        "name" : "DateTimeField"
+        "name" : "ManyToManyField",
+        "parameters" : [ {
+          "name" : "Tag"
+        } ]
+      }
+    }, {
+      "name" : "image",
+      "type" : {
+        "name" : "ImageField"
       }
     }, {
       "name" : "title",
@@ -43,9 +43,9 @@
         "name" : "TextField"
       }
     }, {
-      "name" : "image",
+      "name" : "created_on",
       "type" : {
-        "name" : "ImageField"
+        "name" : "DateTimeField"
       }
     } ],
     "superclass" : {
@@ -54,14 +54,12 @@
   }, {
     "name" : "Comment",
     "fields" : [ {
-      "name" : "created",
+      "name" : "post",
       "type" : {
-        "name" : "DateTimeField"
-      }
-    }, {
-      "name" : "name",
-      "type" : {
-        "name" : "CharField"
+        "name" : "ForeignKey",
+        "parameters" : [ {
+          "name" : "Post"
+        } ]
       }
     }, {
       "name" : "email",
@@ -69,17 +67,19 @@
         "name" : "EmailField"
       }
     }, {
+      "name" : "name",
+      "type" : {
+        "name" : "CharField"
+      }
+    }, {
+      "name" : "created",
+      "type" : {
+        "name" : "DateTimeField"
+      }
+    }, {
       "name" : "content",
       "type" : {
         "name" : "TextField"
-      }
-    }, {
-      "name" : "post",
-      "type" : {
-        "name" : "ForeignKey",
-        "parameters" : [ {
-          "name" : "Post"
-        } ]
       }
     } ],
     "superclass" : {
@@ -99,17 +99,17 @@
   }, {
     "name" : "Profile",
     "fields" : [ {
-      "name" : "about_me",
-      "type" : {
-        "name" : "TextField"
-      }
-    }, {
       "name" : "user",
       "type" : {
         "name" : "OneToOneField",
         "parameters" : [ {
           "name" : "User"
         } ]
+      }
+    }, {
+      "name" : "about_me",
+      "type" : {
+        "name" : "TextField"
       }
     }, {
       "name" : "image",
@@ -129,7 +129,7 @@
       }
     } ],
     "superclass" : {
-      "name" : "models.Model"
+      "name" : "AbstractUser"
     }
   } ]
 }

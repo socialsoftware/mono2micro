@@ -1,0 +1,21 @@
+package example;
+
+class User {
+    String name;
+}
+
+class Account {
+    Double balance;
+}
+
+relation UserAccounts {
+    User playsRole user;
+    Account playsRole accounts {
+        multiplicity *;
+    }
+}
+
+relation RootUsers {
+    .pt.ist.fenixframework.DomainRoot playsRole root;
+    User playsRole users { multiplicity *; }
+}
