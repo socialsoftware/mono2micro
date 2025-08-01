@@ -1,6 +1,9 @@
 package collector;
 
 import collector.fenix.queryresults.FenixFunction;
+import collector.fenix.queryresults.FunctionAttributes;
+import collector.queryresults.CallQualifier;
+import collector.queryresults.FunctionAccesses;
 import collector.utils.DomainEntity;
 import collector.utils.Function;
 
@@ -38,23 +41,17 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
     }
 
     private void buildFunctionAttributes() {
-        try {
-            fileParser.readFunctionAttributes(
-                mapper.readTree(new File(JSON_PATH + FUNCTION_ATTRIBUTES)))
-                .forEach(fa ->
-                    fenixFunctionMap
-                        .computeIfAbsent(fa.getFunctionId(), k -> new FenixFunction(
-                            new Function(fa.getFunctionId()),
-                            fa.getMethodDeclaringType(),
-                            fa.getMethodName(),
-                            fa.getReturningType(),
-                            new ArrayList<>()
-                        ))
-                        .getParams()
-                        .add(fa.getParamType())
-                );
-        } catch (IOException e) {
-            logger.warning("Error reading function attributes: " + e.getMessage());
+        for (FunctionAttributes fa : fileParser.readFunctionAttributes(getFile(FUNCTION_ATTRIBUTES))) {
+            fenixFunctionMap
+                .computeIfAbsent(fa.getFunctionId(), k -> new FenixFunction(
+                    new Function(fa.getFunctionId()),
+                    fa.getMethodDeclaringType(),
+                    fa.getMethodName(),
+                    fa.getReturningType(),
+                    new ArrayList<>()
+                ))
+                .getParams()
+                .add(fa.getParamType());
         }
     }
 
@@ -72,17 +69,6 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
             registerBaseClass(controllerMethodName, method);
         } else if (method.getMethodClass().equals("FenixFramework") && method.getMethodClass().equals("getDomainObject")) {
             registerDomainObject(controllerMethodName, method);
-        }
-    }
-
-    private String getQualifierEntityLocationByCallLocation(String callLocation) {
-        try {
-            return fileParser.getQualifierEntityLocationByCallLocation(
-                mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER)),
-                callLocation);
-        } catch (IOException e) {
-            logger.warning("Error getting Domain location from call qualifier: " + e.getMessage());
-            return "";
         }
     }
 

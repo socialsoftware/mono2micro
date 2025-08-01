@@ -18,7 +18,7 @@ public class Constants {
     public static final String PYTHON_LIBRARY = "codeql-queries/python-library/";
 
     // FILE NAMES
-    public static final String ENTITYTOID ="entityToID.json";
+    public static final String ENTITYTOID = "entityToID.json";
     public static final String IDTOENTITY = "IDToEntity.json";
     public static final String STRUCTURE = "structure.json";
     public static final String ACCESSES = "accesses.json";
@@ -32,6 +32,6 @@ public class Constants {
     public static final String FIELD_ANNOTATIONS = "FieldAnnotations.json";
     public static final String NAMED_QUERIES = "NamedQueries.json";
     public static final String REPO_ACCESSES = "RepoAccesses.json";
-    public static final String FUNCTION_ATTRIBUTES="FunctionAttributes.json";
+    public static final String FUNCTION_ATTRIBUTES = "FunctionAttributes.json";
 
 }

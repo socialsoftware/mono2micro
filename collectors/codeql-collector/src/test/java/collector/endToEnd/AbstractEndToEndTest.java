@@ -25,7 +25,7 @@ public abstract class AbstractEndToEndTest {
     protected abstract List<String> getTestIds();
 
     @Test
-    void validateDjangoOutput() throws IOException {
+    void validateFilesOutput() throws IOException {
         for (String testId : getTestIds()) {
             String dbPath = String.format("./test-resources/endToEnd/%s/%s-db", testId, testId);
             String expectedBase = String.format("./test-resources/endToEnd/%s/expected-output", testId);
@@ -47,14 +47,14 @@ public abstract class AbstractEndToEndTest {
         ObjectMapper mapper = new ObjectMapper();
         LinkedHashMap<String, Integer> expectedMap = mapper.readValue(expected, new TypeReference<>(){});
         LinkedHashMap<String, Integer> resultMap = mapper.readValue(result, new TypeReference<>(){});
-        assertEquals(expectedMap, resultMap, "EntityToID files differ.");
+        assertEquals(expectedMap, resultMap, "EntityToID files differ at file: " + result.getName());
     }
 
     void compareIDToEntity(File expected, File result) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         LinkedHashMap<Integer, String> expectedMap = mapper.readValue(expected, new TypeReference<>(){});
         LinkedHashMap<Integer, String> resultMap = mapper.readValue(result, new TypeReference<>(){});
-        assertEquals(expectedMap, resultMap, "EntityToID files differ.");
+        assertEquals(expectedMap, resultMap, "EntityToID files differ at file: " + result.getName());
     }
 
     void compareStructure(File expected, File result) throws IOException {
@@ -71,7 +71,7 @@ public abstract class AbstractEndToEndTest {
         List<JsonNode> resultList = StreamSupport.stream(resultEntities.spliterator(), false)
                 .map(this::normalizeEntity).sorted(Comparator.comparing(JsonNode::toString)).toList();
 
-        assertEquals(expectedList, resultList, "Structure JSONs differ.");
+        assertEquals(expectedList, resultList, "Structure JSONs differ at file: " + result.getName());
     }
 
     void compareAccess(File expected, File result) throws IOException {
@@ -79,7 +79,7 @@ public abstract class AbstractEndToEndTest {
         JsonNode expectedJsonNode = mapper.readTree(expected);
         JsonNode resultJsonNode = mapper.readTree(result);
 
-        assertEquals(normalizeAccess(expectedJsonNode), normalizeAccess(resultJsonNode), "Access JSONs differ.");
+        assertEquals(normalizeAccess(expectedJsonNode), normalizeAccess(resultJsonNode), "Access JSONs differ at file: " + result.getName());
     }
 
     private JsonNode normalizeAccess(JsonNode node) {

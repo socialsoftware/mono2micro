@@ -1,9 +1,12 @@
 package collector;
 
+import collector.jsonParsing.JsonFileParser;
+import collector.queryresults.CallQualifier;
+import collector.queryresults.Calls;
 import collector.queryresults.Endpoints;
 import collector.queryresults.EntityFields;
 import collector.queryresults.EntitySuperclass;
-import collector.queryresults.FileParser;
+import collector.queryresults.FunctionAccesses;
 import collector.utils.Access;
 import collector.utils.DomainEntity;
 import collector.jpa.ReposityMethodUtils;
@@ -42,7 +45,7 @@ public abstract class AbstractStructuralCollector {
     // Repository method utils
     protected ReposityMethodUtils reposityMethodUtils;
     // CodeQL file parser
-    protected FileParser fileParser;
+    protected JsonFileParser fileParser;
     // Map each function to all functions called by it
     protected Map<String, List<Function>> reachableMap;
     // List of endpoint functions
@@ -52,10 +55,10 @@ public abstract class AbstractStructuralCollector {
     // Map each function's id to its accesses
     protected Map<String, List<Access>> accessMap;
 
-    public AbstractStructuralCollector(Configuration config, FileParser fileParser) {
+    public AbstractStructuralCollector(Configuration config) {
         this.jsonFileGenerator = new JSONFileGenerator();
         this.config = config;
-        this.fileParser = fileParser;
+        this.fileParser = new JsonFileParser();
         this.codeQLQueryExecutor = new CodeQLQueryExecutor(config);
         this.mapper = new ObjectMapper();
         this.locationToEntityMap = new HashMap<>();
@@ -64,10 +67,6 @@ public abstract class AbstractStructuralCollector {
         this.endpointFunctionList = new ArrayList<>();
         this.endpointFunctionAccessMap = new HashMap<>();
         this.accessMap = new HashMap<>();
-    }
-
-    public AbstractStructuralCollector(Configuration config) {
-        this(config, new FileParser());
     }
 
     public void collect() {
@@ -96,126 +95,111 @@ public abstract class AbstractStructuralCollector {
     }
 
     public void generateIdEntityFiles() {
-        try {
-            // Create a new JSON object for entityToID output
-            ObjectNode entityToIDNode = mapper.createObjectNode();
-            // Create a new JSON object for IDToEntity output
-            ObjectNode idToEntityNode = mapper.createObjectNode();
-            // Starting id value
-            int id = 1;
+        // Create a new JSON object for entityToID output
+        ObjectNode entityToIDNode = mapper.createObjectNode();
+        // Create a new JSON object for IDToEntity output
+        ObjectNode idToEntityNode = mapper.createObjectNode();
+        // Starting id value
+        int id = 1;
 
-            // Read entitySuperclasses file as a list
-            List<EntitySuperclass> entitySuperclasses = fileParser.readEntitySuperclass(
-                    mapper.readTree(new File(JSON_PATH + ENTITY_SUPERCLASS)));
-
-            for (EntitySuperclass es : entitySuperclasses) {
-                // Instantiate new Domain Entity
-                DomainEntity de = new DomainEntity(id, es);
-                // Store the domain entities in a map for later
-                locationToEntityMap.put(es.getEntityLocation(), de);
-                entityToIDNode.put(es.getEntityName(), id);
-                idToEntityNode.put(String.valueOf(id), es.getEntityName());
-                id++;
-            }
-
-            // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ENTITYTOID, entityToIDNode);
-            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + IDTOENTITY, idToEntityNode);
-            logger.info("Entity to ID file created successfully.");
-            logger.info("ID to Entity file created successfully.");
-        } catch (IOException e) {
-            logger.warning("Error processing JSON files for ID-Entity: " + e.getMessage());
+        // Read entitySuperclasses file as a list
+        for (EntitySuperclass es : fileParser.readEntitySuperclass(getFile(ENTITY_SUPERCLASS))) {
+            // Instantiate new Domain Entity
+            DomainEntity de = new DomainEntity(id, es);
+            // Store the domain entities in a map for later
+            locationToEntityMap.put(es.getEntityLocation(), de);
+            entityToIDNode.put(es.getEntityName(), id);
+            idToEntityNode.put(String.valueOf(id), es.getEntityName());
+            id++;
         }
+
+        // Write the output JSON files
+        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ENTITYTOID, entityToIDNode);
+        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + IDTOENTITY, idToEntityNode);
+        logger.info("Entity to ID file created successfully.");
+        logger.info("ID to Entity file created successfully.");
     }
 
     public void generateStructureFile() {
-        try {
-            // Map to store all entities before putting them in output JSON
-            Map<String, ObjectNode> entityMap = new TreeMap<>();
-            // Create a new JSON object for structure file
-            ObjectNode structureNode = mapper.createObjectNode();
-            // Create entities array
-            ArrayNode entitiesArray = mapper.createArrayNode();
+        // Map to store all entities before putting them in output JSON
+        Map<String, ObjectNode> entityMap = new TreeMap<>();
+        // Create a new JSON object for structure file
+        ObjectNode structureNode = mapper.createObjectNode();
+        // Create entities array
+        ArrayNode entitiesArray = mapper.createArrayNode();
 
-            // Read entityFields file as a list
-            List<EntityFields> entityFields = fileParser.readEntityFields(
-                    mapper.readTree(new File(JSON_PATH + ENTITY_FIELDS)));
+        for (EntityFields ef : fileParser.readEntityFields(getFile(ENTITY_FIELDS))) {
+            // Object node for the field name
+            ObjectNode fieldNode = mapper.createObjectNode();
+            fieldNode.put("name", ef.getFieldName());
+            // Object node for the field type
+            ObjectNode fieldTypeNode = mapper.createObjectNode();
+            setFieldType(mapper, fieldTypeNode, ef.getFieldType());
 
-            for (EntityFields ef : entityFields) {
-                // Object node for the field name
-                ObjectNode fieldNode = mapper.createObjectNode();
-                fieldNode.put("name", ef.getFieldName());
-                // Object node for the field type
-                ObjectNode fieldTypeNode = mapper.createObjectNode();
-                setFieldType(mapper, fieldTypeNode, ef.getFieldType());
+            // Add type to field node
+            fieldNode.set("type", fieldTypeNode);
 
-                // Add type to field node
-                fieldNode.set("type", fieldTypeNode);
+            // Update field in entity - might have to create one
+            ObjectNode entityNode = entityMap.getOrDefault(ef.getEntityLocation(), mapper.createObjectNode());
 
-                // Update field in entity - might have to create one
-                ObjectNode entityNode = entityMap.getOrDefault(ef.getEntityLocation(), mapper.createObjectNode());
+            if (entityMap.containsKey(ef.getEntityLocation())) {
+                ArrayNode fieldArray = (ArrayNode) entityNode.get("fields");
+                // Add new field to fieldArray
+                fieldArray.add(fieldNode);
+            } else {
+                entityNode.put("name", ef.getEntityName());
+                // New arrayNode for fields
+                ArrayNode fieldArray = mapper.createArrayNode();
+                // Add field to fieldArray
+                fieldArray.add(fieldNode);
+                entityNode.set("fields", fieldArray);
 
-                if (entityMap.containsKey(ef.getEntityLocation())) {
-                    ArrayNode fieldArray = (ArrayNode) entityNode.get("fields");
-                    // Add new field to fieldArray
-                    fieldArray.add(fieldNode);
+                String superclass = locationToEntityMap.get(ef.getEntityLocation()).getSuperclass();
+                if (superclass.equals("Object")) {
+                    entityNode.putNull("superclass");
                 } else {
-                    entityNode.put("name", ef.getEntityName());
-                    // New arrayNode for fields
-                    ArrayNode fieldArray = mapper.createArrayNode();
-                    // Add field to fieldArray
-                    fieldArray.add(fieldNode);
-                    entityNode.set("fields", fieldArray);
-
-                    String superclass = locationToEntityMap.get(ef.getEntityLocation()).getSuperclass();
-                    if (superclass.equals("Object")) {
-                        entityNode.putNull("superclass");
-                    } else {
-                        // Add superclass to entityNode
-                        ObjectNode superclassNode = mapper.createObjectNode();
-                        superclassNode.put("name", superclass);
-                        entityNode.set("superclass", superclassNode);
-                    }
+                    // Add superclass to entityNode
+                    ObjectNode superclassNode = mapper.createObjectNode();
+                    superclassNode.put("name", superclass);
+                    entityNode.set("superclass", superclassNode);
                 }
-
-                // Store entity in map
-                entityMap.put(ef.getEntityLocation(), entityNode);
             }
 
-            // Add entities without fields
-            locationToEntityMap.entrySet()
-                .stream()
-                .filter(entry -> !entityMap.containsKey(entry.getKey()))
-                .forEach(entry -> {
-                    // Create a new node for entity
-                    ObjectNode entityNode = mapper.createObjectNode();
-                    entityNode.put("name", entry.getKey());
-                    // Array for the fields - will be empty
-                    ArrayNode fieldArray = mapper.createArrayNode();
-                    entityNode.set("fields", fieldArray);
-
-                    // Get superclass
-                    String superclass = entry.getValue().getSuperclass();
-                    if (superclass.equals("Object")) {
-                        entityNode.putNull("superclass");
-                    } else {
-                        ObjectNode superclassNode = mapper.createObjectNode();
-                        superclassNode.put("name", superclass);
-                        entityNode.set("superclass", superclassNode);
-                    }
-                    entityMap.put(entry.getValue().getLocation(), entityNode);
-                });
-
-            // Add all entities to entities array
-            entityMap.forEach((key, value) -> entitiesArray.add(value));
-            // Add all entities to global object
-            structureNode.set("entities", entitiesArray);
-            // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + STRUCTURE, structureNode);
-            logger.info("Structure file created successfully.");
-        } catch (IOException e) {
-            logger.warning("Error processing JSON files for Structure: " + e.getMessage());
+            // Store entity in map
+            entityMap.put(ef.getEntityLocation(), entityNode);
         }
+
+        // Add entities without fields
+        locationToEntityMap.entrySet()
+            .stream()
+            .filter(entry -> !entityMap.containsKey(entry.getKey()))
+            .forEach(entry -> {
+                // Create a new node for entity
+                ObjectNode entityNode = mapper.createObjectNode();
+                entityNode.put("name", entry.getKey());
+                // Array for the fields - will be empty
+                ArrayNode fieldArray = mapper.createArrayNode();
+                entityNode.set("fields", fieldArray);
+
+                // Get superclass
+                String superclass = entry.getValue().getSuperclass();
+                if (superclass.equals("Object")) {
+                    entityNode.putNull("superclass");
+                } else {
+                    ObjectNode superclassNode = mapper.createObjectNode();
+                    superclassNode.put("name", superclass);
+                    entityNode.set("superclass", superclassNode);
+                }
+                entityMap.put(entry.getValue().getLocation(), entityNode);
+            });
+
+        // Add all entities to entities array
+        entityMap.forEach((key, value) -> entitiesArray.add(value));
+        // Add all entities to global object
+        structureNode.set("entities", entitiesArray);
+        // Write the output JSON files
+        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + STRUCTURE, structureNode);
+        logger.info("Structure file created successfully.");
     }
 
     public void generateAccessesFile() {
@@ -226,17 +210,12 @@ public abstract class AbstractStructuralCollector {
             // Build access map
             buildFunctionAccesses();
 
-            // Get all controller methods
-            endpointFunctionList = fileParser.readEndpoints(
-                    mapper.readTree(new File(JSON_PATH + ENDPOINTS)));
-
             // Build reachable map
-            fileParser.readCalls(mapper.readTree(new File(JSON_PATH + CALLS)))
-                .forEach(c ->
-                    reachableMap
-                        .computeIfAbsent(c.getCallerId(), k -> new ArrayList<>())
-                        .add(new Function(c.getCalleeId(), c.getCallLocation()))
-                );
+            for (Calls c : fileParser.readCalls(getFile(CALLS))) {
+                reachableMap
+                    .computeIfAbsent(c.getCallerId(), k -> new ArrayList<>())
+                    .add(new Function(c.getCalleeId(), c.getCallLocation()));
+            }
 
             // DFS through calls
             performDFSFromEndpoints();
@@ -262,7 +241,7 @@ public abstract class AbstractStructuralCollector {
     }
 
     public void performDFSFromEndpoints() {
-        for (Endpoints endpoint : endpointFunctionList) {
+        for (Endpoints endpoint : fileParser.readEndpoints(getFile(ENDPOINTS))) {
             Set<String> visitedCallLocations = new HashSet<>();
             // Perform dfs
             dfs(
@@ -298,16 +277,15 @@ public abstract class AbstractStructuralCollector {
 
     protected void buildFunctionAccesses() throws IOException {
         // Read FunctionAccesses file as a list
-        fileParser.readFunctionAccesses(mapper.readTree(new File(JSON_PATH + FUNCTION_ACCESSES)))
-            .forEach(a -> {
-                // Get domain entity for the access
-                DomainEntity domainEntity = locationToEntityMap.get(a.getEntityLocation());
-                // Build method
-                Function function = new Function(a.getFunctionId());
-                // Add access
-                accessMap.computeIfAbsent(a.getFunctionId(), k -> new ArrayList<>())
-                    .add(new Access(domainEntity, function, a.getOperation()));
-            });
+        for (FunctionAccesses fa : fileParser.readFunctionAccesses(getFile(FUNCTION_ACCESSES))) {
+            // Get domain entity for the access
+            DomainEntity domainEntity = locationToEntityMap.get(fa.getEntityLocation());
+            // Build method
+            Function function = new Function(fa.getFunctionId());
+            // Add access
+            accessMap.computeIfAbsent(fa.getFunctionId(), k -> new ArrayList<>())
+                    .add(new Access(domainEntity, function, fa.getOperation()));
+        }
     }
 
     protected void addEntitySequenceAccess(String controllerMethod, int id, String mode) {
@@ -329,6 +307,20 @@ public abstract class AbstractStructuralCollector {
             }
         }
         return null;
+    }
+
+    protected File getFile(String fileName) {
+        return new File(JSON_PATH + fileName);
+    }
+
+    protected String getQualifierEntityLocationByCallLocation(String callLocation) {
+        for (CallQualifier cq : fileParser.readCallQualifiers(getFile(CALL_QUALIFIER))) {
+            if (cq.getCallLocation().equals(callLocation)) {
+                return cq.getEntityLocation();
+            }
+        }
+        // Default return value
+        return "";
     }
 
 }

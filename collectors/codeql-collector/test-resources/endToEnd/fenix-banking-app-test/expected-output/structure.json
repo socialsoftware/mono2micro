@@ -1,0 +1,73 @@
+{
+  "entities" : [ {
+    "name" : "Account",
+    "fields" : [ {
+      "name" : "user",
+      "type" : {
+        "name" : "User"
+      }
+    }, {
+      "name" : "relationUserAccounts",
+      "type" : {
+        "name" : "DirectRelation",
+        "parameters" : [ {
+          "name" : "User"
+        }, {
+          "name" : "Account"
+        } ]
+      }
+    }, {
+      "name" : "balance",
+      "type" : {
+        "name" : "Double"
+      }
+    } ],
+    "superclass" : {
+      "name" : "Account_Base"
+    }
+  }, {
+    "name" : "User",
+    "fields" : [ {
+      "name" : "accountsSet",
+      "type" : {
+        "name" : "Set",
+        "parameters" : [ {
+          "name" : "Account"
+        } ]
+      }
+    }, {
+      "name" : "relationRootUsers",
+      "type" : {
+        "name" : "DirectRelation",
+        "parameters" : [ {
+          "name" : "User"
+        }, {
+          "name" : "DomainRoot"
+        } ]
+      }
+    }, {
+      "name" : "name",
+      "type" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "root",
+      "type" : {
+        "name" : "DomainRoot"
+      }
+    }, {
+      "name" : "relationUserAccounts",
+      "type" : {
+        "name" : "DirectRelation",
+        "parameters" : [ {
+          "name" : "User"
+        }, {
+          "name" : "Account"
+        } ]
+      }
+    } ],
+    "superclass" : {
+      "name" : "User_Base"
+    }
+  } ]
+}

@@ -1,6 +1,8 @@
 package collector;
 
 import collector.jpa.queryresults.EntityAttributes;
+import collector.jpa.queryresults.FieldAnnotations;
+import collector.jpa.queryresults.NamedQueries;
 import collector.jpa.queryresults.RepoAccesses;
 import collector.utils.Access;
 import collector.utils.Classes;
@@ -40,30 +42,22 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
 
     @Override
     public void generateIdEntityFiles() {
-        try {
-            super.generateIdEntityFiles();
+        super.generateIdEntityFiles();
 
-            // Read entitySuperclasses file as a list
-            List<EntityAttributes> entityAttributes = fileParser.readEntityAttributes(
-                    mapper.readTree(new File(JSON_PATH + ENTITY_ATTRIBUTES)));
+        // Fill tableClassesAccessed map
+        for (EntityAttributes ea : fileParser.readEntityAttributes(getFile(ENTITY_ATTRIBUTES))) {
+            Classes classes = new Classes();
+            classes.addClass(ea.getEntityName());
+            tableClassesAccessedMap.put(ea.getTableName().toUpperCase(), classes);
 
-            // Fill tableClassesAccessed map
-            for (EntityAttributes ea : entityAttributes) {
-                Classes classes = new Classes();
-                classes.addClass(ea.getEntityName());
-                tableClassesAccessedMap.put(ea.getTableName().toUpperCase(), classes);
+            // Update domain entities
+            DomainEntity de = locationToEntityMap.get(ea.getEntityLocation());
 
-                // Update domain entities
-                DomainEntity de = locationToEntityMap.get(ea.getEntityLocation());
-
-                if (de == null) continue;
-                // Update entity
-                de.setMappedSuperclass(ea.getMappedSuperclass());
-                de.setTableName(ea.getTableName());
-                locationToEntityMap.put(ea.getEntityLocation(), de);
-            }
-        } catch (IOException e) {
-            logger.warning("Error processing JSON files: " + e.getMessage());
+            if (de == null) continue;
+            // Update entity
+            de.setMappedSuperclass(ea.getMappedSuperclass());
+            de.setTableName(ea.getTableName());
+            locationToEntityMap.put(ea.getEntityLocation(), de);
         }
     }
 
@@ -86,35 +80,25 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
 
     @Override
     protected void checkForAccesses(String controllerMethodName, Function m) {
-        try {
-            List<Access> accesses = accessMap.getOrDefault(m.getFunctionId(), new ArrayList<>());
+        List<Access> accesses = accessMap.getOrDefault(m.getFunctionId(), new ArrayList<>());
 
-            for (Access access : accesses) {
-                if (access.getEntity().isMappedSuperclass()) {
-                    String qualifierDomainLocation = fileParser.getQualifierEntityLocationByCallLocation(
-                        mapper.readTree(new File(JSON_PATH + CALL_QUALIFIER)),
-                        m.getCallLocation());
-                    // Register access to domain entity
-                    addEntitySequenceAccess(
-                        controllerMethodName,
-                        locationToEntityMap.get(qualifierDomainLocation).getId(),
-                        access.getMode()
-                    );
-                } else {
-                    addEntitySequenceAccess(controllerMethodName, access.getEntity().getId(), access.getMode());
-                }
+        for (Access access : accesses) {
+            if (access.getEntity().isMappedSuperclass()) {
+                String qualifierDomainLocation = getQualifierEntityLocationByCallLocation(m.getCallLocation());
+                // Register access to domain entity
+                addEntitySequenceAccess(
+                    controllerMethodName,
+                    locationToEntityMap.get(qualifierDomainLocation).getId(),
+                    access.getMode()
+                );
+            } else {
+                addEntitySequenceAccess(controllerMethodName, access.getEntity().getId(), access.getMode());
             }
-        } catch (IOException e) {
-            logger.warning("Error processing JSON files: " + e.getMessage());
         }
     }
 
     private void buildRepoMethodAccesses() throws IOException {
-        // Read repoAccesses as a list
-        List<RepoAccesses> repoAccesses = fileParser.readRepoAccesses(
-                mapper.readTree(new File(JSON_PATH + REPO_ACCESSES)));
-
-        for (RepoAccesses ra : repoAccesses) {
+        for (RepoAccesses ra : fileParser.readRepoAccesses(getFile(REPO_ACCESSES))) {
 
             // Ignore repository methods with accesses already registered
             if (accessMap.containsKey(ra.getFunctionId())) {
@@ -194,36 +178,34 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
     }
 
     private void buildNamedQueriesList() throws IOException {
-        // Read namedQueries file as a list
-        fileParser.readNamedQueries(mapper.readTree(new File(JSON_PATH + NAMED_QUERIES)))
-            .forEach(q -> namedQueriesList.add(new Query(q.getQueryName(), q.getQueryValue(), q.isNative())));
+        for (NamedQueries nq : fileParser.readNamedQueries(getFile(NAMED_QUERIES))) {
+            namedQueriesList.add(new Query(nq.getQueryName(), nq.getQueryValue(), nq.isNative()));
+        }
     }
 
     private void buildTableClassesMap() throws IOException {
-        // Read fieldAnnotations as list
-        fileParser.readFieldAnnotations(mapper.readTree(new File(JSON_PATH + FIELD_ANNOTATIONS)))
-            .forEach(f -> {
-                Classes classes = new Classes();
-                classes.addClass(f.getDeclaringType());
+        for (FieldAnnotations fa : fileParser.readFieldAnnotations(getFile(FIELD_ANNOTATIONS))) {
+            Classes classes = new Classes();
+            classes.addClass(fa.getDeclaringType());
 
-                List<String> typeNames = getTypes(f.getType());
-                for (String type : typeNames) {
-                    classes.addClass(type);
-                }
+            List<String> typeNames = getTypes(fa.getType());
+            for (String type : typeNames) {
+                classes.addClass(type);
+            }
 
-                if (!f.getJoinTable().equals("null")) {
-                    tableClassesAccessedMap.put(f.getJoinTable().toUpperCase(), classes);
-                } else {
-                    String typeForName = typeNames.get(typeNames.size() - 1);
-                    String declaringTypeTableName = locationToEntityMap.get(f.getEntityLocation()).getTableName();
-                    DomainEntity typeEntity = getEntityByName(typeForName);
-                    if (typeEntity != null) {
-                        String typeTableName = typeEntity.getTableName();
-                        String tableName = declaringTypeTableName + "_" + typeTableName;
-                        tableClassesAccessedMap.put(tableName.toUpperCase(), classes);
-                    }
+            if (!fa.getJoinTable().equals("null")) {
+                tableClassesAccessedMap.put(fa.getJoinTable().toUpperCase(), classes);
+            } else {
+                String typeForName = typeNames.get(typeNames.size() - 1);
+                String declaringTypeTableName = locationToEntityMap.get(fa.getEntityLocation()).getTableName();
+                DomainEntity typeEntity = getEntityByName(typeForName);
+                if (typeEntity != null) {
+                    String typeTableName = typeEntity.getTableName();
+                    String tableName = declaringTypeTableName + "_" + typeTableName;
+                    tableClassesAccessedMap.put(tableName.toUpperCase(), classes);
                 }
-            });
+            }
+        }
     }
 
 }

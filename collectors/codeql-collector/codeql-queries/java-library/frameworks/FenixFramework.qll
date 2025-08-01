@@ -121,7 +121,9 @@ predicate callsCallee(Callable callee, Call call) {
 
 predicate callerCallsCallee(CallableFunction caller, CallableFunction callee, Call call) {
   callInsideCaller(caller, call) and
-  callsCallee(callee, call)
+  callsCallee(callee, call) and
+  caller.fromSource() and 
+  caller.getDeclaringType().getFile().getRelativePath().matches("src/main/java/%")
 }
 
 predicate isEndpoint(Method cal) {
