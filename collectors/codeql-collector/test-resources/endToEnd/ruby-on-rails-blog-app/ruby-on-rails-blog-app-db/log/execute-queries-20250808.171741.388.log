@@ -1,0 +1,1664 @@
+[2025-08-08 17:17:41] This is codeql execute queries -J-Xmx1430M --verbosity=progress --logdir=/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-blog-app/ruby-on-rails-blog-app-db/log --evaluator-log-level=5 --warnings=show --additional-packs=/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/ruby-library --qlconfig-file=/home/miguel/m2m/mono2micro/collectors/codeql-collector/qlconfig.yml --output=/home/miguel/m2m/mono2micro/collectors/codeql-collector/json/Endpoints.bqrs -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-blog-app/ruby-on-rails-blog-app-db/db-ruby path:/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql
+[2025-08-08 17:17:41] Calling plumbing command: codeql resolve queries --additional-packs=/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/ruby-library --qlconfig-file=/home/miguel/m2m/mono2micro/collectors/codeql-collector/qlconfig.yml --format=json -- path:/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql
+[2025-08-08 17:17:42] [PROGRESS] resolve queries> Recording pack reference codeql-collector/queries at /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries.
+[2025-08-08 17:17:42] Plumbing command codeql resolve queries completed:
+                      [
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql"
+                      ]
+[2025-08-08 17:17:42] Refusing fancy output: $CODEQL_ISATTY terminal indication is missing
+[2025-08-08 17:17:42] Creating executor with 1 threads.
+[2025-08-08 17:17:42] Calling plumbing command: codeql resolve extensions --additional-packs=/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/ruby-library --qlconfig-file=/home/miguel/m2m/mono2micro/collectors/codeql-collector/qlconfig.yml --include-extension-row-locations path:/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql
+[2025-08-08 17:17:42] Calling plumbing command: codeql resolve queries --additional-packs=/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/ruby-library --qlconfig-file=/home/miguel/m2m/mono2micro/collectors/codeql-collector/qlconfig.yml --allow-library-packs --format startingpacks -- path:/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql
+[2025-08-08 17:17:43] [PROGRESS] resolve queries> Recording pack reference codeql-collector/queries at /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries.
+[2025-08-08 17:17:43] Plumbing command codeql resolve queries completed:
+                      [
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries"
+                      ]
+[2025-08-08 17:17:43] Calling plumbing command: codeql resolve extensions-by-pack --additional-packs=/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/ruby-library --qlconfig-file=/home/miguel/m2m/mono2micro/collectors/codeql-collector/qlconfig.yml --include-extension-row-locations -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql-collector/queries: not 0.0.1 {root: codeql-collector/queries@0.0.1}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql-collector/queries: 0.0.1 {codeql-collector/queries: not 0.0.1 {root: codeql-collector/queries@0.0.1}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql-collector/queries: * [*], codeql-collector/ruby-library: not * [*] {dependency: codeql-collector/queries@* [*] requires codeql-collector/ruby-library@*}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 1] codeql-collector/queries: 0.0.1
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql-collector/ruby-library: * [*] {codeql-collector/queries: * [*], codeql-collector/ruby-library: not * [*] {dependency: codeql-collector/queries@* [*] requires codeql-collector/ruby-library@*}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql-collector/ruby-library: * [*], codeql/ruby-all: not * [*] {dependency: codeql-collector/ruby-library@* [*] requires codeql/ruby-all@*}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 2] codeql-collector/ruby-library: 0.0.1
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/ruby-all: * [*] {codeql-collector/ruby-library: * [*], codeql/ruby-all: not * [*] {dependency: codeql-collector/ruby-library@* [*] requires codeql/ruby-all@*}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/controlflow: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/controlflow@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/dataflow: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/dataflow@1.1.2-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/mad: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/mad@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/regex: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/regex@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/ssa: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/ssa@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/tutorial: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/tutorial@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/util: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 3] codeql/ruby-all: 1.0.8-dev
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/util: * [*] {codeql/ruby-all: * [*], codeql/util: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/util@1.0.8-dev}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/tutorial: * [*] {codeql/ruby-all: * [*], codeql/tutorial: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/tutorial@1.0.8-dev}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/ssa: * [*] {codeql/ruby-all: * [*], codeql/ssa: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/ssa@1.0.8-dev}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/regex: * [*] {codeql/ruby-all: * [*], codeql/regex: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/regex@1.0.8-dev}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/mad: * [*] {codeql/ruby-all: * [*], codeql/mad: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/mad@1.0.8-dev}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/dataflow: * [*] {codeql/ruby-all: * [*], codeql/dataflow: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/dataflow@1.1.2-dev}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/controlflow: * [*] {codeql/ruby-all: * [*], codeql/controlflow: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/controlflow@1.0.8-dev}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/controlflow: * [*], codeql/util: not * [*] {dependency: codeql/controlflow@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 4] codeql/controlflow: 1.0.8-dev
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/dataflow: * [*], codeql/ssa: not * [*] {dependency: codeql/dataflow@* [*] requires codeql/ssa@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/dataflow: * [*], codeql/typetracking: not * [*] {dependency: codeql/dataflow@* [*] requires codeql/typetracking@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/dataflow: * [*], codeql/util: not * [*] {dependency: codeql/dataflow@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 5] codeql/dataflow: 1.1.2-dev
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DERIVATION] codeql/typetracking: * [*] {codeql/dataflow: * [*], codeql/typetracking: not * [*] {dependency: codeql/dataflow@* [*] requires codeql/typetracking@1.0.8-dev}}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/mad: * [*], codeql/util: not * [*] {dependency: codeql/mad@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 6] codeql/mad: 1.0.8-dev
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/regex: * [*], codeql/util: not * [*] {dependency: codeql/regex@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 7] codeql/regex: 1.0.8-dev
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/ssa: * [*], codeql/util: not * [*] {dependency: codeql/ssa@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 8] codeql/ssa: 1.0.8-dev
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 9] codeql/tutorial: 1.0.8-dev
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [INCOMPATIBILITY] codeql/typetracking: * [*], codeql/util: not * [*] {dependency: codeql/typetracking@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 10] codeql/typetracking: 1.0.8-dev
+[2025-08-08 17:17:43] [SPAMMY] resolve extensions-by-pack> [DECISION 11] codeql/util: 1.0.8-dev
+[2025-08-08 17:17:43] [PROGRESS] resolve extensions-by-pack> Loading data extensions in /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.model.yml.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:summaryModel: 2 tuples.
+[2025-08-08 17:17:43] Calling plumbing command: codeql generate extensible-predicate-metadata /home/miguel/codeql-home/codeql-repo/ruby/ql/lib
+[2025-08-08 17:17:43] Calling plumbing command: codeql pack packlist /home/miguel/codeql-home/codeql-repo/ruby/ql/lib --format=json
+[2025-08-08 17:17:43] Calling plumbing command: codeql resolve files --include=**/*.qll --include=**/*.dbscheme --include=**/*.dbscheme.stats --include=**/*.md --include=**/*.qls --include=**/*.qlref --include=**/*.yml --include=**/*.yaml --include=**/upgrade.properties --include=**/*.ql --include=!**/.* --include=!**/qlpack.auth.yml --include=!**/qlconfig.yml --include=!codeql-pack.lock.yml --include=!qlpack.lock.yml --include=!codeql-pack.release.yml --include=!change-notes --include=!**/*.qhelp --include=codeql-pack.yml --include=qlpack.yml --include=LICENSE --include=README.md --include=CHANGELOG.md --include=!**/*.qlx --include=codeql/ruby/frameworks/**/model.yml --include=codeql/ruby/frameworks/**/*.model.yml /home/miguel/codeql-home/codeql-repo/ruby/ql/lib --format=json
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/30e1075bbdc9ce935dbe28dc7175489fe8e69a4c...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/63af05c01bdd6a38f280e41ac0453db52f46989c...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/09a494ce67d8141f28d6411f89b9ff7bdad440f3...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/ff289788b1552e32078788baa27152cc95b68f77...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/8725deeb2fa6627c45235f18b7c121c35498dac7...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/1199e154f5e9b3560297633c6ebb4dfe0b191ae4...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/b5aef9c93ae64f848017d2dcb760eed916ab0cdd...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/initial...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/acae5775e0732c3d5c28428ea7428a7cba5311a5...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/fabe9e179ed1e3d0e45ccfab6ce94b4bab02dee5...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/3595c826de6db850f16b9da265a54dbf24dd3126...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/307ebf14d59930ba903d71d377f6f4129d0a6d22...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/tainttracking1...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actioncontroller...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/internal...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/filters...
+[2025-08-08 17:17:43] [PROGRESS] resolve files> Scanning /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/files...
+[2025-08-08 17:17:43] Plumbing command codeql resolve files completed:
+                      [
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/CHANGELOG.md",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/Customizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/IDEContextual.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/Locations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/files/FileSystem.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/AST.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ApiGraphs.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/CFG.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/Concepts.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/DataFlow.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/DataFlow2.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/Diagnostics.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/Frameworks.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/InclusionTests.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/Regexp.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/StringOps.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/TaintTracking.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Call.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Constant.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Control.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Erb.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Expr.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Literal.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Method.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Module.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Operation.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Parameter.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Pattern.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Scope.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Statement.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Variable.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/AST.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Call.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Constant.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Control.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Erb.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Expr.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Literal.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Method.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Module.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Operation.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Parameter.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Pattern.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Scope.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Synthesis.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/TreeSitter.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Variable.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/BasicBlocks.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/CfgNodes.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/ControlFlowGraph.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/Completion.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/ControlFlowGraphImpl.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/Guards.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/NonReturning.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/Splitting.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/BarrierGuards.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/FlowSteps.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/FlowSummary.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/RemoteFlowSources.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/SSA.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/Sanitizers.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowDispatch.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImpl.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImpl1.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImpl2.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImplCommon.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImplSpecific.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowPrivate.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowPublic.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/FlowSummaryImpl.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/SsaImpl.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/TaintTrackingImplSpecific.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/TaintTrackingPrivate.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/TaintTrackingPublic.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/tainttracking1/TaintTrackingImpl.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/tainttracking1/TaintTrackingParameter.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/Rbi.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/UnicodeBypassValidationCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/UnicodeBypassValidationQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/ZipSlipCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/ZipSlipQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/filters/GeneratedCode.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionCable.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionController.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionDispatch.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionMailbox.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionMailer.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionView.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveJob.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveRecord.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveResource.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.model.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.model.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Archive.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Arel.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Core.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Erb.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Files.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Gemfile.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/GlobalId.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/GraphQL.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/HttpClients.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Json.model.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Jwt.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Ldap.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Mysql2.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Pg.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/PosixSpawn.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Rack.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Rails.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Railties.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Sequel.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Sinatra.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Slim.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Sqlite3.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Stdlib.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/StringFormatters.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Translation.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Twirp.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ViewComponent.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/XmlParsing.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Yaml.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actioncontroller/Filters.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Mime.model.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Mime.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Request.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Routing.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Array.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Base64.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/BasicObject.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Digest.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Gem.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Hash.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/IO.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Kernel.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Module.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Object.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/README.md",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Regexp.model.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/String.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/internal/IOOrFile.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/ModelsAsData.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/ApiGraphModels.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/ApiGraphModelsExtensions.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/ApiGraphModelsSpecific.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/Excon.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/Faraday.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/HttpClient.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/Httparty.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/NetHttp.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/OpenURI.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/RestClient.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/Typhoeus.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/internal/Rails.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal/App.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal/Request.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal/Response.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal/Utils.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Logger.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Open3.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.model.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Process.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/README.md",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/internal/ConceptsImports.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/internal/ConceptsShared.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/printAst.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/RegExpTreeView.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/internal/DebugRegExpConfiguration.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/internal/ParseRegExp.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/internal/RegExpTracking.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CleartextLoggingCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CleartextLoggingQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CleartextStorageCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CleartextStorageQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CodeInjectionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CodeInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CommandInjectionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CommandInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ConditionalBypassCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ConditionalBypassQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CryptoAlgorithms.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HardcodedDataInterpretedAsCodeCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HardcodedDataInterpretedAsCodeQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HttpToFileAccessCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HttpToFileAccessQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HttpToFileAccessSpecific.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ImproperLdapAuthCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ImproperLdapAuthQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ImproperMemoizationQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/IncompleteMultiCharacterSanitizationQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/IncompleteMultiCharacterSanitizationSpecific.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureDependencyQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureDownloadCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureDownloadQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureRandomnessCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureRandomnessQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/KernelOpenQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/LdapInjectionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/LdapInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/LogInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/MassAssignmentCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/MassAssignmentQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/OpenSSL.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/PathInjectionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/PathInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ReflectedXSSQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SensitiveActions.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SensitiveGetQueryCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SensitiveGetQueryQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ServerSideRequestForgeryCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ServerSideRequestForgeryQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SqlInjectionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SqlInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/StackTraceExposureCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/StackTraceExposureQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/StoredXSSQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TaintedFormatStringCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TaintedFormatStringQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TaintedFormatStringSpecific.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TemplateInjectionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TemplateInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeCodeConstructionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeCodeConstructionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeDeserializationCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeDeserializationQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeHtmlConstructionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeHtmlConstructionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeShellCommandConstructionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeShellCommandConstructionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UrlRedirectCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UrlRedirectQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/WeakSensitiveDataHashingCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/WeakSensitiveDataHashingQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/XSS.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/XpathInjectionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/XpathInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/internal/CleartextSources.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/internal/CryptoAlgorithmNames.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/internal/SensitiveDataHeuristics.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/HostnameRegexp.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/MissingFullAnchorCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/MissingFullAnchorQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/PolynomialReDoSCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/PolynomialReDoSQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/RegExpInjectionCustomizations.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/RegExpInjectionQuery.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/ApiGraphShared.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/TypeTracker.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/TypeTrackerSpecific.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/TypeTracking.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/internal/TypeTrackingImpl.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries/localDefinitions.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries/localReferences.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries/printAst.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries/printCfg.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/qlpack.yml",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ruby.dbscheme.stats",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ruby.qll",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/09a494ce67d8141f28d6411f89b9ff7bdad440f3/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/09a494ce67d8141f28d6411f89b9ff7bdad440f3/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/09a494ce67d8141f28d6411f89b9ff7bdad440f3/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/1199e154f5e9b3560297633c6ebb4dfe0b191ae4/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/1199e154f5e9b3560297633c6ebb4dfe0b191ae4/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/1199e154f5e9b3560297633c6ebb4dfe0b191ae4/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/erb_ast_node_info.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/ruby_ast_node_info.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/307ebf14d59930ba903d71d377f6f4129d0a6d22/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/307ebf14d59930ba903d71d377f6f4129d0a6d22/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/307ebf14d59930ba903d71d377f6f4129d0a6d22/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/30e1075bbdc9ce935dbe28dc7175489fe8e69a4c/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/30e1075bbdc9ce935dbe28dc7175489fe8e69a4c/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/30e1075bbdc9ce935dbe28dc7175489fe8e69a4c/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba/ruby_tokeninfo.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/3595c826de6db850f16b9da265a54dbf24dd3126/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/3595c826de6db850f16b9da265a54dbf24dd3126/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/3595c826de6db850f16b9da265a54dbf24dd3126/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3/ruby.dbscheme.stats",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3/empty_location.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/locations_default.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_ast_node_info.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_block_body.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_block_body_child.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_block_body_def.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_body_statement_child.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_body_statement_def.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_class_body.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_do_block_body.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_method_body.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_module_body.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_singleton_class_body.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_singleton_method_body.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_tokeninfo.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/63af05c01bdd6a38f280e41ac0453db52f46989c/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/63af05c01bdd6a38f280e41ac0453db52f46989c/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/63af05c01bdd6a38f280e41ac0453db52f46989c/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/8725deeb2fa6627c45235f18b7c121c35498dac7/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/8725deeb2fa6627c45235f18b7c121c35498dac7/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/8725deeb2fa6627c45235f18b7c121c35498dac7/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_ast_node_info.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_block_parameters_child.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_block_parameters_locals.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_arguments.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_def.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_method.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_operator.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_receiver.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_scope_resolution_def.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_tokeninfo.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/acae5775e0732c3d5c28428ea7428a7cba5311a5/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/acae5775e0732c3d5c28428ea7428a7cba5311a5/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/acae5775e0732c3d5c28428ea7428a7cba5311a5/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/b5aef9c93ae64f848017d2dcb760eed916ab0cdd/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/b5aef9c93ae64f848017d2dcb760eed916ab0cdd/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/b5aef9c93ae64f848017d2dcb760eed916ab0cdd/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463/ruby_tokeninfo.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/ruby_block_argument_child.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/ruby_block_parameter_name.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/ruby_pair_value.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/erb_ast_node_location.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/erb_ast_node_parent.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/ruby_ast_node_location.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/ruby_ast_node_parent.ql",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/fabe9e179ed1e3d0e45ccfab6ce94b4bab02dee5/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/fabe9e179ed1e3d0e45ccfab6ce94b4bab02dee5/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/fabe9e179ed1e3d0e45ccfab6ce94b4bab02dee5/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/ff289788b1552e32078788baa27152cc95b68f77/old.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/ff289788b1552e32078788baa27152cc95b68f77/ruby.dbscheme",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/ff289788b1552e32078788baa27152cc95b68f77/upgrade.properties",
+                        "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/initial/ruby.dbscheme"
+                      ]
+[2025-08-08 17:17:43] Plumbing command codeql pack packlist completed:
+                      {
+                        "paths" : [
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/CHANGELOG.md",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/Customizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/IDEContextual.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/Locations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/files/FileSystem.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/AST.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ApiGraphs.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/CFG.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/Concepts.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/DataFlow.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/DataFlow2.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/Diagnostics.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/Frameworks.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/InclusionTests.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/Regexp.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/StringOps.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/TaintTracking.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Call.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Constant.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Control.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Erb.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Expr.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Literal.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Method.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Module.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Operation.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Parameter.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Pattern.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Scope.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Statement.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/Variable.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/AST.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Call.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Constant.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Control.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Erb.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Expr.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Literal.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Method.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Module.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Operation.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Parameter.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Pattern.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Scope.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Synthesis.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/TreeSitter.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/ast/internal/Variable.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/BasicBlocks.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/CfgNodes.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/ControlFlowGraph.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/Completion.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/ControlFlowGraphImpl.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/Guards.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/NonReturning.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/controlflow/internal/Splitting.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/BarrierGuards.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/FlowSteps.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/FlowSummary.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/RemoteFlowSources.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/SSA.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/Sanitizers.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowDispatch.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImpl.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImpl1.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImpl2.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImplCommon.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowImplSpecific.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowPrivate.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/DataFlowPublic.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/FlowSummaryImpl.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/SsaImpl.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/TaintTrackingImplSpecific.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/TaintTrackingPrivate.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/TaintTrackingPublic.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/tainttracking1/TaintTrackingImpl.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/dataflow/internal/tainttracking1/TaintTrackingParameter.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/Rbi.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/UnicodeBypassValidationCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/UnicodeBypassValidationQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/ZipSlipCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/experimental/ZipSlipQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/filters/GeneratedCode.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionCable.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionController.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionDispatch.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionMailbox.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionMailer.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActionView.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveJob.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveRecord.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveResource.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.model.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.model.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Archive.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Arel.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Core.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Erb.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Files.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Gemfile.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/GlobalId.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/GraphQL.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/HttpClients.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Json.model.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Jwt.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Ldap.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Mysql2.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Pg.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/PosixSpawn.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Rack.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Rails.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Railties.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Sequel.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Sinatra.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Slim.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Sqlite3.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Stdlib.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/StringFormatters.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Translation.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Twirp.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ViewComponent.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/XmlParsing.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Yaml.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actioncontroller/Filters.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Mime.model.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Mime.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Request.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Routing.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Array.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Base64.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/BasicObject.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Digest.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Gem.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Hash.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/IO.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Kernel.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Module.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Object.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/README.md",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Regexp.model.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/String.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/internal/IOOrFile.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/ModelsAsData.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/ApiGraphModels.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/ApiGraphModelsExtensions.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/ApiGraphModelsSpecific.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/Excon.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/Faraday.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/HttpClient.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/Httparty.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/NetHttp.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/OpenURI.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/RestClient.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/http_clients/Typhoeus.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/internal/Rails.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal/App.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal/Request.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal/Response.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/rack/internal/Utils.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Logger.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Open3.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.model.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Process.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/README.md",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/internal/ConceptsImports.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/internal/ConceptsShared.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/printAst.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/RegExpTreeView.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/internal/DebugRegExpConfiguration.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/internal/ParseRegExp.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/regexp/internal/RegExpTracking.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CleartextLoggingCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CleartextLoggingQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CleartextStorageCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CleartextStorageQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CodeInjectionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CodeInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CommandInjectionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CommandInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ConditionalBypassCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ConditionalBypassQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/CryptoAlgorithms.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HardcodedDataInterpretedAsCodeCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HardcodedDataInterpretedAsCodeQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HttpToFileAccessCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HttpToFileAccessQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/HttpToFileAccessSpecific.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ImproperLdapAuthCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ImproperLdapAuthQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ImproperMemoizationQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/IncompleteMultiCharacterSanitizationQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/IncompleteMultiCharacterSanitizationSpecific.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureDependencyQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureDownloadCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureDownloadQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureRandomnessCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/InsecureRandomnessQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/KernelOpenQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/LdapInjectionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/LdapInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/LogInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/MassAssignmentCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/MassAssignmentQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/OpenSSL.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/PathInjectionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/PathInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ReflectedXSSQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SensitiveActions.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SensitiveGetQueryCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SensitiveGetQueryQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ServerSideRequestForgeryCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/ServerSideRequestForgeryQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SqlInjectionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/SqlInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/StackTraceExposureCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/StackTraceExposureQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/StoredXSSQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TaintedFormatStringCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TaintedFormatStringQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TaintedFormatStringSpecific.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TemplateInjectionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/TemplateInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeCodeConstructionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeCodeConstructionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeDeserializationCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeDeserializationQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeHtmlConstructionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeHtmlConstructionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeShellCommandConstructionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UnsafeShellCommandConstructionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UrlRedirectCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/UrlRedirectQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/WeakSensitiveDataHashingCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/WeakSensitiveDataHashingQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/XSS.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/XpathInjectionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/XpathInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/internal/CleartextSources.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/internal/CryptoAlgorithmNames.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/internal/SensitiveDataHeuristics.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/HostnameRegexp.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/MissingFullAnchorCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/MissingFullAnchorQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/PolynomialReDoSCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/PolynomialReDoSQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/RegExpInjectionCustomizations.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/security/regexp/RegExpInjectionQuery.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/ApiGraphShared.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/TypeTracker.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/TypeTrackerSpecific.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/TypeTracking.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/typetracking/internal/TypeTrackingImpl.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries/localDefinitions.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries/localReferences.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries/printAst.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ide-contextual-queries/printCfg.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/qlpack.yml",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ruby.dbscheme.stats",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ruby.qll",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/09a494ce67d8141f28d6411f89b9ff7bdad440f3/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/09a494ce67d8141f28d6411f89b9ff7bdad440f3/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/09a494ce67d8141f28d6411f89b9ff7bdad440f3/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/1199e154f5e9b3560297633c6ebb4dfe0b191ae4/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/1199e154f5e9b3560297633c6ebb4dfe0b191ae4/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/1199e154f5e9b3560297633c6ebb4dfe0b191ae4/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/erb_ast_node_info.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/ruby_ast_node_info.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/24d81950f3ab7e67e14553e1a5111a04e8ae8445/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/307ebf14d59930ba903d71d377f6f4129d0a6d22/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/307ebf14d59930ba903d71d377f6f4129d0a6d22/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/307ebf14d59930ba903d71d377f6f4129d0a6d22/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/30e1075bbdc9ce935dbe28dc7175489fe8e69a4c/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/30e1075bbdc9ce935dbe28dc7175489fe8e69a4c/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/30e1075bbdc9ce935dbe28dc7175489fe8e69a4c/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba/ruby_tokeninfo.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/31a238d080f3dd563d7225fc0458254617d1e5ba/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/3595c826de6db850f16b9da265a54dbf24dd3126/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/3595c826de6db850f16b9da265a54dbf24dd3126/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/3595c826de6db850f16b9da265a54dbf24dd3126/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3/ruby.dbscheme.stats",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/40be81bc2086eb0368f33c770e0a84817bb340c3/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3/empty_location.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/440de75c71e9206ce16eed49a22c76e7889b5fc3/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/locations_default.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_ast_node_info.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_block_body.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_block_body_child.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_block_body_def.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_body_statement_child.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_body_statement_def.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_class_body.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_do_block_body.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_method_body.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_module_body.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_singleton_class_body.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_singleton_method_body.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/ruby_tokeninfo.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/4ba51641799d2aaa315c7323931e2dd2a94c9f9d/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/63af05c01bdd6a38f280e41ac0453db52f46989c/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/63af05c01bdd6a38f280e41ac0453db52f46989c/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/63af05c01bdd6a38f280e41ac0453db52f46989c/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/8725deeb2fa6627c45235f18b7c121c35498dac7/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/8725deeb2fa6627c45235f18b7c121c35498dac7/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/8725deeb2fa6627c45235f18b7c121c35498dac7/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_ast_node_info.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_block_parameters_child.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_block_parameters_locals.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_arguments.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_def.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_method.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_operator.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_call_receiver.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_scope_resolution_def.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/ruby_tokeninfo.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/9fdd1d40fd3c3f8f9db8fabf5a353580d14c663a/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/acae5775e0732c3d5c28428ea7428a7cba5311a5/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/acae5775e0732c3d5c28428ea7428a7cba5311a5/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/acae5775e0732c3d5c28428ea7428a7cba5311a5/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/b5aef9c93ae64f848017d2dcb760eed916ab0cdd/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/b5aef9c93ae64f848017d2dcb760eed916ab0cdd/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/b5aef9c93ae64f848017d2dcb760eed916ab0cdd/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463/ruby_tokeninfo.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f36dd8a35ce55a3b93a178e38a79b8e8cbea7463/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/ruby_block_argument_child.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/ruby_block_parameter_name.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/ruby_pair_value.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f765176af8e0a5128d2adb1ae9c5a6b1c8e7b20b/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/erb_ast_node_location.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/erb_ast_node_parent.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/ruby_ast_node_location.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/ruby_ast_node_parent.ql",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/f9f0f4023e433184fda76f595247bf448b782135/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/fabe9e179ed1e3d0e45ccfab6ce94b4bab02dee5/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/fabe9e179ed1e3d0e45ccfab6ce94b4bab02dee5/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/fabe9e179ed1e3d0e45ccfab6ce94b4bab02dee5/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/ff289788b1552e32078788baa27152cc95b68f77/old.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/ff289788b1552e32078788baa27152cc95b68f77/ruby.dbscheme",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/ff289788b1552e32078788baa27152cc95b68f77/upgrade.properties",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/upgrades/initial/ruby.dbscheme"
+                        ]
+                      }
+[2025-08-08 17:17:43] Plumbing command codeql generate extensible-predicate-metadata completed:
+                      {
+                        "extensible_predicates" : [
+                          {
+                            "name" : "sourceModel",
+                            "parameters" : [
+                              {
+                                "name" : "type",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "path",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "kind",
+                                "type" : "string"
+                              }
+                            ],
+                            "has_origin" : true,
+                            "path" : "codeql/ruby/frameworks/data/internal/ApiGraphModelsExtensions.qll",
+                            "start_line" : 11,
+                            "start_column" : 1,
+                            "end_line" : 13,
+                            "end_column" : 3
+                          },
+                          {
+                            "name" : "sinkModel",
+                            "parameters" : [
+                              {
+                                "name" : "type",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "path",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "kind",
+                                "type" : "string"
+                              }
+                            ],
+                            "has_origin" : true,
+                            "path" : "codeql/ruby/frameworks/data/internal/ApiGraphModelsExtensions.qll",
+                            "start_line" : 19,
+                            "start_column" : 1,
+                            "end_line" : 19,
+                            "end_column" : 102
+                          },
+                          {
+                            "name" : "summaryModel",
+                            "parameters" : [
+                              {
+                                "name" : "type",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "path",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "input",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "output",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "kind",
+                                "type" : "string"
+                              }
+                            ],
+                            "has_origin" : true,
+                            "path" : "codeql/ruby/frameworks/data/internal/ApiGraphModelsExtensions.qll",
+                            "start_line" : 28,
+                            "start_column" : 1,
+                            "end_line" : 30,
+                            "end_column" : 3
+                          },
+                          {
+                            "name" : "neutralModel",
+                            "parameters" : [
+                              {
+                                "name" : "type",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "path",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "kind",
+                                "type" : "string"
+                              }
+                            ],
+                            "has_origin" : false,
+                            "path" : "codeql/ruby/frameworks/data/internal/ApiGraphModelsExtensions.qll",
+                            "start_line" : 37,
+                            "start_column" : 1,
+                            "end_line" : 37,
+                            "end_column" : 74
+                          },
+                          {
+                            "name" : "typeModel",
+                            "parameters" : [
+                              {
+                                "name" : "type1",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "type2",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "path",
+                                "type" : "string"
+                              }
+                            ],
+                            "has_origin" : false,
+                            "path" : "codeql/ruby/frameworks/data/internal/ApiGraphModelsExtensions.qll",
+                            "start_line" : 42,
+                            "start_column" : 1,
+                            "end_line" : 42,
+                            "end_column" : 73
+                          },
+                          {
+                            "name" : "typeVariableModel",
+                            "parameters" : [
+                              {
+                                "name" : "name",
+                                "type" : "string"
+                              },
+                              {
+                                "name" : "path",
+                                "type" : "string"
+                              }
+                            ],
+                            "has_origin" : false,
+                            "path" : "codeql/ruby/frameworks/data/internal/ApiGraphModelsExtensions.qll",
+                            "start_line" : 47,
+                            "start_column" : 1,
+                            "end_line" : 47,
+                            "end_column" : 66
+                          }
+                        ]
+                      }
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:typeModel: 4 tuples.
+[2025-08-08 17:17:43] [PROGRESS] resolve extensions-by-pack> Loading data extensions in /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.model.yml.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:summaryModel: 7 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:typeModel: 1 tuples.
+[2025-08-08 17:17:43] [PROGRESS] resolve extensions-by-pack> Loading data extensions in /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Json.model.yml.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:summaryModel: 2 tuples.
+[2025-08-08 17:17:43] [PROGRESS] resolve extensions-by-pack> Loading data extensions in /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Mime.model.yml.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:typeModel: 5 tuples.
+[2025-08-08 17:17:43] [PROGRESS] resolve extensions-by-pack> Loading data extensions in /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Regexp.model.yml.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:summaryModel: 1 tuples.
+[2025-08-08 17:17:43] [PROGRESS] resolve extensions-by-pack> Loading data extensions in /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:sourceModel: 0 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:sinkModel: 0 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:summaryModel: 0 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:neutralModel: 0 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:typeModel: 0 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:typeVariableModel: 0 tuples.
+[2025-08-08 17:17:43] [PROGRESS] resolve extensions-by-pack> Loading data extensions in /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.model.yml.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:summaryModel: 13 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:typeModel: 11 tuples.
+[2025-08-08 17:17:43] [PROGRESS] resolve extensions-by-pack> Loading data extensions in /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:sourceModel: 0 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:sinkModel: 2 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:summaryModel: 3 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:neutralModel: 0 tuples.
+[2025-08-08 17:17:43] [DETAILS] resolve extensions-by-pack>   Found extension targeting codeql/ruby-all:typeModel: 11 tuples.
+[2025-08-08 17:17:43] Plumbing command codeql resolve extensions-by-pack completed:
+                      {
+                        "models" : [ ],
+                        "data" : {
+                          "/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries" : [
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 0,
+                              "rowCount" : 2,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=6+1",
+                                "columnNumbers" : "A=9*2"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.model.yml",
+                              "index" : 1,
+                              "firstRowId" : 2,
+                              "rowCount" : 4,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=14+2*3",
+                                "columnNumbers" : "A=9*4"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 6,
+                              "rowCount" : 7,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=16+2*2+1*4",
+                                "columnNumbers" : "A=9*7"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.model.yml",
+                              "index" : 1,
+                              "firstRowId" : 13,
+                              "rowCount" : 1,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=30",
+                                "columnNumbers" : "A=9"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Json.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 14,
+                              "rowCount" : 2,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=9+1",
+                                "columnNumbers" : "A=9*2"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Mime.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 16,
+                              "rowCount" : 5,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=6+1*4",
+                                "columnNumbers" : "A=9*5"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Regexp.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 21,
+                              "rowCount" : 1,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=6",
+                                "columnNumbers" : "A=9"
+                              }
+                            },
+                            {
+                              "predicate" : "sourceModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "sinkModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 1,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 2,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "neutralModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 3,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 4,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "typeVariableModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 5,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 22,
+                              "rowCount" : 13,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=6+1*12",
+                                "columnNumbers" : "A=9*13"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.model.yml",
+                              "index" : 1,
+                              "firstRowId" : 35,
+                              "rowCount" : 11,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=24+1*10",
+                                "columnNumbers" : "A=9*11"
+                              }
+                            },
+                            {
+                              "predicate" : "sourceModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 0,
+                              "firstRowId" : 46,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "sinkModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 1,
+                              "firstRowId" : 46,
+                              "rowCount" : 2,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=11+1",
+                                "columnNumbers" : "A=9*2"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 2,
+                              "firstRowId" : 48,
+                              "rowCount" : 3,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=18+1*2",
+                                "columnNumbers" : "A=9*3"
+                              }
+                            },
+                            {
+                              "predicate" : "neutralModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 3,
+                              "firstRowId" : 51,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 4,
+                              "firstRowId" : 51,
+                              "rowCount" : 11,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=31+1*10",
+                                "columnNumbers" : "A=9*11"
+                              }
+                            }
+                          ]
+                        },
+                        "threatModels" : { },
+                        "extensionPacks" : [ ]
+                      }
+[2025-08-08 17:17:43] Plumbing command codeql resolve extensions completed:
+                      {
+                        "models" : [ ],
+                        "data" : {
+                          "/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries" : [
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 0,
+                              "rowCount" : 2,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=6+1",
+                                "columnNumbers" : "A=9*2"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveStorage.model.yml",
+                              "index" : 1,
+                              "firstRowId" : 2,
+                              "rowCount" : 4,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=14+2*3",
+                                "columnNumbers" : "A=9*4"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 6,
+                              "rowCount" : 7,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=16+2*2+1*4",
+                                "columnNumbers" : "A=9*7"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/ActiveSupport.model.yml",
+                              "index" : 1,
+                              "firstRowId" : 13,
+                              "rowCount" : 1,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=30",
+                                "columnNumbers" : "A=9"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/Json.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 14,
+                              "rowCount" : 2,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=9+1",
+                                "columnNumbers" : "A=9*2"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/actiondispatch/internal/Mime.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 16,
+                              "rowCount" : 5,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=6+1*4",
+                                "columnNumbers" : "A=9*5"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/core/Regexp.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 21,
+                              "rowCount" : 1,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=6",
+                                "columnNumbers" : "A=9"
+                              }
+                            },
+                            {
+                              "predicate" : "sourceModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "sinkModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 1,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 2,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "neutralModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 3,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 4,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "typeVariableModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/data/internal/empty.model.yml",
+                              "index" : 5,
+                              "firstRowId" : 22,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.model.yml",
+                              "index" : 0,
+                              "firstRowId" : 22,
+                              "rowCount" : 13,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=6+1*12",
+                                "columnNumbers" : "A=9*13"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/stdlib/Pathname.model.yml",
+                              "index" : 1,
+                              "firstRowId" : 35,
+                              "rowCount" : 11,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=24+1*10",
+                                "columnNumbers" : "A=9*11"
+                              }
+                            },
+                            {
+                              "predicate" : "sourceModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 0,
+                              "firstRowId" : 46,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "sinkModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 1,
+                              "firstRowId" : 46,
+                              "rowCount" : 2,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=11+1",
+                                "columnNumbers" : "A=9*2"
+                              }
+                            },
+                            {
+                              "predicate" : "summaryModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 2,
+                              "firstRowId" : 48,
+                              "rowCount" : 3,
+                              "predicateHasOrigin" : true,
+                              "locations" : {
+                                "lineNumbers" : "A=18+1*2",
+                                "columnNumbers" : "A=9*3"
+                              }
+                            },
+                            {
+                              "predicate" : "neutralModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 3,
+                              "firstRowId" : 51,
+                              "rowCount" : 0,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A",
+                                "columnNumbers" : "A"
+                              }
+                            },
+                            {
+                              "predicate" : "typeModel",
+                              "file" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/codeql/ruby/frameworks/terrapin/model.yml",
+                              "index" : 4,
+                              "firstRowId" : 51,
+                              "rowCount" : 11,
+                              "predicateHasOrigin" : false,
+                              "locations" : {
+                                "lineNumbers" : "A=31+1*10",
+                                "columnNumbers" : "A=9*11"
+                              }
+                            }
+                          ]
+                        },
+                        "threatModels" : { },
+                        "extensionPacks" : [ ]
+                      }
+[2025-08-08 17:17:44] Calling plumbing command: codeql resolve library-path --additional-packs=/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/ruby-library --qlconfig-file=/home/miguel/m2m/mono2micro/collectors/codeql-collector/qlconfig.yml --query=/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql --format=json
+[2025-08-08 17:17:44] [DETAILS] resolve library-path> Resolving query at normalized path /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql.
+[2025-08-08 17:17:44] [DETAILS] resolve library-path> Found enclosing pack 'codeql-collector/queries' at /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries.
+[2025-08-08 17:17:44] [DETAILS] resolve library-path> Adding compilation cache at /home/miguel/.codeql/compile-cache.
+[2025-08-08 17:17:44] [DETAILS] resolve library-path> Resolving library dependencies from /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/qlpack.yml.
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql-collector/queries: not 0.0.1 {root: codeql-collector/queries@0.0.1}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql-collector/queries: 0.0.1 {codeql-collector/queries: not 0.0.1 {root: codeql-collector/queries@0.0.1}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql-collector/queries: * [*], codeql-collector/ruby-library: not * [*] {dependency: codeql-collector/queries@* [*] requires codeql-collector/ruby-library@*}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 1] codeql-collector/queries: 0.0.1
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql-collector/ruby-library: * [*] {codeql-collector/queries: * [*], codeql-collector/ruby-library: not * [*] {dependency: codeql-collector/queries@* [*] requires codeql-collector/ruby-library@*}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql-collector/ruby-library: * [*], codeql/ruby-all: not * [*] {dependency: codeql-collector/ruby-library@* [*] requires codeql/ruby-all@*}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 2] codeql-collector/ruby-library: 0.0.1
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/ruby-all: * [*] {codeql-collector/ruby-library: * [*], codeql/ruby-all: not * [*] {dependency: codeql-collector/ruby-library@* [*] requires codeql/ruby-all@*}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/controlflow: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/controlflow@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/dataflow: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/dataflow@1.1.2-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/mad: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/mad@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/regex: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/regex@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/ssa: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/ssa@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/tutorial: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/tutorial@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/ruby-all: * [*], codeql/util: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 3] codeql/ruby-all: 1.0.8-dev
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/util: * [*] {codeql/ruby-all: * [*], codeql/util: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/util@1.0.8-dev}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/tutorial: * [*] {codeql/ruby-all: * [*], codeql/tutorial: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/tutorial@1.0.8-dev}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/ssa: * [*] {codeql/ruby-all: * [*], codeql/ssa: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/ssa@1.0.8-dev}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/regex: * [*] {codeql/ruby-all: * [*], codeql/regex: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/regex@1.0.8-dev}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/mad: * [*] {codeql/ruby-all: * [*], codeql/mad: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/mad@1.0.8-dev}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/dataflow: * [*] {codeql/ruby-all: * [*], codeql/dataflow: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/dataflow@1.1.2-dev}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/controlflow: * [*] {codeql/ruby-all: * [*], codeql/controlflow: not * [*] {dependency: codeql/ruby-all@* [*] requires codeql/controlflow@1.0.8-dev}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/controlflow: * [*], codeql/util: not * [*] {dependency: codeql/controlflow@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 4] codeql/controlflow: 1.0.8-dev
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/dataflow: * [*], codeql/ssa: not * [*] {dependency: codeql/dataflow@* [*] requires codeql/ssa@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/dataflow: * [*], codeql/typetracking: not * [*] {dependency: codeql/dataflow@* [*] requires codeql/typetracking@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/dataflow: * [*], codeql/util: not * [*] {dependency: codeql/dataflow@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 5] codeql/dataflow: 1.1.2-dev
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DERIVATION] codeql/typetracking: * [*] {codeql/dataflow: * [*], codeql/typetracking: not * [*] {dependency: codeql/dataflow@* [*] requires codeql/typetracking@1.0.8-dev}}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/mad: * [*], codeql/util: not * [*] {dependency: codeql/mad@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 6] codeql/mad: 1.0.8-dev
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/regex: * [*], codeql/util: not * [*] {dependency: codeql/regex@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 7] codeql/regex: 1.0.8-dev
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/ssa: * [*], codeql/util: not * [*] {dependency: codeql/ssa@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 8] codeql/ssa: 1.0.8-dev
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 9] codeql/tutorial: 1.0.8-dev
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [INCOMPATIBILITY] codeql/typetracking: * [*], codeql/util: not * [*] {dependency: codeql/typetracking@* [*] requires codeql/util@1.0.8-dev}
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 10] codeql/typetracking: 1.0.8-dev
+[2025-08-08 17:17:44] [SPAMMY] resolve library-path> [DECISION 11] codeql/util: 1.0.8-dev
+[2025-08-08 17:17:44] [DETAILS] resolve library-path> QL pack dependencies for /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries resolved OK.
+[2025-08-08 17:17:44] [DETAILS] resolve library-path> Found dbscheme through QL packs: /home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ruby.dbscheme.
+[2025-08-08 17:17:44] Plumbing command codeql resolve library-path completed:
+                      {
+                        "libraryPath" : [
+                          "/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries",
+                          "/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/ruby-library",
+                          "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib",
+                          "/home/miguel/codeql-home/codeql-repo/shared/controlflow",
+                          "/home/miguel/codeql-home/codeql-repo/shared/dataflow",
+                          "/home/miguel/codeql-home/codeql-repo/shared/mad",
+                          "/home/miguel/codeql-home/codeql-repo/shared/regex",
+                          "/home/miguel/codeql-home/codeql-repo/shared/ssa",
+                          "/home/miguel/codeql-home/codeql-repo/shared/tutorial",
+                          "/home/miguel/codeql-home/codeql-repo/shared/typetracking",
+                          "/home/miguel/codeql-home/codeql-repo/shared/util"
+                        ],
+                        "dbscheme" : "/home/miguel/codeql-home/codeql-repo/ruby/ql/lib/ruby.dbscheme",
+                        "compilationCache" : [
+                          "/home/miguel/.codeql/compile-cache"
+                        ],
+                        "relativeName" : "codeql-collector/queries/Endpoints.ql",
+                        "qlPackName" : "codeql-collector/queries"
+                      }
+[2025-08-08 17:17:44] [PROGRESS] execute queries> Compiling query plan for /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql.
+[2025-08-08 17:17:44] [DETAILS] execute queries> Resolving imports for /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql.
+[2025-08-08 17:17:45] Resolved file set for /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql hashes to f902bbd96a1a683dea0bafe8334e7025d0e9a62b.
+[2025-08-08 17:17:46] [DETAILS] execute queries> Compilation cache hit for /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql.
+[2025-08-08 17:17:46] [SPAMMY] execute queries> No database upgrade/downgrade needed for /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql
+[2025-08-08 17:17:47] [PROGRESS] execute queries> [1/1] Found in cache: /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql.
+[2025-08-08 17:17:47] [PROGRESS] execute queries> Starting evaluation of codeql-collector/queries/Endpoints.ql.
+[2025-08-08 17:17:47] Starting evaluation of /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql
+[2025-08-08 17:17:47] (0s) Start query execution
+[2025-08-08 17:17:47] (0s) Beginning execution of Endpoints.ql
+[2025-08-08 17:17:47] (0s) Inferred that AST::THashSplatParameter#24da1e54_10#join_rhs/2@9afd25gc is empty, due to AST::THashSplatParameter#24da1e54/2@afcb44bc.
+[2025-08-08 17:17:47] (0s) Inferred that AST::TSplatParameter#d7677a5a_10#join_rhs/2@f6daa973 is empty, due to AST::TSplatParameter#d7677a5a/2@912e3cjs.
+[2025-08-08 17:17:47] (0s) Inferred that AST::TSimpleParameterSynth#a766b428_2#join_rhs/1@5fdae3o9 is empty, due to AST::TSimpleParameterSynth#a766b428/3@4cde98l9.
+[2025-08-08 17:17:47] (0s) Inferred that _AST::TSubshellLiteral#523015cf_Literal::StringlikeLiteralImpl#class#31c77a8b#shared/2@041f5dtr is empty, due to AST::TSubshellLiteral#523015cf/2@89706dsl.
+[2025-08-08 17:17:47] (0s) Inferred that AST::THashPattern#daa17171_10#join_rhs/2@f497a0pe is empty, due to AST::THashPattern#daa17171/2@ff96bcn5.
+[2025-08-08 17:17:47] (0s) Inferred that Pattern::HashPattern#8e12f256/2@752f2wrh is empty, due to AST::THashPattern#daa17171_10#join_rhs/2@f497a0pe.
+[2025-08-08 17:17:47] (0s) Inferred that Parameter::BlockParameter.getName/0#dispred#490491c9/2@4b79315f is empty, due to AST::TBlockParameter#88087ba4/2@e103be3k.
+[2025-08-08 17:17:47] (0s) Inferred that Parameter::BlockParameter.getName/0#dispred#490491c9_0#antijoin_rhs/1@50ea64m7 is empty, due to Parameter::BlockParameter.getName/0#dispred#490491c9/2@4b79315f.
+[2025-08-08 17:17:47] (0s) Inferred that Constant::ConstantWriteAccessSynth.hasGlobalScope/0#dispred#844877d5/1@b316d533 is empty, due to AST::TConstantWriteAccessSynth#c07cf704/4@9372695f.
+[2025-08-08 17:17:47] (0s) Inferred that Literal::getMethodName/1#3c3885a2#bf/2@da854em4 is empty, due to AST::TTokenMethodName#494a2736/2@624c397d.
+[2025-08-08 17:17:47] (0s) Inferred that AST::TRangeLiteralSynth#808df811_23#join_rhs/2@021f96tn is empty, due to AST::TRangeLiteralSynth#808df811/4@77828cr5.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_end_block_def/1@68f43eau with 0 rows and digest THIS-RELATION-HAS-NO-TUPLES.
+[2025-08-08 17:17:47] (0s) Inferred that AST::TEndBlock#fa7e98fb/2@f6a8e9vl is empty, due to ruby_end_block_def/1@68f43eau.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_do_block_def/1@d9b09cv8 with 157 rows and digest 2dcb8fbb11lf0af3qqc5n71bfvd.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_block_def/1@844acco8 with 7 rows and digest 7b8d07btt72ra3jenn9hb5l51k2.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_lambda_def/2@2dcf30p9 with 1 rows and digest 583c96vbfkjlv1vijgtmi27th9b.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_singleton_method_def/3@a38924in with 2 rows and digest c284d79bsj8n8gmoqvactc33hn1.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_method_def/2@f3b8b0k6 with 96 rows and digest 9f9a18vqm7ki6uqopli5ap39pk8.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_program_def/1@b4282fk9 with 110 rows and digest 26e86e0tnthvhb4bmn0noqevbee.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_singleton_class_def/2@85bf50g2 with 0 rows and digest THIS-RELATION-HAS-NO-TUPLES.
+[2025-08-08 17:17:47] (0s) Inferred that AST::TSingletonClass#dom#5dc16981/1@790d015i is empty, due to ruby_singleton_class_def/2@85bf50g2.
+[2025-08-08 17:17:47] (0s) Inferred that AST::TSingletonClass#42d9dc69/2@2964057g is empty, due to AST::TSingletonClass#dom#5dc16981/1@790d015i.
+[2025-08-08 17:17:47] (0s) Inferred that Module::SingletonClass#a81354e7/2@de88eeli is empty, due to AST::TSingletonClass#42d9dc69/2@2964057g.
+[2025-08-08 17:17:47] (0s) Inferred that Module::SingletonClass.getValue/0#dispred#bec2ec18/2@aa962f56 is empty, due to Module::SingletonClass#a81354e7/2@de88eeli.
+[2025-08-08 17:17:47] (0s) Inferred that Module::SingletonClass#a81354e7_0#antijoin_rhs/1@d8e426in is empty, due to Module::SingletonClass#a81354e7/2@de88eeli.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_module_def/2@1f77bef9 with 11 rows and digest 3ff12ad77b84jgvha5kkch9vsu0.
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_class_def/2@0bf4d3e6 with 69 rows and digest 0233dd0ngrbnviooibhlpaimrk9.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate ruby_lambda_def_1#antijoin_rhs/1@656d5d3q
+[2025-08-08 17:17:47] (0s)  >>> Created relation ruby_lambda_def_1#antijoin_rhs/1@656d5d3q with 1 rows and digest fc51a2ncs3fg3gu9us7pkr0pc25.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate Scope::TScopeReal#902c3cb0/1@c4d0c99o
+[2025-08-08 17:17:47] (0s)  >>> Created relation Scope::TScopeReal#902c3cb0/1@c4d0c99o with 262 rows and digest 124e6e4cfu6tnckkbbun5i6ednf.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate AST::toGenerated/1#cdfffa43_10#join_rhs/2@d6c81dil
+[2025-08-08 17:17:47] (0s)  >>> Created relation AST::toGenerated/1#cdfffa43_10#join_rhs/2@d6c81dil with 7080 rows and digest de2948ej8ps3gpj1b4cd7ffdq6e.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate Scope::Scope::TypeRange#7651bd26/1@68745b0u
+[2025-08-08 17:17:47] (0s)  >>> Created relation Scope::Scope::TypeRange#7651bd26/1@68745b0u with 453 rows and digest 57c0644hliom586katg2lkhb43d.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate Method::Callable#ce5dd8a5/1@dff8cdou
+[2025-08-08 17:17:47] (0s)  >>> Created relation Method::Callable#ce5dd8a5/1@dff8cdou with 262 rows and digest 124e6e4cfu6tnckkbbun5i6ednf.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate RubyOnRails::isEndpoint/1#e473aa5b/1@b82a60ue
+[2025-08-08 17:17:47] (0s)  >>> Created relation RubyOnRails::isEndpoint/1#e473aa5b/1@b82a60ue with 68 rows and digest cf88behi3er48qtc7hi525lb2j7.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate RubyOnRails::CallableFunction.getFullName/0#dispred#fa47df5c/2@e3e7ddmj
+[2025-08-08 17:17:47] (0s)  >>> Created relation RubyOnRails::CallableFunction.getFullName/0#dispred#fa47df5c/2@e3e7ddmj with 262 rows and digest 711d97vh775f1o07dvb5b7ntvpb.
+[2025-08-08 17:17:47] (0s)  >>> Created relation locations_default/6@541b30r8 with 15032 rows and digest 4322b4c1gbvbunompjp9ahucga8.
+[2025-08-08 17:17:47] (0s)  >>> Created relation files/2@1ebcd3es with 111 rows and digest 573fdcq2a1rf205em34t6dakh1f.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate Locations::Location.hasLocationInfo/5#dispred#f4b9395f/6@b89e011h
+[2025-08-08 17:17:47] (0s)  >>> Created relation Locations::Location.hasLocationInfo/5#dispred#f4b9395f/6@b89e011h with 15032 rows and digest 1a2ebd998epu0lsaqb5rdqb09ec.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate Locations::Location.hasLocationInfo/5#dispred#f4b9395f_0#antijoin_rhs/1@eb4887r9
+[2025-08-08 17:17:47] (0s)  >>> Created relation Locations::Location.hasLocationInfo/5#dispred#f4b9395f_0#antijoin_rhs/1@eb4887r9 with 15032 rows and digest 4e8f97quu7v700h11j9081flvib.
+[2025-08-08 17:17:47] (0s) Starting to evaluate predicate #select#query/8@c993240m
+[2025-08-08 17:17:47] (0s)  >>> Created relation #select#query/8@c993240m with 68 rows and digest e729d4i2nirjdc7dmhrrh93ptd4.
+[2025-08-08 17:17:47] (0s) Query done
+[2025-08-08 17:17:47] (0s) Sequence stamp origin is -6017636318667826043
+[2025-08-08 17:17:47] (0s) Pausing evaluation to sync to disk at sequence stamp o+0
+[2025-08-08 17:17:47] (0s) Unpausing evaluation
+[2025-08-08 17:17:47] Evaluation of /home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Endpoints.ql produced BQRS results.
+[2025-08-08 17:17:47] [PROGRESS] execute queries> [1/1 eval 714ms] Evaluation done; writing results to /home/miguel/m2m/mono2micro/collectors/codeql-collector/json/Endpoints.bqrs.
+[2025-08-08 17:17:47] [PROGRESS] execute queries> Shutting down query evaluator.
+[2025-08-08 17:17:47] Pausing evaluation to close the cache at sequence stamp o+1
+[2025-08-08 17:17:47] The disk cache is freshly trimmed; leave it be.
+[2025-08-08 17:17:47] Unpausing evaluation
+[2025-08-08 17:17:47] Exiting with code 0

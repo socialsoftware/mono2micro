@@ -1,0 +1,38 @@
+{
+  "SessionsController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 3 ] ]
+    } ]
+  },
+  "TasksController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 3 ] ]
+    } ]
+  },
+  "TasksController.destroy" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 3 ] ]
+    } ]
+  },
+  "UsersController.show" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 3 ] ]
+    } ]
+  },
+  "UsersController.new" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "W", 3 ] ]
+    } ]
+  },
+  "UsersController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "W", 3 ] ]
+    } ]
+  }
+}

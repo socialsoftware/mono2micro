@@ -1,0 +1,143 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+body {
+  padding-top: 65px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.home, .contact, .about, .login, .signup {
+  letter-spacing: -1px;
+  font-weight: bold;
+}
+
+// navigation bar
+.navbar {
+  background-color: #303F9F;
+  padding: 10px;
+}
+
+section {
+  overflow: auto;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.center {
+  text-align: center;
+  h1 {
+    font-size: 3em;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 1em;
+    margin-bottom: 35px;
+  }
+}
+
+/* header */
+
+#logo {
+  float: left;
+  color: #ffffff;
+  font-size: 2em;
+  font-weight: bold;
+  letter-spacing: -1px;
+  padding-top: 4px;
+  &:hover {
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.image-source {
+  text-align: center;
+}
+
+/* footer */
+
+footer {
+  margin-top: 45px;
+  padding-top: 5px;
+  border-top: 1px solid #303F9F;
+  color: #777;
+  small {
+    float: left;
+  }
+  ul {
+    float: right;
+    list-style: none;
+    li {
+      float: left;
+      margin-left: 15px;
+    }
+  }
+  a {
+    color: #555;
+    &:hover {
+      color: #222;
+    }
+  }
+}
+
+/* Debugging */
+
+@mixin box_sizing {
+  -moz-box-sizing:    border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing:         border-box;
+}
+
+.debug_dump {
+  clear: both;
+  float: left;
+  width: 100%;
+  margin-top: 45px;
+  @include box_sizing;
+}
+
+/* forms */
+
+input, textarea, select, .uneditable-input {
+  border: 1px solid #bbb;
+  width: 100%;
+  margin-bottom: 15px;
+  @include box_sizing;
+}
+
+input {
+  height: auto !important;
+}
+
+#error_explanation {
+  color: red;
+  ul {
+    color: red;
+    margin: 0 0 30px 0;
+  }
+}
+
+.field_with_errors {
+  @extend .has-error;
+  .form-control {
+    color: $state-danger-text;
+  }
+}
+
+/* buttons */
+
+.task-submit {
+  max-width: 100px;
+}
+
+.destroy-button {
+  float: right;
+}

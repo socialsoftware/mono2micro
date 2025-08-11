@@ -1,0 +1,6 @@
+{
+  "1" : "ApplicationRecord",
+  "2" : "Micropost",
+  "3" : "Relationship",
+  "4" : "User"
+}

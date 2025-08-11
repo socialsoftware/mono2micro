@@ -24,6 +24,7 @@ public class ConfigurationManager {
             case "0" -> config.setProperties(ProjectProperties.SPRING_DATA_JPA);
             case "1" -> config.setProperties(ProjectProperties.FENIX_FRAMEWORK);
             case "2" -> config.setProperties(ProjectProperties.DJANGO);
+            case "3" -> config.setProperties(ProjectProperties.RUBY_ON_RAILS);
             default -> {
                 logger.severe("ORM option " + args[0] + " is not valid");
                 System.exit(1);

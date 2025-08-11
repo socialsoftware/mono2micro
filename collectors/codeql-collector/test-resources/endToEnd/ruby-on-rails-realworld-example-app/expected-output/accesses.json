@@ -1,0 +1,38 @@
+{
+  "CommentsController.index" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 3 ] ]
+    } ]
+  },
+  "TagsController.index" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "ArticlesController.feed" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 2 ] ]
+    } ]
+  },
+  "ArticlesController.index" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 2 ] ]
+    } ]
+  },
+  "ApplicationController.authorize_request" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 5 ] ]
+    } ]
+  },
+  "UsersController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "W", 5 ] ]
+    } ]
+  }
+}

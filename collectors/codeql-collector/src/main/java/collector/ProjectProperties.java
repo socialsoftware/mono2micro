@@ -4,12 +4,15 @@ import static collector.Constants.JAVA;
 import static collector.Constants.JAVA_LIBRARY;
 import static collector.Constants.PYTHON;
 import static collector.Constants.PYTHON_LIBRARY;
+import static collector.Constants.RUBY;
+import static collector.Constants.RUBY_LIBRARY;
 
 public enum ProjectProperties {
 
     SPRING_DATA_JPA("codeql-queries/spring-data-jpa/", JAVA_LIBRARY, JAVA, "SpringDataJPA"),
     FENIX_FRAMEWORK("codeql-queries/fenix-framework/", JAVA_LIBRARY, JAVA, "FenixFramework"),
-    DJANGO("", PYTHON_LIBRARY, PYTHON, "Django");
+    DJANGO("", PYTHON_LIBRARY, PYTHON, "Django"),
+    RUBY_ON_RAILS("", RUBY_LIBRARY, RUBY, "RubyOnRails");
 
     private final String specificFolderPath;
     private final String languageLibraryPath;

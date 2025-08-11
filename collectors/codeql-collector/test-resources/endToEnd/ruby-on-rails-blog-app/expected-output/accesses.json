@@ -1,0 +1,128 @@
+{
+  "UsersController.followers" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "PasswordResetsController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "ApplicationController.logged_in_user" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "UsersController.update" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "UsersController.correct_user" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "AccountActivationsController.edit" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "StaticPagesController.home" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 4 ], [ "R", 4 ], [ "R", 4 ], [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "UsersController.show" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "UsersController.following" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "SessionsController.destroy" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 4 ], [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "UsersController.admin_user" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "MicropostsController.correct_user" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "UsersController.edit" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "RelationshipsController.destroy" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 3 ], [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "RelationshipsController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "SessionsController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "PasswordResetsController.get_user" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "MicropostsController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ], [ "R", 4 ], [ "R", 4 ], [ "R", 4 ] ]
+    } ]
+  },
+  "UsersController.new" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "W", 4 ] ]
+    } ]
+  },
+  "UsersController.destroy" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "R", 4 ] ]
+    } ]
+  },
+  "UsersController.create" : {
+    "t" : [ {
+      "id" : 0,
+      "a" : [ [ "W", 4 ] ]
+    } ]
+  }
+}

@@ -12,10 +12,12 @@ public class Constants {
     // LANGUAGES
     public static final String JAVA = "java";
     public static final String PYTHON = "python";
+    public static final String RUBY = "ruby";
 
     // LANGUAGE LIBRARY PATHS
     public static final String JAVA_LIBRARY = "codeql-queries/java-library/";
     public static final String PYTHON_LIBRARY = "codeql-queries/python-library/";
+    public static final String RUBY_LIBRARY = "codeql-queries/ruby-library/";
 
     // FILE NAMES
     public static final String ENTITYTOID = "entityToID.json";

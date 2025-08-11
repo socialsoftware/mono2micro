@@ -1,0 +1,27 @@
+{
+  "entities" : [ {
+    "name" : "Employee",
+    "fields" : [ {
+      "name" : "firstName",
+      "type" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "id",
+      "type" : {
+        "name" : "long"
+      }
+    }, {
+      "name" : "email",
+      "type" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "lastName",
+      "type" : {
+        "name" : "String"
+      }
+    } ],
+    "superclass" : null
+  } ]
+}

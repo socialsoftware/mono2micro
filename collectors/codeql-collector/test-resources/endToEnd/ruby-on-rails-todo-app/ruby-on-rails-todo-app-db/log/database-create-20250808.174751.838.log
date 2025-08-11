@@ -1,0 +1,615 @@
+[2025-08-08 17:47:51] This is codeql database create --language=ruby --source-root=. -- ruby-on-rails-todo-app-db
+[2025-08-08 17:47:51] Log file was started late.
+[2025-08-08 17:47:51] [PROGRESS] database create> Initializing database at /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db.
+[2025-08-08 17:47:51] Running plumbing command: codeql database init --language=ruby --extractor-options-verbosity=1 --qlconfig-file=/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/qlconfig.yml --source-root=/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app --allow-missing-source-root=false --allow-already-existing -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db
+[2025-08-08 17:47:51] Calling plumbing command: codeql resolve languages --extractor-options-verbosity=1 --format=betterjson
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Scanning for [codeql-extractor.yml] from /home/miguel/codeql-home/codeql/.codeqlmanifest.json
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/cpp/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/html/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/yaml/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/javascript/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/swift/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/properties/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/java/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/xml/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/csv/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/go/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/ruby/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/python/codeql-extractor.yml.
+[2025-08-08 17:47:52] [DETAILS] resolve languages> Parsing /home/miguel/codeql-home/codeql/csharp/codeql-extractor.yml.
+[2025-08-08 17:47:52] Plumbing command codeql resolve languages completed:
+                      {
+                        "aliases" : {
+                          "c" : "cpp",
+                          "c++" : "cpp",
+                          "c-c++" : "cpp",
+                          "c-cpp" : "cpp",
+                          "c#" : "csharp",
+                          "java-kotlin" : "java",
+                          "kotlin" : "java",
+                          "javascript-typescript" : "javascript",
+                          "typescript" : "javascript"
+                        },
+                        "extractors" : {
+                          "cpp" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/cpp",
+                              "extractor_options" : { }
+                            }
+                          ],
+                          "html" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/html"
+                            }
+                          ],
+                          "yaml" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/yaml"
+                            }
+                          ],
+                          "javascript" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/javascript",
+                              "extractor_options" : {
+                                "skip_types" : {
+                                  "title" : "Skip type extraction for TypeScript",
+                                  "description" : "Whether to skip the extraction of types in a TypeScript application",
+                                  "type" : "string",
+                                  "pattern" : "^(false|true)$"
+                                }
+                              }
+                            }
+                          ],
+                          "swift" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/swift"
+                            }
+                          ],
+                          "properties" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/properties"
+                            }
+                          ],
+                          "java" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/java",
+                              "extractor_options" : {
+                                "exclude" : {
+                                  "title" : "A glob excluding files from analysis.",
+                                  "description" : "A glob indicating what files to exclude from the analysis.\n",
+                                  "type" : "string"
+                                },
+                                "add_prefer_source" : {
+                                  "title" : "Whether to always prefer source files over class files.",
+                                  "description" : "A value indicating whether source files should be preferred over class files. If set to 'true', the extraction adds '-Xprefer:source' to the javac command line. If set to 'false', the extraction uses the default javac behavior ('-Xprefer:newer'). The default is 'true'.\n",
+                                  "type" : "string",
+                                  "pattern" : "^(false|true)$"
+                                },
+                                "buildless" : {
+                                  "title" : "Whether to use buildless (standalone) extraction (experimental).",
+                                  "description" : "A value indicating, which type of extraction the autobuilder should perform. If 'true', then the standalone extractor will be used, otherwise tracing extraction will be performed. The default is 'false'. Note that buildless extraction will generally yield less accurate analysis results, and should only be used in cases where it is not possible to build the code (for example if it uses inaccessible dependencies).\n",
+                                  "type" : "string",
+                                  "pattern" : "^(false|true)$"
+                                }
+                              }
+                            }
+                          ],
+                          "xml" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/xml"
+                            }
+                          ],
+                          "csv" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/csv"
+                            }
+                          ],
+                          "go" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/go"
+                            }
+                          ],
+                          "ruby" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/ruby",
+                              "extractor_options" : {
+                                "trap" : {
+                                  "title" : "Options pertaining to TRAP.",
+                                  "description" : "Options pertaining to TRAP.",
+                                  "type" : "object",
+                                  "properties" : {
+                                    "compression" : {
+                                      "title" : "Controls compression for the TRAP files written by the extractor.",
+                                      "description" : "This option is only intended for use in debugging the extractor. Accepted values are 'gzip' (the default, to write gzip-compressed TRAP) and 'none' (to write uncompressed TRAP).\n",
+                                      "type" : "string",
+                                      "pattern" : "^(none|gzip)$"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ],
+                          "python" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/python",
+                              "extractor_options" : {
+                                "logging" : {
+                                  "title" : "Options pertaining to logging.",
+                                  "description" : "Options pertaining to logging.",
+                                  "type" : "object",
+                                  "properties" : {
+                                    "verbosity" : {
+                                      "title" : "Python extractor logging verbosity level.",
+                                      "description" : "Controls the level of verbosity of the CodeQL Python extractor.\nThe supported levels are (in order of increasing verbosity):\n\n  - off\n  - errors\n  - warnings\n  - info or progress\n  - debug or progress+\n  - trace or progress++\n  - progress+++\n",
+                                      "type" : "string",
+                                      "pattern" : "^(off|errors|warnings|(info|progress)|(debug|progress\\+)|(trace|progress\\+\\+)|progress\\+\\+\\+)$"
+                                    }
+                                  }
+                                },
+                                "python_executable_name" : {
+                                  "title" : "Controls the name of the Python executable used by the Python extractor.",
+                                  "description" : "The Python extractor uses platform-dependent heuristics to determine the name of the Python executable to use. Specifying a value for this option overrides the name of the Python executable used by the extractor. Accepted values are py, python and python3. Use this setting with caution, the Python extractor requires Python 3 to run.\n",
+                                  "type" : "string",
+                                  "pattern" : "^(py|python|python3)$"
+                                }
+                              }
+                            }
+                          ],
+                          "csharp" : [
+                            {
+                              "extractor_root" : "/home/miguel/codeql-home/codeql/csharp",
+                              "extractor_options" : {
+                                "trap" : {
+                                  "title" : "Options pertaining to TRAP.",
+                                  "description" : "Options pertaining to TRAP.",
+                                  "type" : "object",
+                                  "properties" : {
+                                    "compression" : {
+                                      "title" : "Controls compression for the TRAP files written by the extractor.",
+                                      "description" : "This option is only intended for use in debugging the extractor. Accepted values are 'brotli' (the default, to write brotli-compressed TRAP), 'gzip', and 'none' (to write uncompressed TRAP).\n",
+                                      "type" : "string",
+                                      "pattern" : "^(none|gzip|brotli)$"
+                                    }
+                                  }
+                                },
+                                "buildless" : {
+                                  "title" : "DEPRECATED - Whether to use buildless (standalone) extraction.",
+                                  "description" : "DEPRECATED: Use `--build-mode none` instead.\nA value indicating, which type of extraction the autobuilder should perform. If 'true', then the standalone extractor will be used, otherwise tracing extraction will be performed. The default is 'false'. Note that buildless extraction will generally yield less accurate analysis results, and should only be used in cases where it is not possible to build the code (for example if it uses inaccessible dependencies).\n",
+                                  "type" : "string",
+                                  "pattern" : "^(false|true)$"
+                                },
+                                "logging" : {
+                                  "title" : "Options pertaining to logging.",
+                                  "description" : "Options pertaining to logging.",
+                                  "type" : "object",
+                                  "properties" : {
+                                    "verbosity" : {
+                                      "title" : "Extractor logging verbosity level.",
+                                      "description" : "Controls the level of verbosity of the extractor. The supported levels are (in order of increasing verbosity):\n  - off\n  - errors\n  - warnings\n  - info or progress\n  - debug or progress+\n  - trace or progress++\n  - progress+++\n",
+                                      "type" : "string",
+                                      "pattern" : "^(off|errors|warnings|(info|progress)|(debug|progress\\+)|(trace|progress\\+\\+)|progress\\+\\+\\+)$"
+                                    }
+                                  }
+                                },
+                                "binlog" : {
+                                  "title" : "Binlog",
+                                  "description" : "[EXPERIMENTAL] The value is a path to the MsBuild binary log file that should be extracted. This option only works when `--build-mode none` is also specified.\n",
+                                  "type" : "string"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+[2025-08-08 17:47:52] [PROGRESS] database init> Calculating baseline information in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app
+[2025-08-08 17:47:52] [SPAMMY] database init> Ignoring the following directories when processing baseline information: .git, .hg, .svn.
+[2025-08-08 17:47:52] [DETAILS] database init> Running command in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app: /home/miguel/codeql-home/codeql/tools/linux64/scc --by-file --exclude-dir .git,.hg,.svn --format json --no-large --no-min .
+[2025-08-08 17:47:52] Using configure-baseline script /home/miguel/codeql-home/codeql/javascript/tools/configure-baseline.sh.
+[2025-08-08 17:47:52] [PROGRESS] database init> Running command in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app: [/home/miguel/codeql-home/codeql/javascript/tools/configure-baseline.sh]
+[2025-08-08 17:47:52] [SPAMMY] database init> Found 57 baseline files for ruby.
+[2025-08-08 17:47:52] [SPAMMY] database init> Found 3 baseline files for javascript.
+[2025-08-08 17:47:52] [PROGRESS] database init> Calculated baseline information for languages: javascript, ruby (170ms).
+[2025-08-08 17:47:53] [PROGRESS] database init> Resolving extractor ruby.
+[2025-08-08 17:47:53] [DETAILS] database init> Found candidate extractor root for ruby: /home/miguel/codeql-home/codeql/ruby.
+[2025-08-08 17:47:53] [PROGRESS] database init> Successfully loaded extractor Ruby (ruby) from /home/miguel/codeql-home/codeql/ruby.
+[2025-08-08 17:47:53] [PROGRESS] database init> Created skeleton CodeQL database at /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db. This in-progress database is ready to be populated by an extractor.
+[2025-08-08 17:47:53] Plumbing command codeql database init completed.
+[2025-08-08 17:47:53] [PROGRESS] database create> Running build command: []
+[2025-08-08 17:47:53] Running plumbing command: codeql database trace-command --working-dir=/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app --index-traceless-dbs --no-db-cluster -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db
+[2025-08-08 17:47:53] Using autobuild script /home/miguel/codeql-home/codeql/ruby/tools/autobuild.sh.
+[2025-08-08 17:47:53] [PROGRESS] database trace-command> Running command in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app: [/home/miguel/codeql-home/codeql/ruby/tools/autobuild.sh]
+[2025-08-08 17:47:54] [build-stderr] Scanning for files in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app...
+[2025-08-08 17:47:54] [build-stderr] /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db: Indexing files in in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app...
+[2025-08-08 17:47:54] [build-stderr] Running command in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app: [/home/miguel/codeql-home/codeql/ruby/tools/index-files.sh, /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/working/files-to-index3056827396777533185.list]
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/Gemfile
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/application_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/boot.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/sessions_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/task.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/channels/application_cable/connection.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/application_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/spring.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/static_pages_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environment.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/tasks_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/channels/application_cable/channel.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/development.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707202537_create_users.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/static_pages_controller_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/users_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/user.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/sessions_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/static_pages_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707204541_add_index_to_users_email.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/tasks_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/users_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160708063117_create_tasks.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707205045_add_password_digest_to_users.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_footer.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_footer.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/users_login_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/schema.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/jobs/application_job.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/seeds.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/tasks_controller_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/sessions_controller_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_header.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/users_controller_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_header.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/production.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/cookies_serializer.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/site_layout_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.text.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.text.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/users_signup_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/filter_parameter_logging.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_rails_default.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_rails_default.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/application.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/sessions/new.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/inflections.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/application.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/mailers/application_mailer.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/sessions/new.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/mime_types.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_shim.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_shim.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/new_framework_defaults.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/models/task_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/session_store.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/application_controller_renderer.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/assets.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/models/user_test.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/backtrace_silencers.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/application_record.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/contact.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/contact.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/new.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/new.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/shared/_error_messages.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/shared/_error_messages.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/home.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/home.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/test_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/wrap_parameters.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/puma.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/about.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/about.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/show.html.erb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/application.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/routes.rb
+[2025-08-08 17:47:54] [build-stdout] [2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/show.html.erb
+[2025-08-08 17:47:54] Plumbing command codeql database trace-command completed.
+[2025-08-08 17:47:54] [PROGRESS] database create> Finalizing database at /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db.
+[2025-08-08 17:47:54] Running plumbing command: codeql database finalize --no-db-cluster -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db
+[2025-08-08 17:47:54] [PROGRESS] database finalize> Running TRAP import for CodeQL database at /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db...
+[2025-08-08 17:47:54] Running plumbing command: codeql dataset import --dbscheme=/home/miguel/codeql-home/codeql/ruby/ruby.dbscheme -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/db-ruby /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/trap/ruby
+[2025-08-08 17:47:54] Clearing disk cache since the version file /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/db-ruby/default/cache/version does not exist
+[2025-08-08 17:47:54] Tuple pool not found. Clearing relations with cached strings
+[2025-08-08 17:47:54] Trimming disk cache at /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/db-ruby/default/cache in mode clear.
+[2025-08-08 17:47:54] Sequence stamp origin is -6017628534818574954
+[2025-08-08 17:47:54] Pausing evaluation to hard-clear memory at sequence stamp o+0
+[2025-08-08 17:47:54] Unpausing evaluation
+[2025-08-08 17:47:54] Pausing evaluation to quickly trim disk at sequence stamp o+1
+[2025-08-08 17:47:54] Unpausing evaluation
+[2025-08-08 17:47:54] Pausing evaluation to zealously trim disk at sequence stamp o+2
+[2025-08-08 17:47:55] Unpausing evaluation
+[2025-08-08 17:47:55] Trimming completed (18ms): Purged everything.
+[2025-08-08 17:47:55] Scanning for files in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/trap/ruby
+[2025-08-08 17:47:55] Found 69 TRAP files (272.03 KiB)
+[2025-08-08 17:47:55] [PROGRESS] dataset import> Importing TRAP files
+[2025-08-08 17:47:55] Importing extras.trap.gz (1 of 69)
+[2025-08-08 17:47:55] Importing Gemfile.trap.gz (2 of 69)
+[2025-08-08 17:47:55] Importing channel.rb.trap.gz (3 of 69)
+[2025-08-08 17:47:55] Importing connection.rb.trap.gz (4 of 69)
+[2025-08-08 17:47:55] Importing application_controller.rb.trap.gz (5 of 69)
+[2025-08-08 17:47:55] Importing sessions_controller.rb.trap.gz (6 of 69)
+[2025-08-08 17:47:55] Importing static_pages_controller.rb.trap.gz (7 of 69)
+[2025-08-08 17:47:55] Importing tasks_controller.rb.trap.gz (8 of 69)
+[2025-08-08 17:47:55] Importing users_controller.rb.trap.gz (9 of 69)
+[2025-08-08 17:47:55] Importing application_helper.rb.trap.gz (10 of 69)
+[2025-08-08 17:47:55] Importing sessions_helper.rb.trap.gz (11 of 69)
+[2025-08-08 17:47:55] Importing static_pages_helper.rb.trap.gz (12 of 69)
+[2025-08-08 17:47:55] Importing tasks_helper.rb.trap.gz (13 of 69)
+[2025-08-08 17:47:55] Importing users_helper.rb.trap.gz (14 of 69)
+[2025-08-08 17:47:55] Importing application_job.rb.trap.gz (15 of 69)
+[2025-08-08 17:47:55] Importing application_mailer.rb.trap.gz (16 of 69)
+[2025-08-08 17:47:55] Importing application_record.rb.trap.gz (17 of 69)
+[2025-08-08 17:47:55] Importing task.rb.trap.gz (18 of 69)
+[2025-08-08 17:47:55] Importing user.rb.trap.gz (19 of 69)
+[2025-08-08 17:47:55] Importing _footer.html.erb.trap.gz (20 of 69)
+[2025-08-08 17:47:55] Importing _header.html.erb.trap.gz (21 of 69)
+[2025-08-08 17:47:55] Importing _rails_default.html.erb.trap.gz (22 of 69)
+[2025-08-08 17:47:55] Importing _shim.html.erb.trap.gz (23 of 69)
+[2025-08-08 17:47:55] Importing application.html.erb.trap.gz (24 of 69)
+[2025-08-08 17:47:55] Importing mailer.html.erb.trap.gz (25 of 69)
+[2025-08-08 17:47:55] Importing mailer.text.erb.trap.gz (26 of 69)
+[2025-08-08 17:47:55] Importing new.html.erb.trap.gz (27 of 69)
+[2025-08-08 17:47:55] Importing _error_messages.html.erb.trap.gz (28 of 69)
+[2025-08-08 17:47:55] Importing about.html.erb.trap.gz (29 of 69)
+[2025-08-08 17:47:55] Importing contact.html.erb.trap.gz (30 of 69)
+[2025-08-08 17:47:55] Importing home.html.erb.trap.gz (31 of 69)
+[2025-08-08 17:47:55] Importing new.html.erb.trap.gz (32 of 69)
+[2025-08-08 17:47:55] Importing show.html.erb.trap.gz (33 of 69)
+[2025-08-08 17:47:55] Importing application.rb.trap.gz (34 of 69)
+[2025-08-08 17:47:55] Importing boot.rb.trap.gz (35 of 69)
+[2025-08-08 17:47:55] Importing environment.rb.trap.gz (36 of 69)
+[2025-08-08 17:47:55] Importing development.rb.trap.gz (37 of 69)
+[2025-08-08 17:47:55] Importing production.rb.trap.gz (38 of 69)
+[2025-08-08 17:47:55] Importing test.rb.trap.gz (39 of 69)
+[2025-08-08 17:47:55] Importing application_controller_renderer.rb.trap.gz (40 of 69)
+[2025-08-08 17:47:55] Importing assets.rb.trap.gz (41 of 69)
+[2025-08-08 17:47:55] Importing backtrace_silencers.rb.trap.gz (42 of 69)
+[2025-08-08 17:47:55] Importing cookies_serializer.rb.trap.gz (43 of 69)
+[2025-08-08 17:47:55] Importing filter_parameter_logging.rb.trap.gz (44 of 69)
+[2025-08-08 17:47:55] Importing inflections.rb.trap.gz (45 of 69)
+[2025-08-08 17:47:55] Importing mime_types.rb.trap.gz (46 of 69)
+[2025-08-08 17:47:55] Importing new_framework_defaults.rb.trap.gz (47 of 69)
+[2025-08-08 17:47:55] Importing session_store.rb.trap.gz (48 of 69)
+[2025-08-08 17:47:55] Importing wrap_parameters.rb.trap.gz (49 of 69)
+[2025-08-08 17:47:55] Importing puma.rb.trap.gz (50 of 69)
+[2025-08-08 17:47:55] Importing routes.rb.trap.gz (51 of 69)
+[2025-08-08 17:47:55] Importing spring.rb.trap.gz (52 of 69)
+[2025-08-08 17:47:55] Importing 20160707202537_create_users.rb.trap.gz (53 of 69)
+[2025-08-08 17:47:55] Importing 20160707204541_add_index_to_users_email.rb.trap.gz (54 of 69)
+[2025-08-08 17:47:55] Importing 20160707205045_add_password_digest_to_users.rb.trap.gz (55 of 69)
+[2025-08-08 17:47:55] Importing 20160708063117_create_tasks.rb.trap.gz (56 of 69)
+[2025-08-08 17:47:55] Importing schema.rb.trap.gz (57 of 69)
+[2025-08-08 17:47:55] Importing seeds.rb.trap.gz (58 of 69)
+[2025-08-08 17:47:55] Importing sessions_controller_test.rb.trap.gz (59 of 69)
+[2025-08-08 17:47:55] Importing static_pages_controller_test.rb.trap.gz (60 of 69)
+[2025-08-08 17:47:55] Importing tasks_controller_test.rb.trap.gz (61 of 69)
+[2025-08-08 17:47:55] Importing users_controller_test.rb.trap.gz (62 of 69)
+[2025-08-08 17:47:55] Importing site_layout_test.rb.trap.gz (63 of 69)
+[2025-08-08 17:47:55] Importing users_login_test.rb.trap.gz (64 of 69)
+[2025-08-08 17:47:55] Importing users_signup_test.rb.trap.gz (65 of 69)
+[2025-08-08 17:47:55] Importing task_test.rb.trap.gz (66 of 69)
+[2025-08-08 17:47:55] Importing user_test.rb.trap.gz (67 of 69)
+[2025-08-08 17:47:55] Importing test_helper.rb.trap.gz (68 of 69)
+[2025-08-08 17:47:55] Importing sourceLocationPrefix.trap.gz (69 of 69)
+[2025-08-08 17:47:55] [PROGRESS] dataset import> Merging relations
+[2025-08-08 17:47:55] Merging 1 fragment for 'files'.
+[2025-08-08 17:47:55] Merged 544 bytes for 'files'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'locations_default'.
+[2025-08-08 17:47:55] Merged 122832 bytes (119.95 KiB) for 'locations_default'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'empty_location'.
+[2025-08-08 17:47:55] Merged 4 bytes for 'empty_location'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'containerparent'.
+[2025-08-08 17:47:55] Merged 792 bytes for 'containerparent'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'folders'.
+[2025-08-08 17:47:55] Merged 264 bytes for 'folders'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_ast_node_location'.
+[2025-08-08 17:47:55] Merged 39240 bytes (38.32 KiB) for 'ruby_ast_node_location'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_ast_node_parent'.
+[2025-08-08 17:47:55] Merged 55884 bytes (54.57 KiB) for 'ruby_ast_node_parent'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_tokeninfo'.
+[2025-08-08 17:47:55] Merged 39204 bytes (38.29 KiB) for 'ruby_tokeninfo'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_string_child'.
+[2025-08-08 17:47:55] Merged 2904 bytes (2.84 KiB) for 'ruby_string_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_string_def'.
+[2025-08-08 17:47:55] Merged 972 bytes for 'ruby_string_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_argument_list_child'.
+[2025-08-08 17:47:55] Merged 4872 bytes (4.76 KiB) for 'ruby_argument_list_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_argument_list_def'.
+[2025-08-08 17:47:55] Merged 1080 bytes (1.05 KiB) for 'ruby_argument_list_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_call_arguments'.
+[2025-08-08 17:47:55] Merged 2152 bytes (2.10 KiB) for 'ruby_call_arguments'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_call_method'.
+[2025-08-08 17:47:55] Merged 3760 bytes (3.67 KiB) for 'ruby_call_method'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_call_def'.
+[2025-08-08 17:47:55] Merged 1880 bytes (1.84 KiB) for 'ruby_call_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_pair_value'.
+[2025-08-08 17:47:55] Merged 824 bytes for 'ruby_pair_value'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_pair_def'.
+[2025-08-08 17:47:55] Merged 824 bytes for 'ruby_pair_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_body_statement_child'.
+[2025-08-08 17:47:55] Merged 3456 bytes (3.38 KiB) for 'ruby_body_statement_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_body_statement_def'.
+[2025-08-08 17:47:55] Merged 380 bytes for 'ruby_body_statement_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_do_block_body'.
+[2025-08-08 17:47:55] Merged 360 bytes for 'ruby_do_block_body'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_do_block_def'.
+[2025-08-08 17:47:55] Merged 180 bytes for 'ruby_do_block_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_call_block'.
+[2025-08-08 17:47:55] Merged 376 bytes for 'ruby_call_block'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_array_child'.
+[2025-08-08 17:47:55] Merged 156 bytes for 'ruby_array_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_array_def'.
+[2025-08-08 17:47:55] Merged 32 bytes for 'ruby_array_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_program_child'.
+[2025-08-08 17:47:55] Merged 1548 bytes (1.51 KiB) for 'ruby_program_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_program_def'.
+[2025-08-08 17:47:55] Merged 268 bytes for 'ruby_program_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_scope_resolution_scope'.
+[2025-08-08 17:47:55] Merged 280 bytes for 'ruby_scope_resolution_scope'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_scope_resolution_def'.
+[2025-08-08 17:47:55] Merged 288 bytes for 'ruby_scope_resolution_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_superclass_def'.
+[2025-08-08 17:47:55] Merged 208 bytes for 'ruby_superclass_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_class_superclass'.
+[2025-08-08 17:47:55] Merged 208 bytes for 'ruby_class_superclass'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_class_def'.
+[2025-08-08 17:47:55] Merged 216 bytes for 'ruby_class_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_module_body'.
+[2025-08-08 17:47:55] Merged 48 bytes for 'ruby_module_body'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_module_def'.
+[2025-08-08 17:47:55] Merged 64 bytes for 'ruby_module_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_class_body'.
+[2025-08-08 17:47:55] Merged 168 bytes for 'ruby_class_body'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_method_def'.
+[2025-08-08 17:47:55] Merged 208 bytes for 'ruby_method_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_element_reference_child'.
+[2025-08-08 17:47:55] Merged 300 bytes for 'ruby_element_reference_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_element_reference_def'.
+[2025-08-08 17:47:55] Merged 200 bytes for 'ruby_element_reference_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_call_operator'.
+[2025-08-08 17:47:55] Merged 2000 bytes (1.95 KiB) for 'ruby_call_operator'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_call_receiver'.
+[2025-08-08 17:47:55] Merged 2000 bytes (1.95 KiB) for 'ruby_call_receiver'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_assignment_def'.
+[2025-08-08 17:47:55] Merged 1044 bytes (1.02 KiB) for 'ruby_assignment_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_binary_def'.
+[2025-08-08 17:47:55] Merged 192 bytes for 'ruby_binary_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_then_child'.
+[2025-08-08 17:47:55] Merged 204 bytes for 'ruby_then_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_then_def'.
+[2025-08-08 17:47:55] Merged 32 bytes for 'ruby_then_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_else_child'.
+[2025-08-08 17:47:55] Merged 84 bytes for 'ruby_else_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_else_def'.
+[2025-08-08 17:47:55] Merged 24 bytes for 'ruby_else_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_if_alternative'.
+[2025-08-08 17:47:55] Merged 48 bytes for 'ruby_if_alternative'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_if_consequence'.
+[2025-08-08 17:47:55] Merged 64 bytes for 'ruby_if_consequence'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_if_def'.
+[2025-08-08 17:47:55] Merged 64 bytes for 'ruby_if_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_method_body'.
+[2025-08-08 17:47:55] Merged 176 bytes for 'ruby_method_body'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_optional_parameter_def'.
+[2025-08-08 17:47:55] Merged 12 bytes for 'ruby_optional_parameter_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_method_parameters_child'.
+[2025-08-08 17:47:55] Merged 48 bytes for 'ruby_method_parameters_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_method_parameters_def'.
+[2025-08-08 17:47:55] Merged 16 bytes for 'ruby_method_parameters_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_method_parameters'.
+[2025-08-08 17:47:55] Merged 24 bytes for 'ruby_method_parameters'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_operator_assignment_def'.
+[2025-08-08 17:47:55] Merged 64 bytes for 'ruby_operator_assignment_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_unary_def'.
+[2025-08-08 17:47:55] Merged 24 bytes for 'ruby_unary_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_interpolation_child'.
+[2025-08-08 17:47:55] Merged 24 bytes for 'ruby_interpolation_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_interpolation_def'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_interpolation_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_hash_child'.
+[2025-08-08 17:47:55] Merged 324 bytes for 'ruby_hash_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_hash_def'.
+[2025-08-08 17:47:55] Merged 76 bytes for 'ruby_hash_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_block_body_child'.
+[2025-08-08 17:47:55] Merged 24 bytes for 'ruby_block_body_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_block_body_def'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_block_body_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_block_body'.
+[2025-08-08 17:47:55] Merged 16 bytes for 'ruby_block_body'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_block_def'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_block_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_regex_child'.
+[2025-08-08 17:47:55] Merged 144 bytes for 'ruby_regex_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_regex_def'.
+[2025-08-08 17:47:55] Merged 4 bytes for 'ruby_regex_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_conditional_def'.
+[2025-08-08 17:47:55] Merged 16 bytes for 'ruby_conditional_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_singleton_method_body'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_singleton_method_body'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_singleton_method_parameters'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_singleton_method_parameters'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_singleton_method_def'.
+[2025-08-08 17:47:55] Merged 12 bytes for 'ruby_singleton_method_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_ast_node_location'.
+[2025-08-08 17:47:55] Merged 3200 bytes (3.12 KiB) for 'erb_ast_node_location'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_ast_node_parent'.
+[2025-08-08 17:47:55] Merged 4632 bytes (4.52 KiB) for 'erb_ast_node_parent'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_tokeninfo'.
+[2025-08-08 17:47:55] Merged 3720 bytes (3.63 KiB) for 'erb_tokeninfo'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_output_directive_child'.
+[2025-08-08 17:47:55] Merged 432 bytes for 'erb_output_directive_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_output_directive_def'.
+[2025-08-08 17:47:55] Merged 216 bytes for 'erb_output_directive_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_template_child'.
+[2025-08-08 17:47:55] Merged 1896 bytes (1.85 KiB) for 'erb_template_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_template_def'.
+[2025-08-08 17:47:55] Merged 56 bytes for 'erb_template_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_directive_child'.
+[2025-08-08 17:47:55] Merged 176 bytes for 'erb_directive_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'erb_directive_def'.
+[2025-08-08 17:47:55] Merged 88 bytes for 'erb_directive_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_yield_child'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_yield_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_yield_def'.
+[2025-08-08 17:47:55] Merged 16 bytes for 'ruby_yield_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_block_parameters_child'.
+[2025-08-08 17:47:55] Merged 156 bytes for 'ruby_block_parameters_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_block_parameters_def'.
+[2025-08-08 17:47:55] Merged 48 bytes for 'ruby_block_parameters_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_do_block_parameters'.
+[2025-08-08 17:47:55] Merged 88 bytes for 'ruby_do_block_parameters'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_if_modifier_def'.
+[2025-08-08 17:47:55] Merged 12 bytes for 'ruby_if_modifier_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_splat_argument_child'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_splat_argument_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_splat_argument_def'.
+[2025-08-08 17:47:55] Merged 4 bytes for 'ruby_splat_argument_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_bare_string_child'.
+[2025-08-08 17:47:55] Merged 108 bytes for 'ruby_bare_string_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_bare_string_def'.
+[2025-08-08 17:47:55] Merged 36 bytes for 'ruby_bare_string_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_string_array_child'.
+[2025-08-08 17:47:55] Merged 108 bytes for 'ruby_string_array_child'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_string_array_def'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_string_array_def'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'ruby_block_parameters'.
+[2025-08-08 17:47:55] Merged 8 bytes for 'ruby_block_parameters'.
+[2025-08-08 17:47:55] Merging 1 fragment for 'sourceLocationPrefix'.
+[2025-08-08 17:47:55] Merged 4 bytes for 'sourceLocationPrefix'.
+[2025-08-08 17:47:55] Saving string and id pools to disk.
+[2025-08-08 17:47:55] Finished importing TRAP files.
+[2025-08-08 17:47:55] Read 984.67 KiB of uncompressed TRAP data.
+[2025-08-08 17:47:55] Relation data size: 301.57 KiB (merge rate: 3.33 MiB/s)
+[2025-08-08 17:47:55] String pool size: 2.06 MiB
+[2025-08-08 17:47:55] ID pool size: 1.02 MiB
+[2025-08-08 17:47:55] [PROGRESS] dataset import> Finished writing database (relations: 301.57 KiB; string pool: 2.06 MiB).
+[2025-08-08 17:47:55] Pausing evaluation to close the cache at sequence stamp o+3
+[2025-08-08 17:47:55] The disk cache is freshly trimmed; leave it be.
+[2025-08-08 17:47:55] Unpausing evaluation
+[2025-08-08 17:47:55] Plumbing command codeql dataset import completed.
+[2025-08-08 17:47:55] [PROGRESS] database finalize> TRAP import complete (1.2s).
+[2025-08-08 17:47:55] Running plumbing command: codeql database cleanup -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db
+[2025-08-08 17:47:56] [PROGRESS] database cleanup> Cleaning up existing TRAP files after import...
+[2025-08-08 17:47:56] [PROGRESS] database cleanup> TRAP files cleaned up (9ms).
+[2025-08-08 17:47:56] [PROGRESS] database cleanup> Cleaning up scratch directory...
+[2025-08-08 17:47:56] [PROGRESS] database cleanup> Scratch directory cleaned up (0ms).
+[2025-08-08 17:47:56] Running plumbing command: codeql dataset cleanup -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/db-ruby
+[2025-08-08 17:47:56] [PROGRESS] dataset cleanup> Cleaning up dataset in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/db-ruby.
+[2025-08-08 17:47:56] Trimming disk cache at /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/db-ruby/default/cache in mode trim.
+[2025-08-08 17:47:56] Sequence stamp origin is -6017628530115269424
+[2025-08-08 17:47:56] Pausing evaluation to quickly trim memory at sequence stamp o+0
+[2025-08-08 17:47:56] Unpausing evaluation
+[2025-08-08 17:47:56] Pausing evaluation to zealously trim disk at sequence stamp o+1
+[2025-08-08 17:47:56] Unpausing evaluation
+[2025-08-08 17:47:56] Trimming completed (3ms): Trimmed disposable data from cache.
+[2025-08-08 17:47:56] Pausing evaluation to close the cache at sequence stamp o+2
+[2025-08-08 17:47:56] The disk cache is freshly trimmed; leave it be.
+[2025-08-08 17:47:56] Unpausing evaluation
+[2025-08-08 17:47:56] [PROGRESS] dataset cleanup> Trimmed disposable data from cache.
+[2025-08-08 17:47:56] [PROGRESS] dataset cleanup> Finalizing dataset in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/db-ruby
+[2025-08-08 17:47:56] [DETAILS] dataset cleanup> Finished deleting ID pool from /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/db-ruby (2ms).
+[2025-08-08 17:47:56] Plumbing command codeql dataset cleanup completed.
+[2025-08-08 17:47:56] Plumbing command codeql database cleanup completed with status 0.
+[2025-08-08 17:47:56] [PROGRESS] database finalize> Finished zipping source archive (39.65 KiB).
+[2025-08-08 17:47:56] Plumbing command codeql database finalize completed.
+[2025-08-08 17:47:56] [PROGRESS] database create> Successfully created database at /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db.
+[2025-08-08 17:47:56] Terminating normally.

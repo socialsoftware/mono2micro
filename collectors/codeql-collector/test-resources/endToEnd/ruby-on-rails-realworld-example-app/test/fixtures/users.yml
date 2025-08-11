@@ -1,0 +1,7 @@
+one:
+  username: John
+  email: john@email.com
+  password_digest: secret
+  image: http://img.jpg
+  bio: Once upon a time
+  

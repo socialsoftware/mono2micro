@@ -1,0 +1,216 @@
+[2025-08-08 17:47:54] This is codeql database index-files --verbosity=progress --include-extension=.rb --include-extension=.erb --include-extension=.gemspec --include=**/Gemfile --exclude=**/.git --size-limit=5m --language=ruby --working-dir=. /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db
+[2025-08-08 17:47:54] Log file was started late.
+[2025-08-08 17:47:54] Using index-files script /home/miguel/codeql-home/codeql/ruby/tools/index-files.sh.
+[2025-08-08 17:47:54] [PROGRESS] database index-files> Scanning for files in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app...
+[2025-08-08 17:47:54] Calling plumbing command: codeql resolve files --include-extension=.rb --include-extension=.erb --include-extension=.gemspec --include=**/Gemfile --exclude=**/.git --size-limit=5m /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app --format=json
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/tmp...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/mailers...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/models...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/helpers...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/fixtures...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/fixtures/files...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/working...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/diagnostic...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/diagnostic/extractors...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/diagnostic/extractors/ruby...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/diagnostic/tracer...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/log...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/lib...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/lib/assets...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/lib/tasks...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/locales...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/bin...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/public...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/vendor...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/vendor/assets...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/vendor/assets/stylesheets...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/vendor/assets/javascripts...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/mailers...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/sessions...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/shared...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/concerns...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/concerns...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/channels...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/channels/application_cable...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/assets...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/assets/stylesheets...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/assets/javascripts...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/assets/javascripts/channels...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/assets/images...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/assets/config...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/jobs...
+[2025-08-08 17:47:54] [PROGRESS] resolve files> Scanning /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/log...
+[2025-08-08 17:47:54] Plumbing command codeql resolve files completed:
+                      [
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/Gemfile",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/channels/application_cable/channel.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/channels/application_cable/connection.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/application_controller.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/sessions_controller.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/static_pages_controller.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/tasks_controller.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/users_controller.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/application_helper.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/sessions_helper.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/static_pages_helper.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/tasks_helper.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/users_helper.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/jobs/application_job.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/mailers/application_mailer.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/application_record.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/task.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/user.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_footer.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_header.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_rails_default.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_shim.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/application.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.text.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/sessions/new.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/shared/_error_messages.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/about.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/contact.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/home.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/new.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/show.html.erb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/application.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/boot.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environment.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/development.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/production.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/application_controller_renderer.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/assets.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/backtrace_silencers.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/cookies_serializer.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/filter_parameter_logging.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/inflections.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/mime_types.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/new_framework_defaults.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/session_store.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/wrap_parameters.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/puma.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/routes.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/spring.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707202537_create_users.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707204541_add_index_to_users_email.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707205045_add_password_digest_to_users.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160708063117_create_tasks.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/schema.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/seeds.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/sessions_controller_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/static_pages_controller_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/tasks_controller_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/users_controller_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/site_layout_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/users_login_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/users_signup_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/models/task_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/models/user_test.rb",
+                        "/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/test_helper.rb"
+                      ]
+[2025-08-08 17:47:54] [DETAILS] database index-files> Found 67 files.
+[2025-08-08 17:47:54] [PROGRESS] database index-files> /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db: Indexing files in in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app...
+[2025-08-08 17:47:54] Using index-files script /home/miguel/codeql-home/codeql/ruby/tools/index-files.sh.
+[2025-08-08 17:47:54] [PROGRESS] database index-files> Running command in /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app: [/home/miguel/codeql-home/codeql/ruby/tools/index-files.sh, /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db/working/files-to-index3056827396777533185.list]
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/Gemfile
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/application_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/boot.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/sessions_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/task.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/channels/application_cable/connection.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/application_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/spring.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/static_pages_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environment.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/tasks_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/channels/application_cable/channel.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/development.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707202537_create_users.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/static_pages_controller_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/controllers/users_controller.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/user.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/sessions_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/static_pages_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707204541_add_index_to_users_email.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/tasks_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/helpers/users_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160708063117_create_tasks.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/migrate/20160707205045_add_password_digest_to_users.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_footer.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_footer.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/users_login_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/schema.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/jobs/application_job.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/db/seeds.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/tasks_controller_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/sessions_controller_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_header.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/controllers/users_controller_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_header.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/production.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/cookies_serializer.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/site_layout_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.text.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.text.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/integration/users_signup_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/filter_parameter_logging.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_rails_default.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_rails_default.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/application.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/sessions/new.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/inflections.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/application.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/mailers/application_mailer.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/sessions/new.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/mime_types.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_shim.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/_shim.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/layouts/mailer.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/environments/test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/new_framework_defaults.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/models/task_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/session_store.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/application_controller_renderer.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/assets.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/models/user_test.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/backtrace_silencers.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/models/application_record.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/contact.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/contact.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/new.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/new.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/shared/_error_messages.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/shared/_error_messages.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/home.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/home.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/test/test_helper.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/initializers/wrap_parameters.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/puma.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/about.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/static_pages/about.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/show.html.erb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/application.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/config/routes.rb
+[2025-08-08 17:47:54] [build-stdout] [32m INFO[0m extracting: /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-todo-app/app/views/users/show.html.erb
+[2025-08-08 17:47:54] Terminating normally.

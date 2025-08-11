@@ -1,0 +1,7 @@
+{
+  "1" : "ApplicationRecord",
+  "2" : "Article",
+  "3" : "Comment",
+  "4" : "Tag",
+  "5" : "User"
+}

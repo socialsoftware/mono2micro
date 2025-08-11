@@ -1,0 +1,51 @@
+<% provide(:title, @user.name) %>
+<h3>
+  <%= gravatar_for @user %>
+  <%= @user.name %>
+</h3>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">What's New To Do</h3>
+  </div>
+  <div class="panel-body">
+    <p>Use this section to keep track of your tasks!</p>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <h4>Add a task:</h4>
+        <%= form_for([@user, Task.new]) do |f| %>
+          <p>
+            <%= f.label :Task %><br>
+            <%= f.text_field :taskText %>
+          </p>
+          <p>
+            <%= f.submit "Submit", class: "task-submit btn btn-primary" %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+
+    <h3>What You Gotta Do</h3>
+
+    <ul class="list-group">
+      <% if @user.tasks.exists? %>
+      <% @user.tasks.each do |task| %>
+        <li class="list-group-item">
+          <strong>Task:</strong>
+          <%= task.taskText %>
+
+          <%= link_to 'Destroy Task', [task.user, task],
+                       method: :delete,
+                       class: "btn btn-primary btn-xs destroy-button",
+                       data: { confirm: 'Did you actually do that?' } %>
+        </li>
+      <% end %>
+
+      <% else %>
+        Do you need to start something? :D
+      <% end %>
+    </ul>
+
+
+  </div>
+</div>

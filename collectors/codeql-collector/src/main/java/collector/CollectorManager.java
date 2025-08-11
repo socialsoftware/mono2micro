@@ -17,6 +17,9 @@ public class CollectorManager {
             case DJANGO:
                 collector = new DjangoCollector(configManager.getConfig());
                 break;
+            case RUBY_ON_RAILS:
+                collector = new RubyOnRailsCollector(configManager.getConfig());
+                break;
             default:
                throw new IllegalArgumentException("Unsupported choice: " + choice);
         }

@@ -1,0 +1,10 @@
+[2025-08-08 17:54:35] This is codeql query run ./codeql-queries/generated-queries/Calls.ql --database ./test-resources/endToEnd/ruby-on-rails-blog-app/ruby-on-rails-blog-app-db --output ./json/Calls.bqrs --additional-packs codeql-queries/ruby-library/
+[2025-08-08 17:54:35] Log file was started late.
+[2025-08-08 17:54:35] Calling plumbing command: codeql resolve ram --dataset=/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-blog-app/ruby-on-rails-blog-app-db/db-ruby --format=json
+[2025-08-08 17:54:35] [PROGRESS] resolve ram> Stringpool size measured as 2179482
+[2025-08-08 17:54:35] Plumbing command codeql resolve ram completed:
+                      [
+                        "-J-Xmx1430M"
+                      ]
+[2025-08-08 17:54:35] Chaining via /tmp/codeql.2XLqQCqp to plumbing: execute queries -J-Xmx1430M --verbosity=progress --logdir=/home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-blog-app/ruby-on-rails-blog-app-db/log --evaluator-log-level=5 --warnings=show --additional-packs=/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/ruby-library --qlconfig-file=/home/miguel/m2m/mono2micro/collectors/codeql-collector/qlconfig.yml --output=/home/miguel/m2m/mono2micro/collectors/codeql-collector/json/Calls.bqrs -- /home/miguel/m2m/mono2micro/collectors/codeql-collector/test-resources/endToEnd/ruby-on-rails-blog-app/ruby-on-rails-blog-app-db/db-ruby path:/home/miguel/m2m/mono2micro/collectors/codeql-collector/codeql-queries/generated-queries/Calls.ql
+[2025-08-08 17:54:35] Exiting with code 70
