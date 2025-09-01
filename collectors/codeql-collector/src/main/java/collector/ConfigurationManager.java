@@ -7,26 +7,18 @@ public class ConfigurationManager {
 
     private Configuration config;
 
-    public ConfigurationManager(String[] args) {
-        // Check args size
-        if (args.length < 4) {
-            logger.severe("Different number of args than expected");
-            System.exit(1);
-        } else if (!args[1].equals("0") && !args[1].equals("1")) {
-            logger.severe("RUN_QUERIES flag option must be either 1 or 0");
-            System.exit(1);
-        }
+    public ConfigurationManager(CliArgs cliArgs) {
+        // init with queries flag, project name, db path
+        config = new Configuration(!cliArgs.noQueries, cliArgs.projectName, cliArgs.dbPath);
 
-        config = new Configuration(args[1].equals("1"), args[2], args[3]);
-
-        // ORM option
-        switch (args[0]) {
-            case "0" -> config.setProperties(ProjectProperties.SPRING_DATA_JPA);
-            case "1" -> config.setProperties(ProjectProperties.FENIX_FRAMEWORK);
-            case "2" -> config.setProperties(ProjectProperties.DJANGO);
-            case "3" -> config.setProperties(ProjectProperties.RUBY_ON_RAILS);
+        // framework mapping
+        switch (cliArgs.frameworkOption.toLowerCase()) {
+            case "spring" -> config.setProperties(ProjectProperties.SPRING_DATA_JPA);
+            case "fenix"  -> config.setProperties(ProjectProperties.FENIX_FRAMEWORK);
+            case "django" -> config.setProperties(ProjectProperties.DJANGO);
+            case "rails"  -> config.setProperties(ProjectProperties.RUBY_ON_RAILS);
             default -> {
-                logger.severe("ORM option " + args[0] + " is not valid");
+                logger.severe("Framework option " + cliArgs.frameworkOption + " is not valid");
                 System.exit(1);
             }
         }
@@ -34,9 +26,5 @@ public class ConfigurationManager {
 
     public Configuration getConfig() {
         return config;
-    }
-
-    public void setConfig(Configuration config) {
-        this.config = config;
     }
 }

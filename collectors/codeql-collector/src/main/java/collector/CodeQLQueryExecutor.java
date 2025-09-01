@@ -28,7 +28,7 @@ public class CodeQLQueryExecutor {
 
     public void runAndDecodeCommonQueries() {
         try {
-            // Create the output directory if it doesn't exist
+            // Create the query result output directory if it doesn't exist
             Files.createDirectories(Paths.get(JSON_PATH));
 
             String lang = config.getProperties().getLanguage();

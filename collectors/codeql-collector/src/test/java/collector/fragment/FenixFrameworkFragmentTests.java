@@ -2,7 +2,7 @@ package collector.fragment;
 
 import collector.AbstractStructuralCollector;
 import collector.Configuration;
-import collector.FenixFrameworkCollector;
+import collector.frameworks.FenixFrameworkCollector;
 import collector.ProjectProperties;
 import collector.queryresults.Endpoints;
 import collector.queryresults.EntityFields;

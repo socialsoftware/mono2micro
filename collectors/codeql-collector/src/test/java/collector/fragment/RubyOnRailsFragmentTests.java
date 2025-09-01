@@ -3,7 +3,7 @@ package collector.fragment;
 import collector.AbstractStructuralCollector;
 import collector.Configuration;
 import collector.ProjectProperties;
-import collector.RubyOnRailsCollector;
+import collector.frameworks.RubyOnRailsCollector;
 import collector.queryresults.Endpoints;
 import collector.queryresults.EntityFields;
 import collector.queryresults.EntitySuperclass;

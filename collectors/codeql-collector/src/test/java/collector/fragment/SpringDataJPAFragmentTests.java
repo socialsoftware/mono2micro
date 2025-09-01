@@ -3,7 +3,7 @@ package collector.fragment;
 import collector.AbstractStructuralCollector;
 import collector.Configuration;
 import collector.ProjectProperties;
-import collector.SpringDataJPACollector;
+import collector.frameworks.SpringDataJPACollector;
 import collector.jpa.queryresults.EntityAttributes;
 import collector.jpa.queryresults.FieldAnnotations;
 import collector.jpa.queryresults.NamedQueries;

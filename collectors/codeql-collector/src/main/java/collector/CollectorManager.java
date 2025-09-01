@@ -1,5 +1,10 @@
 package collector;
 
+import collector.frameworks.DjangoCollector;
+import collector.frameworks.FenixFrameworkCollector;
+import collector.frameworks.RubyOnRailsCollector;
+import collector.frameworks.SpringDataJPACollector;
+
 public class CollectorManager {
 
     private final AbstractStructuralCollector collector;

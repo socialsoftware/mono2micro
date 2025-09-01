@@ -2,7 +2,7 @@ package collector.fragment;
 
 import collector.AbstractStructuralCollector;
 import collector.Configuration;
-import collector.DjangoCollector;
+import collector.frameworks.DjangoCollector;
 import collector.ProjectProperties;
 import collector.queryresults.Endpoints;
 import collector.queryresults.EntityFields;
