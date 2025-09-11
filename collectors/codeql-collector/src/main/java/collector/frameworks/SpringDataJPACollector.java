@@ -78,7 +78,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
     }
 
     @Override
-    protected void checkForAccesses(String controllerMethodName, Function m) {
+    public void checkForAccesses(String controllerMethodName, Function m) {
         List<Access> accesses = accessMap.getOrDefault(m.getFunctionId(), new ArrayList<>());
 
         for (Access access : accesses) {

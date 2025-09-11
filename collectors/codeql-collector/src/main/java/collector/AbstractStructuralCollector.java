@@ -273,7 +273,10 @@ public abstract class AbstractStructuralCollector {
             .forEach(m -> dfs(m, visitedCallLocations, endpointName));
     }
 
-    protected abstract void checkForAccesses(String controllerMethodName, Function m);
+    public void checkForAccesses(String controllerMethodName, Function m) {
+        accessMap.getOrDefault(m.getFunctionId(), new ArrayList<>())
+                .forEach(access -> addEntitySequenceAccess(controllerMethodName, access.getEntity().getId(), access.getMode()));
+    }
 
     protected void buildFunctionAccesses() throws IOException {
         // Read FunctionAccesses file as a list

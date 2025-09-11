@@ -52,7 +52,7 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
     }
 
     @Override
-    protected void checkForAccesses(String controllerMethodName, Function f) {
+    public void checkForAccesses(String controllerMethodName, Function f) {
         // Get fenixFunction from map
         FenixFunction method = fenixFunctionMap.get(f.getFunctionId());
 
