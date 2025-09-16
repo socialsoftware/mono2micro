@@ -14,9 +14,13 @@ public enum ProjectProperties {
     DJANGO("", PYTHON_LIBRARY, PYTHON, "Django"),
     RUBY_ON_RAILS("", RUBY_LIBRARY, RUBY, "RubyOnRails");
 
+    // Path to framework-specific queries, empty string if not necessary
     private final String specificFolderPath;
+    // Constant pointing to language library folder
     private final String languageLibraryPath;
+    // Constant with language name - will be used by codeql packs
     private final String language;
+    // Name of the framework; should match .qll file name without extension
     private final String framework;
 
     ProjectProperties(String specificFolderPath, String languageLibraryPath, String language, String framework) {
