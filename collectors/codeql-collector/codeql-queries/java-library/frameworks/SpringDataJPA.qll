@@ -1,12 +1,11 @@
 import java
-import semmle.code.java.frameworks.javaee.Persistence
 
 /**
  * Domain entity definition
  */
 class DomainEntity extends Class {
   DomainEntity() {
-    isEntity(this) or isMappedSuperclass(this)
+    isEntity(this) or isMappedSuperclass(this) or isEmbeddable(this)
   }
 
   predicate hasField(DomainField df) {
@@ -19,6 +18,12 @@ class DomainEntity extends Class {
 
 }
 
+predicate isEmbeddable(Class de) {
+  exists(EmbeddableAnnotation embeddable |
+    de.getAnAnnotation() = embeddable
+  )
+}
+
 predicate isEntity(Class de) {
   exists(EntityAnnotation entity |
     de.getAnAnnotation() = entity
@@ -29,6 +34,30 @@ predicate isMappedSuperclass(Class de) {
   exists(MappedSuperclassAnnotation mapperSuperclass |
     de.getAnAnnotation() = mapperSuperclass
   )
+}
+
+class EntityAnnotation extends Annotation {
+  EntityAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "Entity")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "Entity")
+  }
+}
+
+class MappedSuperclassAnnotation extends Annotation {
+  MappedSuperclassAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "MappedSuperclass")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "MappedSuperclass")
+  }
+}
+
+class EmbeddableAnnotation extends Annotation {
+  EmbeddableAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "Embeddable")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "Embeddable")
+  }
 }
 
 /**

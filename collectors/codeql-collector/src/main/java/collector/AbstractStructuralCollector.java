@@ -114,8 +114,8 @@ public abstract class AbstractStructuralCollector {
         }
 
         // Write the output JSON files
-        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ENTITYTOID, entityToIDNode);
-        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + IDTOENTITY, idToEntityNode);
+        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "_" + ENTITYTOID, entityToIDNode);
+        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "_" + IDTOENTITY, idToEntityNode);
         logger.info("Entity to ID file created successfully.");
         logger.info("ID to Entity file created successfully.");
     }
@@ -176,7 +176,7 @@ public abstract class AbstractStructuralCollector {
             .forEach(entry -> {
                 // Create a new node for entity
                 ObjectNode entityNode = mapper.createObjectNode();
-                entityNode.put("name", entry.getKey());
+                entityNode.put("name", entry.getValue().getName());
                 // Array for the fields - will be empty
                 ArrayNode fieldArray = mapper.createArrayNode();
                 entityNode.set("fields", fieldArray);
@@ -198,7 +198,7 @@ public abstract class AbstractStructuralCollector {
         // Add all entities to global object
         structureNode.set("entities", entitiesArray);
         // Write the output JSON files
-        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + STRUCTURE, structureNode);
+        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "_" + STRUCTURE, structureNode);
         logger.info("Structure file created successfully.");
     }
 
@@ -233,7 +233,7 @@ public abstract class AbstractStructuralCollector {
             });
 
             // Write the output JSON files
-            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "-" + ACCESSES, accessesNode);
+            jsonFileGenerator.outputToJson(mapper, config.getProjectName() + ".json", accessesNode);
             logger.info("Accesses file created successfully.");
         } catch (IOException e) {
             logger.warning("Error processing JSON files for Accesses: " + e.getMessage());

@@ -47,10 +47,6 @@ Collects data for a given project and CodeQL database.
 
 ---
 
-Got it 👍 — I can polish and reformat your section so it reads more clearly, is easier to follow, and looks good in the README. Here’s an improved version with better structure, Markdown styling, and examples:
-
----
-
 ## 🔧 Extending the Collector: Adding a Library File
 
 The Collector can be extended to support new frameworks and languages by adding a **library file**. Follow the steps below:

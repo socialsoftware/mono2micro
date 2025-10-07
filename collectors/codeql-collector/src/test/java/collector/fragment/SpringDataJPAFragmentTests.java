@@ -81,9 +81,9 @@ public class SpringDataJPAFragmentTests extends AbstractFragmentTest {
 
     private List<EntityAttributes> getExpectedEntityAttributesList() {
         return List.of(
-            new EntityAttributes("Author", false, "Author", ""),
-            new EntityAttributes("BaseEntity", true, "BaseEntity", ""),
-            new EntityAttributes("Book", false, "Book", "")
+            new EntityAttributes("Author", false, false, "Author", ""),
+            new EntityAttributes("BaseEntity", true, false, "BaseEntity", ""),
+            new EntityAttributes("Book", false, false, "Book", "")
         );
     }
 

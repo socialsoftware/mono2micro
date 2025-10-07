@@ -1,5 +1,61 @@
 import frameworks.SpringDataJPA
 
+class CollectionTableAnnotation extends Annotation {
+  CollectionTableAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "CollectionTable")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "CollectionTable")
+  }
+}
+
+class ElementCollectionAnnotation extends Annotation {
+  ElementCollectionAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "ElementCollection")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "ElementCollection")
+  }
+}
+
+class JoinTableAnnotation extends Annotation {
+  JoinTableAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "JoinTable")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "JoinTable")
+  }
+}
+
+class OneToOneAnnotation extends Annotation {
+  OneToOneAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "OneToOne")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "OneToOne")
+  }
+}
+
+class ManyToManyAnnotation extends Annotation {
+  ManyToManyAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "ManyToMany")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "ManyToMany")
+  }
+}
+
+class OneToManyAnnotation extends Annotation {
+  OneToManyAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "OneToMany")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "OneToMany")
+  }
+}
+
+class ManyToOneAnnotation extends Annotation {
+  ManyToOneAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "ManyToOne")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "ManyToOne")
+  }
+}
+
 predicate elementCollectionJoinTable(Field f, string joinTableName) {
     exists(ElementCollectionAnnotation elmtCollection  |
         f.getAnAnnotation() = elmtCollection and

@@ -6,21 +6,28 @@ import collector.jpa.queryresults.EntityAttributes;
 import collector.jpa.queryresults.FieldAnnotations;
 import collector.jpa.queryresults.NamedQueries;
 import collector.jpa.queryresults.RepoAccesses;
+import collector.queryresults.EntitySuperclass;
 import collector.utils.Access;
 import collector.utils.Classes;
 import collector.utils.DomainEntity;
 import collector.utils.Function;
 import collector.utils.Query;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
+import static collector.Constants.ENTITYTOID;
 import static collector.Constants.ENTITY_ATTRIBUTES;
+import static collector.Constants.ENTITY_SUPERCLASS;
 import static collector.Constants.FIELD_ANNOTATIONS;
+import static collector.Constants.IDTOENTITY;
 import static collector.Constants.NAMED_QUERIES;
 import static collector.Constants.REPO_ACCESSES;
 import static collector.utils.TypeUtils.getTypes;
@@ -41,10 +48,32 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
 
     @Override
     public void generateIdEntityFiles() {
-        super.generateIdEntityFiles();
+        // Create a new JSON object for entityToID output
+        ObjectNode entityToIDNode = mapper.createObjectNode();
+        // Create a new JSON object for IDToEntity output
+        ObjectNode idToEntityNode = mapper.createObjectNode();
+        // Store entities that are @Embeddable annotated
+        List<String> embeddableList = new ArrayList<>();
+        // Store all entities in order
+        List<String> entityList = new ArrayList<>();
+
+        int id = 1;
+        // Read entitySuperclasses file as a list
+        for (EntitySuperclass es : fileParser.readEntitySuperclass(getFile(ENTITY_SUPERCLASS))) {
+            // Instantiate new Domain Entity
+            DomainEntity de = new DomainEntity(id, es);
+            // Store the domain entities in a map for later
+            locationToEntityMap.put(es.getEntityLocation(), de);
+            embeddableList.add(es.getEntityName());
+            entityList.add(de.getName());
+            id++;
+        }
 
         // Fill tableClassesAccessed map
         for (EntityAttributes ea : fileParser.readEntityAttributes(getFile(ENTITY_ATTRIBUTES))) {
+            // @Embeddable annotated classes don't show up in EntityAttributes
+            embeddableList.remove(ea.getEntityName());
+
             Classes classes = new Classes();
             classes.addClass(ea.getEntityName());
             tableClassesAccessedMap.put(ea.getTableName().toUpperCase(), classes);
@@ -58,6 +87,21 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
             de.setTableName(ea.getTableName());
             locationToEntityMap.put(ea.getEntityLocation(), de);
         }
+
+        entityList.removeAll(embeddableList);
+
+        id = 1;
+        for (String entity : entityList) {
+            entityToIDNode.put(entity, id);
+            idToEntityNode.put(String.valueOf(id), entity);
+            id++;
+        }
+
+        // Write the output JSON files
+        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "_" + ENTITYTOID, entityToIDNode);
+        jsonFileGenerator.outputToJson(mapper, config.getProjectName() + "_" + IDTOENTITY, idToEntityNode);
+        logger.info("Entity to ID file created successfully.");
+        logger.info("ID to Entity file created successfully.");
     }
 
     @Override
@@ -107,7 +151,7 @@ public class SpringDataJPACollector extends AbstractStructuralCollector {
             Access access;
             DomainEntity entity = locationToEntityMap.get(ra.getEntityLocation());
             Function method = new Function(ra.getFunctionId(), ra.getCallLocation());
-            String methodName = ra.getMethodName();
+            String methodName = ra.getFunctionId();
 
             // Repository method was not declared
             if (!ra.isDeclared()) {

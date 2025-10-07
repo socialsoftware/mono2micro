@@ -1,5 +1,13 @@
 import frameworks.SpringDataJPA
 
+class TableAnnotation extends Annotation {
+  TableAnnotation() {
+    this.getType().hasQualifiedName("javax.persistence", "Table")
+    or
+    this.getType().hasQualifiedName("jakarta.persistence", "Table")
+  }
+}
+
 from DomainEntity de, Class entityClass, string mappedSuperclass, string tableName, string entityName
 where 
     entityClass = de and

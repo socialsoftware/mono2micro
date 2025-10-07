@@ -38,14 +38,16 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
 
     private void buildFunctionAttributes() {
         for (FunctionAttributes fa : fileParser.readFunctionAttributes(getFile(FUNCTION_ATTRIBUTES))) {
+            FenixFunction ff = new FenixFunction(
+                new Function(fa.getFunctionId()),
+                fa.getMethodDeclaringType(),
+                fa.getMethodName(),
+                fa.getReturningType(),
+                new ArrayList<>()
+            );
+
             fenixFunctionMap
-                .computeIfAbsent(fa.getFunctionId(), k -> new FenixFunction(
-                    new Function(fa.getFunctionId()),
-                    fa.getMethodDeclaringType(),
-                    fa.getMethodName(),
-                    fa.getReturningType(),
-                    new ArrayList<>()
-                ))
+                .computeIfAbsent(fa.getFunctionId(), k -> ff)
                 .getParams()
                 .add(fa.getParamType());
         }
@@ -61,9 +63,9 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
         }
 
         // Check accesses
-        if (method.getMethodName().endsWith("_Base")) {
+        if (method.getMethodClass().endsWith("_Base")) {
             registerBaseClass(controllerMethodName, method);
-        } else if (method.getMethodClass().equals("FenixFramework") && method.getMethodClass().equals("getDomainObject")) {
+        } else if (method.getMethodClass().equals("FenixFramework") && method.getMethodName().equals("getDomainObject")) {
             registerDomainObject(controllerMethodName, method);
         }
     }
@@ -72,14 +74,16 @@ public class FenixFrameworkCollector extends AbstractStructuralCollector {
         // Get Domain location from call qualifier
         String qualifierDomainLocation = getQualifierEntityLocationByCallLocation(method.getFunction().getCallLocation());
         // Check for access
-        if (locationToEntityMap.containsKey(qualifierDomainLocation))
+        if (locationToEntityMap.containsKey(qualifierDomainLocation)) {
             addEntitySequenceAccess(controllerMethodName, locationToEntityMap.get(qualifierDomainLocation).getId(), "R");
+        }
     }
 
     private void registerBaseClass(String controllerMethodName, FenixFunction method) {
         String mode = "";
         String returnType = "";
         List<String> argTypes = new ArrayList<>();
+
         // Analyze each method
         if (method.getMethodClass().endsWith("_Base")) {
             if (method.getMethodName().startsWith("get")) {
