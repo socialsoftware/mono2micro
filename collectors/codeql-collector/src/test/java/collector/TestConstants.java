@@ -14,9 +14,9 @@ public class TestConstants {
     public static final String RUBY_FRAGMENT_TEST_NAME = "ruby-fragment-test";
     public static final String RUBY_FRAGMENT_TEST_PATH = "./test-resources/fragments/ruby-on-rails/ruby-on-rails-db";
 
-    public static final String SPRING_CHOICE = "0";
-    public static final String FENIX_CHOICE = "1";
-    public static final String DJANGO_CHOICE = "2";
-    public static final String RUBY_CHOICE = "3";
+    public static final String SPRING_CHOICE = "spring";
+    public static final String FENIX_CHOICE = "fenix";
+    public static final String DJANGO_CHOICE = "django";
+    public static final String RUBY_CHOICE = "rails";
 
 }

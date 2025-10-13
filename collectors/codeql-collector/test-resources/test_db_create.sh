@@ -78,3 +78,80 @@ else
     exit 1
   fi
 fi
+
+if [ -d "./endToEnd/ruby-on-rails-blog-app/ruby-on-rails-blog-app-db" ]; then
+  echo "CodeQL database ruby-on-rails-blog-app-db already exists. Skipping creation."
+else
+  echo "Creating CodeQL database ruby-on-rails-blog-app-db..."
+  codeql database create --language=ruby --source-root=./endToEnd/ruby-on-rails-blog-app -- ./endToEnd/ruby-on-rails-blog-app/ruby-on-rails-blog-app-db
+  if [ $? -ne 0 ]; then
+    echo "Failed to create CodeQL database."
+    exit 1
+  fi
+fi
+
+if [ -d "./endToEnd/ruby-on-rails-realworld-example-app/ruby-on-rails-realworld-example-app-db" ]; then
+  echo "CodeQL database ruby-on-rails-realworld-example-app-db already exists. Skipping creation."
+else
+  echo "Creating CodeQL database ruby-on-rails-realworld-example-app-db..."
+  codeql database create --language=ruby --source-root=./endToEnd/ruby-on-rails-realworld-example-app -- ./endToEnd/ruby-on-rails-realworld-example-app/ruby-on-rails-realworld-example-app-db
+  if [ $? -ne 0 ]; then
+    echo "Failed to create CodeQL database."
+    exit 1
+  fi
+fi
+
+if [ -d "./endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db" ]; then
+  echo "CodeQL database ruby-on-rails-todo-app-db already exists. Skipping creation."
+else
+  echo "Creating CodeQL database ruby-on-rails-todo-app-db..."
+  codeql database create --language=ruby --source-root=./endToEnd/ruby-on-rails-todo-app -- ./endToEnd/ruby-on-rails-todo-app/ruby-on-rails-todo-app-db
+  if [ $? -ne 0 ]; then
+    echo "Failed to create CodeQL database."
+    exit 1
+  fi
+fi
+
+if [ -d "./fragments/django_fragment/django-db" ]; then
+  echo "CodeQL database django-db already exists. Skipping creation."
+else
+  echo "Creating CodeQL django-db..."
+  codeql database create --language=python --source-root=./fragments/django_fragment -- ./fragments/django_fragment/django-db
+  if [ $? -ne 0 ]; then
+    echo "Failed to create CodeQL database."
+    exit 1
+  fi
+fi
+
+if [ -d "./fragments/fenix-fragment/fenix-db" ]; then
+  echo "CodeQL database fenix-db already exists. Skipping creation."
+else
+  echo "Creating CodeQL database fenix-db..."
+  codeql database create --language=java --source-root=./fragments/fenix-fragment -- ./fragments/fenix-fragment/fenix-db
+  if [ $? -ne 0 ]; then
+    echo "Failed to create CodeQL database."
+    exit 1
+  fi
+fi
+
+if [ -d "./fragments/ruby-on-rails/ruby-on-rails-db" ]; then
+  echo "CodeQL database ruby-on-rails-db already exists. Skipping creation."
+else
+  echo "Creating CodeQL database ruby-on-rails-db..."
+  codeql database create --language=ruby --source-root=./fragments/ruby-on-rails -- ./fragments/ruby-on-rails/ruby-on-rails-db
+  if [ $? -ne 0 ]; then
+    echo "Failed to create CodeQL database."
+    exit 1
+  fi
+fi
+
+if [ -d "./fragments/spring-data-jpa/spring-db" ]; then
+  echo "CodeQL database spring-db already exists. Skipping creation."
+else
+  echo "Creating CodeQL database ruby-on-rails-todo-app-db..."
+  codeql database create --language=java --source-root=./fragments/spring-data-jpa -- ./fragments/spring-data-jpa/spring-db
+  if [ $? -ne 0 ]; then
+    echo "Failed to create CodeQL database."
+    exit 1
+  fi
+fi

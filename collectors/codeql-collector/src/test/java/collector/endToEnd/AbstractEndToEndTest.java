@@ -33,13 +33,14 @@ public abstract class AbstractEndToEndTest {
 
 
             // Run the MainRunner
-            MainRunner.main(new String[]{getChoice(), "1", testId, dbPath});
+            int exitCode = MainRunner.run(new String[]{"--framework=" + getChoice(), testId, dbPath});
+            assertEquals(0, exitCode);
 
             // Compare results
-            compareEntityToID(new File(expectedBase + "/entityToID.json"), new File(outputBase + testId + "-entityToID.json"));
-            compareIDToEntity(new File(expectedBase + "/IDToEntity.json"), new File(outputBase + testId + "-IDToEntity.json"));
-            compareStructure(new File(expectedBase + "/structure.json"), new File(outputBase + testId + "-structure.json"));
-            compareAccess(new File(expectedBase + "/accesses.json"), new File(outputBase + testId + "-accesses.json"));
+            compareEntityToID(new File(expectedBase + "/entityToID.json"), new File(outputBase + testId + "_entityToID.json"));
+            compareIDToEntity(new File(expectedBase + "/IDToEntity.json"), new File(outputBase + testId + "_IDToEntity.json"));
+            compareStructure(new File(expectedBase + "/structure.json"), new File(outputBase + testId + "_structure.json"));
+            compareAccess(new File(expectedBase + "/accesses.json"), new File(outputBase + testId + ".json"));
         }
     }
 

@@ -1,9 +1,9 @@
 package collector.fragment;
 
+import collector.FileParser;
 import collector.queryresults.Endpoints;
 import collector.queryresults.EntityFields;
 import collector.queryresults.EntitySuperclass;
-import collector.queryresults.FileParser;
 import collector.queryresults.FunctionAccesses;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
